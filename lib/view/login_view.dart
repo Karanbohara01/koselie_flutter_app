@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:koselie/common/snackbar.dart';
 import 'package:koselie/view/homepage_view.dart';
 import 'package:koselie/view/signup_view.dart';
 
@@ -11,44 +10,59 @@ class LoginPage extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        body: Container(
-          width: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.white, Color.fromARGB(255, 236, 150, 150)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-          ),
-          child: Center(
-            child: SingleChildScrollView(
-              child: Container(
-                padding: const EdgeInsets.all(24),
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 220, 227, 230),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 15,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _header(context),
-                    const SizedBox(height: 20),
-                    _inputField(context),
-                    const SizedBox(height: 10),
-                    _forgotPassword(context),
-                    const SizedBox(height: 20),
-                    _signup(context),
-                  ],
-                ),
+        body: SafeArea(
+          child: Container(
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.pink, Colors.pinkAccent],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
+            ),
+            child: Stack(
+              children: [
+                const Positioned(
+                  top: 50,
+                  left: 150,
+                  child: Image(
+                    image: AssetImage('assets/logo/logo.png'),
+                    height: 100,
+                    width: 100,
+                  ),
+                ),
+                Center(
+                  child: SingleChildScrollView(
+                    child: Container(
+                      padding: const EdgeInsets.all(24),
+                      margin: const EdgeInsets.symmetric(horizontal: 20),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 15,
+                            offset: const Offset(0, 10),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _header(),
+                          const SizedBox(height: 20),
+                          _inputField(context),
+                          const SizedBox(height: 10),
+                          _forgotPassword(context),
+                          const SizedBox(height: 20),
+                          _signup(context),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -57,7 +71,7 @@ class LoginPage extends StatelessWidget {
   }
 
   // Header with welcome message
-  _header(BuildContext context) {
+  Widget _header() {
     return const Column(
       children: [
         Text(
@@ -81,7 +95,7 @@ class LoginPage extends StatelessWidget {
   }
 
   // Input fields for username and password
-  _inputField(BuildContext context) {
+  Widget _inputField(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -112,31 +126,25 @@ class LoginPage extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 20),
-        GestureDetector(
-          onTap: () {
-            showMySnackBar(context, 'message');
+        TextButton(
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => Homepage()),
+            );
           },
-          child: ElevatedButton(
-            onPressed: () {
-              print("Sign in Successful!");
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              shape: const StadiumBorder(),
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              backgroundColor: Colors.pink,
-              shadowColor: Colors.pinkAccent,
-              elevation: 5,
-            ),
-            child: const Text(
-              "Login",
-              style: TextStyle(
-                fontSize: 20,
-                color: Colors.white,
-              ),
+          style: ElevatedButton.styleFrom(
+            shape: const StadiumBorder(),
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            backgroundColor: Colors.pink,
+            shadowColor: Colors.pinkAccent,
+            elevation: 5,
+          ),
+          child: const Text(
+            "Login",
+            style: TextStyle(
+              fontSize: 20,
+              color: Colors.white,
             ),
           ),
         ),
@@ -145,7 +153,7 @@ class LoginPage extends StatelessWidget {
   }
 
   // Forgot password link
-  _forgotPassword(BuildContext context) {
+  Widget _forgotPassword(BuildContext context) {
     return TextButton(
       onPressed: () {},
       child: const Text(
@@ -159,7 +167,7 @@ class LoginPage extends StatelessWidget {
   }
 
   // Link to navigate to the signup screen
-  _signup(BuildContext context) {
+  Widget _signup(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -169,13 +177,9 @@ class LoginPage extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            // Corrected navigation to SignupScreen
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(
-                builder: (context) =>
-                    SignupScreen(), // Ensure SignupScreen is correctly imported
-              ),
+              MaterialPageRoute(builder: (context) => SignupScreen()),
             );
           },
           child: const Text(
