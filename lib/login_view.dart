@@ -1,7 +1,7 @@
-import 'package:first_assignment/common/show_my_snackbar.dart';
-import 'package:first_assignment/view/homepage_view.dart';
-import 'package:first_assignment/view/signup_view.dart';
 import 'package:flutter/material.dart';
+import 'package:koselie/common/snackbar.dart';
+import 'package:koselie/view/homepage_view.dart';
+import 'package:koselie/view/signup_view.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});

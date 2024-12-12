@@ -1,7 +1,5 @@
-import 'package:first_assignment/view/homepage_view.dart';
-import 'package:first_assignment/view/sign_in_view.dart';
-import 'package:first_assignment/view/signin_view.dart';
 import 'package:flutter/material.dart';
+import 'package:koselie/login_view.dart';
 
 class OnboardingScreen extends StatefulWidget {
   @override

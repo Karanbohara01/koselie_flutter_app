@@ -1,5 +1,5 @@
-import 'package:first_assignment/view/onboard_view.dart';
 import 'package:flutter/material.dart';
+import 'package:koselie/view/onboarding_view.dart';
 
 class SplashScreen extends StatefulWidget {
   @override

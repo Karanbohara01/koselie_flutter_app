@@ -1,5 +1,5 @@
-import 'package:first_assignment/view/sign_in_view.dart';
 import 'package:flutter/material.dart';
+import 'package:koselie/login_view.dart';
 
 class SignupScreen extends StatefulWidget {
   @override
