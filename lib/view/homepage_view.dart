@@ -7,7 +7,7 @@ class Homepage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.pinkAccent,
+        backgroundColor: const Color.fromARGB(255, 238, 2, 80),
         title: Row(
           children: [
             Image.asset('assets/logo/logo.png', height: 30),
