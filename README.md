@@ -1,4 +1,4 @@
-# koselie
+Koselie an e-commerce based social media app
 
 
 ![WhatsApp Image 2024-12-12 at 20 53 02_f8715f3d](https://github.com/user-attachments/assets/cfca7d93-4a16-48ec-8905-58817ff1f17a)
