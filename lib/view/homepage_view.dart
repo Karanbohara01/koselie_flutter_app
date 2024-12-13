@@ -26,7 +26,40 @@ class Homepage extends StatelessWidget {
         children: [
           // Horizontal Icon Menu
           Container(
-            padding: const EdgeInsets.all(2.0),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+            color: Colors.white,
+            child: Row(
+              children: [
+                const CircleAvatar(
+                  backgroundImage: AssetImage('assets/images/baby.jpg'),
+                  radius: 20, // Adjust size to match Facebook's style
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      hintText: "What's on your mind?",
+                      hintStyle: TextStyle(
+                          color: Colors.grey[600]), // Subtle text style
+                      border: InputBorder.none, // No border for cleaner look
+                    ),
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    // Add functionality for photo upload
+                  },
+                  icon: const Icon(Icons.photo,
+                      color: Colors.pinkAccent,
+                      size: 28), // Green color for photo icon
+                ),
+              ],
+            ),
+          ),
+
+          Container(
+            padding: const EdgeInsets.all(8.0),
             color: Colors.white,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
