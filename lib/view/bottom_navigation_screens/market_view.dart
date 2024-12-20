@@ -35,7 +35,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
     ),
     Product(
       imageUrl:
-          'https://fdn.gsmarena.com/imgroot/news/21/08/samsung-galaxy-a52s-5g-oficcial-renders/-1200x1200m/gsmarena_001.jpg',
+          "https://www.shift4shop.com/2015/images/sell-online/electronics/selling-charge-up.jpg",
       title: '8/128GB Ram',
       price: 'रू12,000',
     ),

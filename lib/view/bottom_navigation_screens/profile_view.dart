@@ -60,23 +60,39 @@ class ProfileScreen extends StatelessWidget {
               ),
 
               const SizedBox(height: 20),
-              const SectionTitle('Selling'),
+              const SectionTitle(
+                'Selling',
+              ),
 
               // Selling Section
               const ListTile(
-                leading: Icon(Icons.list),
+                leading: Icon(
+                  Icons.list,
+                  color: Colors.pink,
+                ),
                 title: Text('Your listings (1)'),
               ),
               const ListTile(
-                leading: Icon(Icons.flash_on),
-                title: Text('Quick actions'),
+                leading: Icon(
+                  Icons.flash_on,
+                  color: Colors.pink,
+                ),
+                title: Text(
+                  'Quick actions',
+                ),
               ),
               const ListTile(
-                leading: Icon(Icons.people),
+                leading: Icon(
+                  Icons.people,
+                  color: Colors.pink,
+                ),
                 title: Text('Marketplace followers'),
               ),
               const ListTile(
-                leading: Icon(Icons.bar_chart),
+                leading: Icon(
+                  Icons.bar_chart,
+                  color: Colors.pink,
+                ),
                 title: Text('All selling activities'),
               ),
 
@@ -85,7 +101,10 @@ class ProfileScreen extends StatelessWidget {
 
               // Preferences Section
               const ListTile(
-                leading: Icon(Icons.check_box_outlined),
+                leading: Icon(
+                  Icons.check_box_outlined,
+                  color: Colors.pink,
+                ),
                 title: Text('Following'),
               ),
 
@@ -94,12 +113,32 @@ class ProfileScreen extends StatelessWidget {
 
               // Account Section
               const ListTile(
-                leading: Icon(Icons.location_on),
+                leading: Icon(
+                  Icons.location_on,
+                  color: Colors.pink,
+                ),
                 title: Text('Location'),
               ),
               const ListTile(
-                leading: Icon(Icons.notifications),
+                leading: Icon(
+                  Icons.notifications,
+                  color: Colors.pink,
+                ),
                 title: Text('Notifications'),
+              ),
+              const ListTile(
+                leading: Icon(
+                  Icons.settings,
+                  color: Colors.pink,
+                ),
+                title: Text('Settings'),
+              ),
+              const ListTile(
+                leading: Icon(
+                  Icons.more_horiz,
+                  color: Colors.pink,
+                ),
+                title: Text('More'),
               ),
             ],
           ),
