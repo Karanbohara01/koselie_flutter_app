@@ -6,65 +6,156 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
-            mainAxisSize:
-                MainAxisSize.min, // Ensures content is centered vertically
-            crossAxisAlignment:
-                CrossAxisAlignment.stretch, // Makes buttons full width
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Login Page',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
+              // Profile Section
+              const Row(
+                children: [
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundImage: NetworkImage(
+                        'https://lh3.googleusercontent.com/a/AEdFTp7YZOCxHujVnJuM7eCc4dAZ8S67DyBYE3-RMXex0g=s96-c'), // Replace with your image
+                  ),
+                  SizedBox(width: 16),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Karan Bohara',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        'View Marketplace profile',
+                        style: TextStyle(color: Colors.pink),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              const SizedBox(
-                  height:
-                      20), // Adds spacing between the title and the text fields
-              const TextField(
-                decoration: InputDecoration(
-                  labelText: 'Username',
-                  border: OutlineInputBorder(),
+              const SizedBox(height: 20),
+
+              // Action Buttons
+              GridView(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                  childAspectRatio: 3,
                 ),
+                children: const [
+                  ActionButton(
+                      title: 'Saved items', icon: Icons.favorite_border),
+                  ActionButton(
+                      title: '2 messages', icon: Icons.message_outlined),
+                  ActionButton(title: 'Reviews', icon: Icons.star_border),
+                  ActionButton(title: 'Recently viewed', icon: Icons.history),
+                ],
               ),
-              const SizedBox(height: 12), // Adds spacing between text fields
-              const TextField(
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(),
-                  // Masks the password input
-                ),
+
+              const SizedBox(height: 20),
+              const SectionTitle('Selling'),
+
+              // Selling Section
+              const ListTile(
+                leading: Icon(Icons.list),
+                title: Text('Your listings (1)'),
               ),
-              const SizedBox(
-                  height: 20), // Adds spacing between text fields and buttons
-              ElevatedButton(
-                onPressed: () {
-                  // Login logic goes here
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Login button pressed')),
-                  );
-                },
-                child: const Text(
-                  'Login',
-                  style: TextStyle(color: Colors.white),
-                ),
+              const ListTile(
+                leading: Icon(Icons.flash_on),
+                title: Text('Quick actions'),
               ),
-              const SizedBox(height: 12), // Adds spacing between buttons
-              ElevatedButton(
-                onPressed: () {
-                  // Register logic goes here
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Register button pressed')),
-                  );
-                },
-                child: const Text('Register'),
+              const ListTile(
+                leading: Icon(Icons.people),
+                title: Text('Marketplace followers'),
+              ),
+              const ListTile(
+                leading: Icon(Icons.bar_chart),
+                title: Text('All selling activities'),
+              ),
+
+              const SizedBox(height: 20),
+              const SectionTitle('Preferences'),
+
+              // Preferences Section
+              const ListTile(
+                leading: Icon(Icons.check_box_outlined),
+                title: Text('Following'),
+              ),
+
+              const SizedBox(height: 20),
+              const SectionTitle('Account'),
+
+              // Account Section
+              const ListTile(
+                leading: Icon(Icons.location_on),
+                title: Text('Location'),
+              ),
+              const ListTile(
+                leading: Icon(Icons.notifications),
+                title: Text('Notifications'),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class ActionButton extends StatelessWidget {
+  final String title;
+  final IconData icon;
+
+  const ActionButton({super.key, required this.title, required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.pink[800],
+        padding: const EdgeInsets.symmetric(vertical: 8), // Reduced padding
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      onPressed: () {},
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: Colors.white, size: 24), // Adjusted icon size
+          const SizedBox(height: 4), // Reduced spacing
+          Text(
+            title,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 12, // Reduced font size
+              overflow: TextOverflow.ellipsis, // Prevents overflow
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SectionTitle extends StatelessWidget {
+  final String title;
+
+  const SectionTitle(this.title, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      title,
+      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
     );
   }
 }
