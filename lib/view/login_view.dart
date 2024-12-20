@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:koselie/view/homepage_view.dart';
+import 'package:koselie/view/bottom_navigation_screens/dashboard_view.dart';
 import 'package:koselie/view/signup_view.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -130,7 +129,7 @@ class LoginPage extends StatelessWidget {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => Homepage()),
+              MaterialPageRoute(builder: (context) => const MyDashboardView()),
             );
           },
           style: ElevatedButton.styleFrom(
@@ -141,6 +140,8 @@ class LoginPage extends StatelessWidget {
             elevation: 5,
           ),
           child: const Text(
+            // showMySnackBar(, "Login Successful"),
+
             "Login",
             style: TextStyle(
               fontSize: 20,
