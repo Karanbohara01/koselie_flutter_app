@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:koselie/core/common/snackbar.dart';
 import 'package:koselie/view/bottom_navigation_screens/dashboard_view.dart';
 import 'package:koselie/view/signup_view.dart';
 
@@ -125,30 +126,34 @@ class LoginPage extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 20),
-        TextButton(
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const MyDashboardView()),
-            );
-          },
-          style: ElevatedButton.styleFrom(
-            shape: const StadiumBorder(),
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            backgroundColor: Colors.pink,
-            shadowColor: Colors.pinkAccent,
-            elevation: 5,
-          ),
-          child: const Text(
-            // showMySnackBar(, "Login Successful"),
-
-            "Login",
-            style: TextStyle(
-              fontSize: 20,
-              color: Colors.white,
+        Builder(builder: (context) {
+          return TextButton(
+            onPressed: () {
+              showMySnackBar(context, "Login Successful");
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const MyDashboardView()),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              shape: const StadiumBorder(),
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              backgroundColor: Colors.pink,
+              shadowColor: Colors.pinkAccent,
+              elevation: 5,
             ),
-          ),
-        ),
+            child: const Text(
+              // showMySnackBar(, "Login Successful"),
+
+              "Login",
+              style: TextStyle(
+                fontSize: 20,
+                color: Colors.white,
+              ),
+            ),
+          );
+        }),
       ],
     );
   }

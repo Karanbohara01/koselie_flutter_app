@@ -8,9 +8,9 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(1.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Profile Section
               const Row(
@@ -125,20 +125,6 @@ class ProfileScreen extends StatelessWidget {
                   color: Colors.pink,
                 ),
                 title: Text('Notifications'),
-              ),
-              const ListTile(
-                leading: Icon(
-                  Icons.settings,
-                  color: Colors.pink,
-                ),
-                title: Text('Settings'),
-              ),
-              const ListTile(
-                leading: Icon(
-                  Icons.more_horiz,
-                  color: Colors.pink,
-                ),
-                title: Text('More'),
               ),
             ],
           ),

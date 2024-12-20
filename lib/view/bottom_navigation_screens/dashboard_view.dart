@@ -26,7 +26,7 @@ class _MyDashboardViewState extends State<MyDashboardView> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text(
-            'Dashboard',
+            '',
           ),
           backgroundColor: Colors.pink,
           centerTitle: true,

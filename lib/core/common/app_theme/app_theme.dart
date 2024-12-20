@@ -12,7 +12,7 @@ ThemeData getApplicationTheme() {
               color: Colors.white,
               fontWeight: FontWeight.w500,
               fontFamily: 'Montserrat Regular'),
-          backgroundColor: const Color.fromARGB(255, 212, 112, 11),
+          backgroundColor: Colors.pink,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(5))),
     ),
