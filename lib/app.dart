@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false, // Disable debug banner
-      title: 'First Assignment',
+      title: 'Koselie',
       theme: getApplicationTheme(),
       home: SplashScreen(), // Set the initial screen to SplashScreen
     );

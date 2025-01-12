@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:koselie/core/common/snackbar.dart';
+import 'package:koselie/core/common/app_theme/snackbar.dart';
 import 'package:koselie/view/bottom_navigation_screens/dashboard_view.dart';
 import 'package:koselie/view/signup_view.dart';
 
