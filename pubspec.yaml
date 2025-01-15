@@ -45,6 +45,8 @@ dependencies:
   bloc_provider: ^1.0.0
   dio: ^5.7.0
   get_it: ^8.0.3
+  hive_flutter: ^1.1.0
+  shared_preferences: ^2.3.5
 
 dev_dependencies:
   flutter_test:
