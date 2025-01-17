@@ -1,71 +1,71 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:koselie/features/home/presentation/view_model/home_cubit.dart';
-import 'package:koselie/features/home/presentation/view_model/home_state.dart';
+import 'package:koselie/features/dashboard/presentation/view/dashboard_view.dart';
+import 'package:koselie/features/market/market_view.dart';
+import 'package:koselie/features/profile/profile_view.dart';
+import 'package:koselie/features/search/search_screen.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
   @override
+  State<HomeView> createState() => _MyHomeViewState();
+}
+
+class _MyHomeViewState extends State<HomeView> {
+  int _selectedIndex = 0;
+
+  // List of bottom navigation screens
+  List<Widget> lstBOttomScreen = [
+    const DashboardScreen(),
+    const MarketScreen(),
+    const ProfileScreen(),
+    const SearchScreen(),
+  ];
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Home'),
-        centerTitle: true,
-        actions: const [
-          // IconButton(
-          //   icon: const Icon(Icons.logout),
-          //   onPressed: () {
-          //     // showMySnackBar(context: event.context, message: "logginout");
-          //     // Logout action
-          //   },
-          // ),
-          // BlocBuilder<HomeCubit, HomeState>(
-          //   builder: (context, state) {
-          //     return Switch(
-          //       value: true,
-          //       onChanged: (value) {
-          //         context.read<HomeCubit>().toggleTheme(value);
-          //       },
-          //     );
-          //   },
-          // ),
-        ],
-      ),
-      body: BlocBuilder<HomeCubit, HomeState>(
-        builder: (context, state) {
-          return state.views.elementAt(state.selectedIndex);
-        },
-      ),
-      bottomNavigationBar: BlocBuilder<HomeCubit, HomeState>(
-        builder: (context, state) {
-          return BottomNavigationBar(
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(Icons.dashboard),
-                label: 'Dashboard',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.book),
-                label: 'Market',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.group),
-                label: 'Profile',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.account_circle),
-                label: 'Account',
-              ),
-            ],
-            currentIndex: state.selectedIndex,
-            selectedItemColor: Colors.white,
-            onTap: (index) {
-              context.read<HomeCubit>().onTabTapped(index);
-            },
-          );
-        },
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.pink,
+          centerTitle: true,
+        ),
+        body: lstBOttomScreen[_selectedIndex], // Display the selected screen
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: Colors.white,
+          backgroundColor: Colors.pink,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Dashboard',
+            ),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.shopping_bag,
+                ),
+                label: 'Market'),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.person,
+                ),
+                label: 'Profile'),
+            BottomNavigationBarItem(
+                icon: Icon(
+                  Icons.search,
+                ),
+                label: 'Search'),
+          ],
+          currentIndex: _selectedIndex,
+          onTap: (index) {
+            setState(() {
+              _selectedIndex = index; // Update the index to switch screens
+            });
+          },
+        ),
       ),
     );
   }
 }
+
+// Define placeholder screens for Market, Profile, and Search
