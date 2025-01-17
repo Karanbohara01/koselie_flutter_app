@@ -5,6 +5,7 @@ class AuthEntity extends Equatable {
   final String userName;
   final String email;
   final String password;
+  // final String? image;
 
   // Create named constructor
 
@@ -13,8 +14,11 @@ class AuthEntity extends Equatable {
     required this.email,
     required this.password,
     this.userId,
+    // this.image
   });
 
   @override
-  List<Object?> get props => [userId];
+  List<Object?> get props => [userId, userName, email, password];
 }
+
+// Complete xa
