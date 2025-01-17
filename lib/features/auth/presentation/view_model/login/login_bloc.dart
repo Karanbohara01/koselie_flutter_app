@@ -74,13 +74,18 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           },
           (token) {
             emit(state.copyWith(isLoading: false, isSuccess: true));
+            showMySnackBar(
+              context: event.context,
+              message: "Login Successful",
+              color: Colors.green,
+            );
             add(
               NavigateHomeScreenEvent(
                 context: event.context,
                 destination: const HomeView(),
               ),
             );
-            //_homeCubit.setToken(token);
+            // _homeCubit.setToken(token);
           },
         );
       },

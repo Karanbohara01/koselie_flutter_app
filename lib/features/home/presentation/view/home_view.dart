@@ -12,24 +12,24 @@ class HomeView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Home'),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              // showMySnackBar(context: event.context, message: "logginout");
-              // Logout action
-            },
-          ),
-          BlocBuilder<HomeCubit, HomeState>(
-            builder: (context, state) {
-              return Switch(
-                value: true,
-                onChanged: (value) {
-                  context.read<HomeCubit>().toggleTheme(value);
-                },
-              );
-            },
-          ),
+        actions: const [
+          // IconButton(
+          //   icon: const Icon(Icons.logout),
+          //   onPressed: () {
+          //     // showMySnackBar(context: event.context, message: "logginout");
+          //     // Logout action
+          //   },
+          // ),
+          // BlocBuilder<HomeCubit, HomeState>(
+          //   builder: (context, state) {
+          //     return Switch(
+          //       value: true,
+          //       onChanged: (value) {
+          //         context.read<HomeCubit>().toggleTheme(value);
+          //       },
+          //     );
+          //   },
+          // ),
         ],
       ),
       body: BlocBuilder<HomeCubit, HomeState>(
