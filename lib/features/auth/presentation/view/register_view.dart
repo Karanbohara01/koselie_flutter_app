@@ -8,7 +8,7 @@
 
 //   @override
 //   Widget build(BuildContext context) {
-//     final userNameController = TextEditingController();
+//     final usernameController = TextEditingController();
 //     final emailController = TextEditingController();
 //     final passwordController = TextEditingController();
 //     final formKey = GlobalKey<FormState>();
@@ -37,7 +37,7 @@
 //                 ),
 //                 const SizedBox(height: 20),
 //                 TextFormField(
-//                   controller: userNameController,
+//                   controller: usernameController,
 //                   decoration: InputDecoration(
 //                     labelText: 'User Name',
 //                     labelStyle: const TextStyle(fontSize: 16),
@@ -96,7 +96,7 @@
 //                         context.read<RegisterBloc>().add(
 //                               RegisterUser(
 //                                 context: context,
-//                                 userName: userNameController.text,
+//                                 username: usernameController.text,
 //                                 email: emailController.text,
 //                                 password: passwordController.text,
 //                               ),
@@ -140,7 +140,7 @@ class RegisterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userNameController = TextEditingController();
+    final usernameController = TextEditingController();
     final emailController = TextEditingController();
     final passwordController = TextEditingController();
     final formKey = GlobalKey<FormState>();
@@ -171,7 +171,7 @@ class RegisterView extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  controller: userNameController,
+                  controller: usernameController,
                   decoration: InputDecoration(
                     labelText: 'User Name',
                     prefixIcon: const Icon(Icons.person, color: Colors.pink),
@@ -248,7 +248,7 @@ class RegisterView extends StatelessWidget {
                         context.read<RegisterBloc>().add(
                               RegisterUser(
                                 context: context,
-                                userName: userNameController.text,
+                                username: usernameController.text,
                                 email: emailController.text,
                                 password: passwordController.text,
                               ),

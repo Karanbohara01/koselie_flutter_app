@@ -33,7 +33,7 @@ class HiveService {
   }
 
   // Login using username and password
-  Future<AuthHiveModel?> loginUser(String userName, String password) async {
+  Future<AuthHiveModel?> loginUser(String username, String password) async {
     // var box = await Hive.openBox<AuthHiveModel>(HiveTableConstant.studentBox);
     // var auth = box.values.firstWhere(
     //     (element) =>
@@ -43,7 +43,7 @@ class HiveService {
 
     var box = await Hive.openBox<AuthHiveModel>(HiveTableConstant.userBox);
     var user = box.values.firstWhere((element) =>
-        element.userName == userName && element.password == password);
+        element.username == username && element.password == password);
     box.close();
     return user;
   }

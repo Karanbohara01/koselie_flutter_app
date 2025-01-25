@@ -12,7 +12,7 @@ class AuthHiveModel extends Equatable {
   final String? userId;
 
   @HiveField(1)
-  final String userName;
+  final String username;
 
   @HiveField(2)
   final String email;
@@ -24,7 +24,7 @@ class AuthHiveModel extends Equatable {
   AuthHiveModel({
     String? userId,
     required this.email,
-    required this.userName,
+    required this.username,
     required this.password,
   }) : userId = userId ?? const Uuid().v4();
 
@@ -33,7 +33,7 @@ class AuthHiveModel extends Equatable {
 
   const AuthHiveModel.initial()
       : userId = '',
-        userName = '',
+        username = '',
         password = '',
         email = '';
 
@@ -42,7 +42,7 @@ class AuthHiveModel extends Equatable {
     return AuthHiveModel(
       userId: entity.userId,
       email: entity.email,
-      userName: entity.userName,
+      username: entity.username,
       password: entity.password,
     );
   }
@@ -50,7 +50,7 @@ class AuthHiveModel extends Equatable {
   // Convert AuthHiveModel back to AuthEntity
   AuthEntity toEntity() {
     return AuthEntity(
-        userId: userId, userName: userName, email: email, password: password);
+        userId: userId, username: username, email: email, password: password);
   }
 
   // To entity list
@@ -61,7 +61,7 @@ class AuthHiveModel extends Equatable {
   }
 
   @override
-  List<Object?> get props => [userId, userName, password, email];
+  List<Object?> get props => [userId, username, password, email];
 }
 
 // complete xa

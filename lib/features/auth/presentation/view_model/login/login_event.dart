@@ -29,12 +29,12 @@
 
 // class LoginUserEvent extends LoginEvent {
 //   final BuildContext context;
-//   final String userName;
+//   final String username;
 //   final String password;
 
 //   const LoginUserEvent({
 //     required this.context,
-//     required this.userName,
+//     required this.username,
 //     required this.password,
 //   });
 // }
@@ -76,17 +76,17 @@ class NavigateHomeScreenEvent extends LoginEvent {
 
 class LoginUserEvent extends LoginEvent {
   final BuildContext context;
-  final String userName;
+  final String username;
   final String password;
 
   const LoginUserEvent({
     required this.context,
-    required this.userName,
+    required this.username,
     required this.password,
   });
 
   @override
-  List<Object?> get props => [context, userName, password];
+  List<Object?> get props => [context, username, password];
 }
 
 class LoginSuccessEvent extends LoginEvent {

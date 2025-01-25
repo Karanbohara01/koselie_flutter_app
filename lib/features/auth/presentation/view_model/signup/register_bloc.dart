@@ -24,7 +24,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     emit(state.copyWith(isLoading: true));
 
     final result = await _registerUseCase.call(RegisterUserParams(
-      userName: event.userName,
+      username: event.username,
       password: event.password,
       email: event.email,
     ));

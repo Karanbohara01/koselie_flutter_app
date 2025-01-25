@@ -101,7 +101,7 @@
 //       children: [
 //         TextField(
 //           decoration: InputDecoration(
-//             hintText: "Username",
+//             hintText: "username",
 //             border: OutlineInputBorder(
 //               borderRadius: BorderRadius.circular(18),
 //               borderSide: BorderSide.none,

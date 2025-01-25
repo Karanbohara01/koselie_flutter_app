@@ -9,16 +9,16 @@ sealed class RegisterEvent extends Equatable {
 
 class RegisterUser extends RegisterEvent {
   final BuildContext context;
-  final String userName;
+  final String username;
   final String password;
   final String email;
 
   const RegisterUser(
-      {required this.userName,
+      {required this.username,
       required this.email,
       required this.password,
       required this.context});
 
   @override
-  List<Object> get props => [userName, email, password];
+  List<Object> get props => [username, email, password];
 }

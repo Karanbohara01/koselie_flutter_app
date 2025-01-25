@@ -6,7 +6,7 @@ import 'package:koselie/features/auth/domain/entity/auth_entity.dart';
 import 'package:koselie/features/auth/domain/repository/auth_repository.dart';
 
 class RegisterUserParams extends Equatable {
-  final String userName;
+  final String username;
   final String password;
 
   final String email;
@@ -14,18 +14,18 @@ class RegisterUserParams extends Equatable {
   const RegisterUserParams({
     required this.password,
     required this.email,
-    required this.userName,
+    required this.username,
   });
 
   //intial constructor
   const RegisterUserParams.initial({
     required this.email,
     required this.password,
-    required this.userName,
+    required this.username,
   });
 
   @override
-  List<Object?> get props => [userName, email, password];
+  List<Object?> get props => [username, email, password];
 }
 
 class RegisterUseCase implements UsecaseWithParams<void, RegisterUserParams> {
@@ -38,7 +38,7 @@ class RegisterUseCase implements UsecaseWithParams<void, RegisterUserParams> {
     final authEntity = AuthEntity(
       password: params.password,
       email: params.email,
-      userName: params.userName,
+      username: params.username,
     );
     return repository.registerUser(authEntity);
   }

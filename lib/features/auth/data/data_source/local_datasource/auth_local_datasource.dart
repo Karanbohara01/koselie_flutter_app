@@ -12,15 +12,15 @@ class AuthLocalDataSource implements IAuthDataSource {
     return Future.value(const AuthEntity(
       userId: "1",
       email: "",
-      userName: "",
+      username: "",
       password: "",
     ));
   }
 
   @override
-  Future<String> loginUser(String userName, String password) async {
+  Future<String> loginUser(String username, String password) async {
     try {
-      await _hiveService.loginUser(userName, password);
+      await _hiveService.loginUser(username, password);
       return Future.value("Success");
     } catch (e) {
       return Future.error(e);

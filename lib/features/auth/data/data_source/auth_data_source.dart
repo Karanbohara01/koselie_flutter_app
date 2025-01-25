@@ -1,7 +1,7 @@
 import 'package:koselie/features/auth/domain/entity/auth_entity.dart';
 
 abstract interface class IAuthDataSource {
-  Future<String> loginUser(String userName, String password);
+  Future<String> loginUser(String username, String password);
 
   Future<void> registerUser(AuthEntity entity);
 

@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 class AuthEntity extends Equatable {
   final String? userId;
-  final String userName;
+  final String username;
   final String email;
   final String password;
   // final String? image;
@@ -10,7 +10,7 @@ class AuthEntity extends Equatable {
   // Create named constructor
 
   const AuthEntity({
-    required this.userName,
+    required this.username,
     required this.email,
     required this.password,
     this.userId,
@@ -18,7 +18,7 @@ class AuthEntity extends Equatable {
   });
 
   @override
-  List<Object?> get props => [userId, userName, email, password];
+  List<Object?> get props => [userId, username, email, password];
 }
 
 // Complete xa
