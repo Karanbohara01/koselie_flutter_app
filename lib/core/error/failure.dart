@@ -30,3 +30,7 @@ class SharedPrefsFailure extends Failure {
     required super.message,
   });
 }
+
+class ServerFailure extends Failure {
+  ServerFailure({required super.message, super.statusCode});
+}
