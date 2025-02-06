@@ -1,10 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:koselie/app.dart';
-
-// void main() {
-//   runApp(const MyApp());
-// }
-
 import 'package:flutter/cupertino.dart';
 import 'package:koselie/app/app.dart';
 import 'package:koselie/app/di/di.dart';

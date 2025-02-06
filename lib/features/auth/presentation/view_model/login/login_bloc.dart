@@ -38,7 +38,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         );
       },
     );
-
     on<NavigateHomeScreenEvent>(
       (event, emit) {
         Navigator.pushReplacement(

@@ -8,13 +8,14 @@ import 'package:koselie/features/auth/domain/repository/auth_repository.dart';
 class RegisterUserParams extends Equatable {
   final String username;
   final String password;
-
+  final String? image;
   final String email;
 
   const RegisterUserParams({
     required this.password,
     required this.email,
     required this.username,
+    this.image,
   });
 
   //intial constructor
@@ -22,6 +23,7 @@ class RegisterUserParams extends Equatable {
     required this.email,
     required this.password,
     required this.username,
+    this.image,
   });
 
   @override
@@ -39,6 +41,7 @@ class RegisterUseCase implements UsecaseWithParams<void, RegisterUserParams> {
       password: params.password,
       email: params.email,
       username: params.username,
+      image: params.image,
     );
     return repository.registerUser(authEntity);
   }

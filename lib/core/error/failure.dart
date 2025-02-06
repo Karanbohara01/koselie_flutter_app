@@ -24,3 +24,9 @@ class ApiFailure extends Failure {
     this.statusCode,
   });
 }
+
+class SharedPrefsFailure extends Failure {
+  SharedPrefsFailure({
+    required super.message,
+  });
+}
