@@ -9,12 +9,20 @@ class ApiEndpoints {
   static const String login = "auth/login";
   static const String register = "auth/register";
   static const String getAllStudents = "user/getAllUsers";
+  static const String getCurrentUser = "user/getCurrentUser";
   static const String getStudentsByBatch = "auth/getStudentsByBatch/";
   static const String getStudentsByCourse = "auth/getStudentsByCourse/";
   static const String updateStudent = "auth/updateStudent/";
+  static const String updateUser = "auth/updateUser/";
+  static const String getUserById = "auth/getUserById/";
+  static const String getAllUsers = "auth/getAllUsers/";
+  static const String deleteUser = "auth/deleteUser/";
   static const String deleteStudent = "auth/deleteStudent/";
+
   static const String imageUrl = "http://10.0.2.2:8000/uploads";
   static const String uploadImage = "auth/uploadImage";
+  static const String updateProfilePicture = "auth/updateProfilePicture";
+  static const String deleteProfilePicture = "auth/deleteProfilePicture";
 
   // ======================== Batch Routes =============================
   static const String createBatch = "batch/createBatch";
