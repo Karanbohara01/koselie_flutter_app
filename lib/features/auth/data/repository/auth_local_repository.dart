@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dartz/dartz.dart';
 import 'package:koselie/core/error/failure.dart';
 import 'package:koselie/features/auth/data/data_source/local_datasource/auth_local_datasource.dart';
@@ -38,6 +40,12 @@ class AuthLocalRepository implements IAuthRepository {
     } catch (e) {
       return Left(LocalDatabaseFailure(message: e.toString()));
     }
+  }
+
+  @override
+  Future<Either<Failure, String>> uploadProfilePicture(File file) {
+    // TODO: implement uploadProfilePicture
+    throw UnimplementedError();
   }
 
   // @override

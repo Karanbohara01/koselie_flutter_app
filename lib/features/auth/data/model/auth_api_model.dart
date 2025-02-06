@@ -2,59 +2,51 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:koselie/features/auth/domain/entity/auth_entity.dart';
 
+part 'auth_api_model.g.dart';
+
 @JsonSerializable()
 class AuthApiModel extends Equatable {
   @JsonKey(name: "_id")
   final String? userId;
   final String username;
   final String email;
-  final String password;
+  final String? password;
+  final String? image;
 
   const AuthApiModel({
     this.userId,
+    required this.image,
     required this.username,
     required this.email,
     required this.password,
   });
 
-  const AuthApiModel.empty()
-      : userId = '',
-        username = '',
-        password = '',
-        email = '';
+  factory AuthApiModel.fromJson(Map<String, dynamic> json) =>
+      _$AuthApiModelFromJson(json);
 
-  factory AuthApiModel.fromJson(Map<String, dynamic> json) {
-    return AuthApiModel(
-      userId: json['_id'],
-      username: json['username'],
-      password: json['password'],
-      email: json['email'],
+  Map<String, dynamic> toJson() => _$AuthApiModelToJson(this);
+
+  // To Entity
+  AuthEntity toEntity() {
+    return AuthEntity(
+      userId: userId,
+      image: image,
+      email: email,
+      username: username,
+      password: password ?? '',
     );
   }
-  // To json
-  Map<String, dynamic> toJson() {
-    return {
-      '_id': userId,
-      'username': username,
-      'email': email,
-      'password': password,
-    };
+
+  // From Entity
+  factory AuthApiModel.fromEntity(AuthEntity entity) {
+    return AuthApiModel(
+      image: entity.image,
+      email: entity.email,
+      username: entity.username,
+      password: entity.password,
+    );
   }
 
-  // Convert API object to Entity
-  AuthEntity toEntity() => AuthEntity(
-      email: email, userId: userId, username: username, password: password);
-
-// Convert entity to API object
-  static AuthApiModel fromEntity(AuthEntity entity) => AuthApiModel(
-      username: entity.username,
-      email: entity.email,
-      password: entity.password);
-
-  // Convert API list to entity list
-  static List<AuthEntity> toEntityList(List<AuthApiModel> models) =>
-      models.map((model) => model.toEntity()).toList();
-
   @override
-  List<Object?> get props => [userId, username, password, email];
+  List<Object?> get props => [userId, image, password, email];
 }
