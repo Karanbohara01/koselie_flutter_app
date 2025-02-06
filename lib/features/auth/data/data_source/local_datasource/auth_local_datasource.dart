@@ -47,6 +47,43 @@ class AuthLocalDataSource implements IAuthDataSource {
     // TODO: implement uploadProfilePicture
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> deleteProfilePicture() {
+    // TODO: implement deleteProfilePicture
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> deleteUser(String userId) {
+    // TODO: implement deleteUser
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<String> updateProfilePicture(File file) {
+    // TODO: implement updateProfilePicture
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateUser(AuthEntity entity) {
+    // TODO: implement updateUser
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<AuthEntity> getUserById(String userId) {
+    // TODO: implement getUserById
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<AuthEntity>> getAllUsers() {
+    // TODO: implement getAllUsers
+    throw UnimplementedError();
+  }
+
   //   @override
   // Future<String> uploadProfilePicture(File file) {
   //   throw UnimplementedError();
