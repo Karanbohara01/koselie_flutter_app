@@ -100,7 +100,7 @@ _initLoginDependencies() async {
 
   getIt.registerFactory<LoginBloc>(
     () => LoginBloc(
-      registerBloc: getIt<RegisterBloc>(),
+      // registerBloc: getIt<RegisterBloc>(),  // only for testing
       homeCubit: getIt<HomeCubit>(),
       loginUseCase: getIt<LoginUseCase>(),
     ),
