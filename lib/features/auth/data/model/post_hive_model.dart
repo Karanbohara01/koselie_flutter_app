@@ -1,18 +1,43 @@
 import 'package:equatable/equatable.dart';
+import 'package:hive/hive.dart';
+import 'package:koselie/app/constants/hive_table_constant.dart';
 
-class PostEntity extends Equatable {
+part 'post_hive_model.g.dart'; // Required for Hive
+
+@HiveType(typeId: HiveTableConstant.postTableId)
+class PostHiveModel extends Equatable {
+  @HiveField(0)
   final String? postId;
-  final String caption;
-  final String price;
-  final String description;
-  final String location;
-  final String image;
-  final String authorId;
-  final List<String> likeIds;
-  final List<String> commentIds; // List of Comment IDs
-  final List<String> categoryIds; // List of Category IDs
 
-  const PostEntity({
+  @HiveField(1)
+  final String caption;
+
+  @HiveField(2)
+  final String price;
+
+  @HiveField(3)
+  final String description;
+
+  @HiveField(4)
+  final String location;
+
+  @HiveField(5)
+  final String image;
+
+  @HiveField(6)
+  final String authorId;
+
+  @HiveField(7)
+  final List<String> likeIds;
+
+  @HiveField(8)
+  final List<String> commentIds;
+
+  @HiveField(9)
+  final List<String> categoryIds;
+
+  const PostHiveModel({
+    // Make constructor const
     this.postId,
     required this.caption,
     required this.price,
@@ -25,26 +50,13 @@ class PostEntity extends Equatable {
     required this.categoryIds,
   });
 
-  // Empty Constructor - PROBLEM!  This will cause Equatable to malfunction
-  const PostEntity.empty()
-      : postId = '_empty.postId',
-        caption = '_empty.caption',
-        price = '_empty.price',
-        location = '_empty.location',
-        description = '_empty.description',
-        image = '_empty.image',
-        authorId = '_empty.authorId',
-        likeIds = const [],
-        commentIds = const [],
-        categoryIds = const [];
-
   @override
   List<Object?> get props => [
         postId,
         caption,
         price,
-        location,
         description,
+        location,
         image,
         authorId,
         likeIds,
