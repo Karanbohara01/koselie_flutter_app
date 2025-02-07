@@ -32,5 +32,5 @@ class SharedPrefsFailure extends Failure {
 }
 
 class ServerFailure extends Failure {
-  ServerFailure({required super.message, super.statusCode});
+  ServerFailure(String s, {required super.message, super.statusCode});
 }
