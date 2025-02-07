@@ -1,6 +1,7 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:koselie/app/constants/hive_table_constant.dart';
 import 'package:koselie/features/auth/data/model/auth_hive_model.dart';
+import 'package:koselie/features/auth/data/model/post_hive_model.dart';
 import 'package:path_provider/path_provider.dart';
 
 class HiveService {
@@ -14,6 +15,40 @@ class HiveService {
     // Register Adapters
 
     Hive.registerAdapter(AuthHiveModelAdapter());
+    Hive.registerAdapter(PostHiveModelAdapter());
+  }
+
+  // Post Queries
+  Future<void> createPost(PostHiveModel post) async {
+    var box = await Hive.openBox<PostHiveModel>(HiveTableConstant.postBox);
+    await box.put(post.postId, post);
+    await box.close();
+  }
+
+  Future<PostHiveModel?> getPost(String postId) async {
+    var box = await Hive.openBox<PostHiveModel>(HiveTableConstant.postBox);
+    final post = box.get(postId);
+    await box.close();
+    return post;
+  }
+
+  Future<List<PostHiveModel>> getAllPosts() async {
+    var box = await Hive.openBox<PostHiveModel>(HiveTableConstant.postBox);
+    final posts = box.values.toList();
+    await box.close();
+    return posts;
+  }
+
+  Future<void> deletePost(String postId) async {
+    var box = await Hive.openBox<PostHiveModel>(HiveTableConstant.postBox);
+    await box.delete(postId); // Use the postId as the key
+    await box.close();
+  }
+
+  Future<void> updatePost(PostHiveModel post) async {
+    var box = await Hive.openBox<PostHiveModel>(HiveTableConstant.postBox);
+    await box.put(post.postId, post); // Use the postId as the key
+    await box.close();
   }
 
   // Auth Queries
