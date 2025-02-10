@@ -2,6 +2,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:koselie/app/constants/hive_table_constant.dart';
 import 'package:koselie/features/auth/data/model/auth_hive_model.dart';
 import 'package:koselie/features/auth/data/model/post_hive_model.dart';
+import 'package:koselie/features/category/data/model/category_hive_model.dart';
 import 'package:path_provider/path_provider.dart';
 
 class HiveService {
@@ -16,6 +17,29 @@ class HiveService {
 
     Hive.registerAdapter(AuthHiveModelAdapter());
     Hive.registerAdapter(PostHiveModelAdapter());
+    Hive.registerAdapter(CategoryHiveModelAdapter());
+  }
+
+  //  Categories Queries
+
+  // Batch Queries
+  Future<void> createCategory(CategoryHiveModel category) async {
+    var box =
+        await Hive.openBox<CategoryHiveModel>(HiveTableConstant.categoryBox);
+    await box.put(category.categoryId, category);
+  }
+
+  Future<void> deleteCategory(String categoryId) async {
+    var box =
+        await Hive.openBox<CategoryHiveModel>(HiveTableConstant.categoryBox);
+    await box.delete(categoryId);
+  }
+
+  Future<List<CategoryHiveModel>> getAllCategories() async {
+    // Sort by BatchName
+    var box =
+        await Hive.openBox<CategoryHiveModel>(HiveTableConstant.categoryBox);
+    return box.values.toList()..sort((a, b) => a.name.compareTo(b.name));
   }
 
   // Post Queries

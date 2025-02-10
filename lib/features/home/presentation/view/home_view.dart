@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:koselie/features/category/presentation/view/category_view.dart';
 import 'package:koselie/features/dashboard/presentation/view/dashboard_view.dart';
 import 'package:koselie/features/market/market_view.dart';
 import 'package:koselie/features/profile/profile_view.dart';
-import 'package:koselie/features/search/search_screen.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -19,7 +19,7 @@ class _MyHomeViewState extends State<HomeView> {
     const DashboardScreen(),
     const MarketScreen(),
     const ProfileScreen(),
-    const SearchScreen(),
+    CategoryView(),
   ];
 
   @override
@@ -52,9 +52,9 @@ class _MyHomeViewState extends State<HomeView> {
                 label: 'Profile'),
             BottomNavigationBarItem(
                 icon: Icon(
-                  Icons.search,
+                  Icons.category,
                 ),
-                label: 'Search'),
+                label: 'Category'),
           ],
           currentIndex: _selectedIndex,
           onTap: (index) {

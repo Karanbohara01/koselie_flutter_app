@@ -25,7 +25,7 @@ class HomeState extends Equatable {
           child: Text('Profile'),
         ),
         Center(
-          child: Text('Account'),
+          child: Text('Category'),
         ),
       ],
     );

@@ -42,7 +42,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     result.fold((l) => emit(state.copyWith(isLoading: false, isSuccess: false)),
         (r) {
       emit(state.copyWith(isLoading: false, isSuccess: true));
-      // showMySnackBar(context: event.context, message: "Signup successful");
+      showMySnackBar(context: event.context, message: "Signup successful");
     });
   }
 
