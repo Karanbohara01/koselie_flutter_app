@@ -51,6 +51,7 @@ class RegisterState extends Equatable {
       : isLoading = false,
         isSuccess = false,
         imageName = null,
+        // imageName = '',// for testing
         imageUploaded = false;
 
   RegisterState copyWith({

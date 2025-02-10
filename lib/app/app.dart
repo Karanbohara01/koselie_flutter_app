@@ -4,6 +4,7 @@ import 'package:koselie/app/di/di.dart';
 import 'package:koselie/core/theme/app_theme.dart';
 import 'package:koselie/features/auth/presentation/view_model/login/login_bloc.dart';
 import 'package:koselie/features/auth/presentation/view_model/signup/register_bloc.dart';
+import 'package:koselie/features/category/presentation/view_model/category_bloc.dart';
 import 'package:koselie/features/splash/presentation/view/splash_view.dart';
 import 'package:koselie/features/splash/presentation/view_model/splash_cubit.dart';
 
@@ -22,6 +23,9 @@ class App extends StatelessWidget {
         ),
         BlocProvider<LoginBloc>(
           create: (_) => getIt<LoginBloc>(),
+        ),
+        BlocProvider<CategoryBloc>(
+          create: (_) => getIt<CategoryBloc>(),
         ),
       ],
       child: MaterialApp(

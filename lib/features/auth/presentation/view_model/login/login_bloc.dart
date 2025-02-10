@@ -91,3 +91,55 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     );
   }
 }
+
+// // for testing only
+// import 'package:equatable/equatable.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:koselie/features/auth/domain/usecase/login_user_usecase.dart';
+// import 'package:koselie/features/home/presentation/view_model/home_cubit.dart';
+
+// part 'login_event.dart';
+// part 'login_state.dart';
+
+// class LoginBloc extends Bloc<LoginEvent, LoginState> {
+//   final HomeCubit _homeCubit;
+//   final LoginUseCase _loginUseCase;
+
+//   LoginBloc({
+//     required HomeCubit homeCubit,
+//     required LoginUseCase loginUseCase,
+//   })  : _homeCubit = homeCubit,
+//         _loginUseCase = loginUseCase,
+//         super(LoginState.initial()) {
+//     on<LoginUserEvent>((event, emit) async {
+//       emit(state.copyWith(isLoading: true));
+
+//       final result = await _loginUseCase(
+//         LoginParams(username: event.username, password: event.password),
+//       );
+
+//       result.fold(
+//         (failure) {
+//           emit(state.copyWith(isLoading: false, isSuccess: false));
+//           // Emitting error event for snackbar
+//           add(const ShowSnackbarEvent(message: "Invalid Credentials"));
+//         },
+//         (token) {
+//           emit(state.copyWith(isLoading: false, isSuccess: true));
+//           // Emitting success event for snackbar
+//           add(const ShowSnackbarEvent(message: "Login Successful"));
+//           // Emitting navigation event to Home screen
+//           add(NavigateToHomeEvent());
+//         },
+//       );
+//     });
+
+//     on<ShowSnackbarEvent>((event, emit) {
+//       // This event will be handled by the UI layer to show snackbar
+//     });
+
+//     on<NavigateToHomeEvent>((event, emit) {
+//       // This event will be handled by the UI layer to navigate to the home screen
+//     });
+//   }
+// }

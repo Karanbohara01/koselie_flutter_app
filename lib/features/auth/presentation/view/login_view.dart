@@ -98,7 +98,7 @@ class LoginView extends StatelessWidget {
                           if (_formKey.currentState!.validate()) {
                             context.read<LoginBloc>().add(
                                   LoginUserEvent(
-                                    context: context,
+                                    context: context, // only for testing
                                     username: _usernameController.text,
                                     password: _passwordController.text,
                                   ),
@@ -125,6 +125,7 @@ class LoginView extends StatelessWidget {
                     Center(
                       child: GestureDetector(
                         onTap: () {
+                          // only for testing
                           context.read<LoginBloc>().add(
                                 NavigateRegisterScreenEvent(
                                   destination: const RegisterView(),

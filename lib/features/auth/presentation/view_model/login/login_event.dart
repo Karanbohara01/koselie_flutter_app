@@ -106,3 +106,40 @@ class LoginFailureEvent extends LoginEvent {
   @override
   List<Object?> get props => [errorMessage];
 }
+
+// // For testing only
+// part of 'login_bloc.dart';
+
+// sealed class LoginEvent extends Equatable {
+//   const LoginEvent();
+
+//   @override
+//   List<Object?> get props => [];
+// }
+
+// class LoginUserEvent extends LoginEvent {
+//   final String username;
+//   final String password;
+
+//   const LoginUserEvent({
+//     required this.username,
+//     required this.password,
+//   });
+
+//   @override
+//   List<Object?> get props => [username, password];
+// }
+
+// class ShowSnackbarEvent extends LoginEvent {
+//   final String message;
+
+//   const ShowSnackbarEvent({required this.message});
+
+//   @override
+//   List<Object?> get props => [message];
+// }
+
+// class NavigateToHomeEvent extends LoginEvent {
+//   @override
+//   List<Object?> get props => [];
+// }
