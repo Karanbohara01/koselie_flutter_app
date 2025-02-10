@@ -20,7 +20,7 @@ class ApiService {
 
     _dio.options.headers = {
       'Accept': 'application/json',
-      //  'Content-Type': 'application/json', // Removed from here
+      'Content-Type': 'application/json', // Removed from here
     };
   }
 }

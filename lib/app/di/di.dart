@@ -12,6 +12,14 @@ import 'package:koselie/features/auth/domain/usecase/register_user_usecase.dart'
 import 'package:koselie/features/auth/domain/usecase/upload_image_usecase.dart';
 import 'package:koselie/features/auth/presentation/view_model/login/login_bloc.dart';
 import 'package:koselie/features/auth/presentation/view_model/signup/register_bloc.dart';
+import 'package:koselie/features/category/data/data_source/local_datasource/category_local_data_source.dart';
+import 'package:koselie/features/category/data/data_source/remote_datasource/category_remote_data_source.dart';
+import 'package:koselie/features/category/data/repository/category_local_repository.dart';
+import 'package:koselie/features/category/data/repository/category_remote_repository.dart';
+import 'package:koselie/features/category/domain/usecase/create_category_usecase.dart';
+import 'package:koselie/features/category/domain/usecase/delete_category_usecase.dart';
+import 'package:koselie/features/category/domain/usecase/get_all_category_usecase.dart';
+import 'package:koselie/features/category/presentation/view_model/category_bloc.dart';
 import 'package:koselie/features/home/presentation/view_model/home_cubit.dart';
 import 'package:koselie/features/splash/presentation/view_model/splash_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,6 +34,7 @@ Future<void> initDependencies() async {
   await _initLoginDependencies();
   await _initSplashScreenDependencies();
   await _initSharedPreferences();
+  await _initCategoryDependencies();
 }
 
 Future<void> _initSharedPreferences() async {
@@ -100,7 +109,7 @@ _initLoginDependencies() async {
 
   getIt.registerFactory<LoginBloc>(
     () => LoginBloc(
-      // registerBloc: getIt<RegisterBloc>(),  // only for testing
+      registerBloc: getIt<RegisterBloc>(), // only for testing
       homeCubit: getIt<HomeCubit>(),
       loginUseCase: getIt<LoginUseCase>(),
     ),
@@ -110,5 +119,57 @@ _initLoginDependencies() async {
 _initSplashScreenDependencies() async {
   getIt.registerFactory<SplashCubit>(
     () => SplashCubit(getIt<LoginBloc>()),
+  );
+}
+
+_initCategoryDependencies() async {
+  // =========================== Data Source ===========================
+  getIt.registerFactory<CategoryLocalDataSource>(
+      () => CategoryLocalDataSource(hiveService: getIt<HiveService>()));
+
+  getIt.registerLazySingleton<CategoryRemoteDataSource>(
+    () => CategoryRemoteDataSource(
+      dio: getIt<Dio>(),
+    ),
+  );
+
+  // =========================== Repository ===========================
+
+  getIt.registerLazySingleton<CategoryLocalRepository>(() =>
+      CategoryLocalRepository(
+          categoryLocalDataSource: getIt<CategoryLocalDataSource>()));
+
+  getIt.registerLazySingleton(
+    () => CategoryRemoteRepository(
+      remoteDataSource: getIt<CategoryRemoteDataSource>(),
+    ),
+  );
+
+  // =========================== Usecases ===========================
+
+  getIt.registerLazySingleton<CreateCategoryUseCase>(
+    () => CreateCategoryUseCase(
+        categoryRepository: getIt<CategoryRemoteRepository>()),
+  );
+
+  getIt.registerLazySingleton<GetAllCategoryUseCase>(
+    () => GetAllCategoryUseCase(
+        categoryRepository: getIt<CategoryRemoteRepository>()),
+  );
+
+  getIt.registerLazySingleton<DeleteCategoryUsecase>(
+    () => DeleteCategoryUsecase(
+      categoryRepository: getIt<CategoryRemoteRepository>(),
+      tokenSharedPrefs: getIt<TokenSharedPrefs>(),
+    ),
+  );
+
+  // =========================== Bloc ===========================
+  getIt.registerFactory<CategoryBloc>(
+    () => CategoryBloc(
+      createCategoryUseCase: getIt<CreateCategoryUseCase>(),
+      getAllCategoryUseCase: getIt<GetAllCategoryUseCase>(),
+      deleteCategoryUsecase: getIt<DeleteCategoryUsecase>(),
+    ),
   );
 }

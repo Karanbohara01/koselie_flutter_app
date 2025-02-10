@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:koselie/features/auth/presentation/view/register_view.dart';
+import 'package:koselie/features/auth/presentation/view/register_view.dart';
 import 'package:koselie/features/auth/presentation/view_model/login/login_bloc.dart';
 
 class LoginView extends StatelessWidget {
@@ -98,7 +98,7 @@ class LoginView extends StatelessWidget {
                           if (_formKey.currentState!.validate()) {
                             context.read<LoginBloc>().add(
                                   LoginUserEvent(
-                                    // context: context,  // only for testing
+                                    context: context, // only for testing
                                     username: _usernameController.text,
                                     password: _passwordController.text,
                                   ),
@@ -126,12 +126,12 @@ class LoginView extends StatelessWidget {
                       child: GestureDetector(
                         onTap: () {
                           // only for testing
-                          // context.read<LoginBloc>().add(
-                          //       NavigateRegisterScreenEvent(
-                          //         destination: const RegisterView(),
-                          //         context: context,
-                          //       ),
-                          //     );
+                          context.read<LoginBloc>().add(
+                                NavigateRegisterScreenEvent(
+                                  destination: const RegisterView(),
+                                  context: context,
+                                ),
+                              );
                         },
                         child: const Text(
                           'Don\'t have an account? Register here',
