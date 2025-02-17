@@ -20,4 +20,6 @@ abstract interface class IAuthRepository {
       File file); // Returns new image URL
   Future<Either<Failure, AuthEntity>> getUserById(String userId);
   Future<Either<Failure, List<AuthEntity>>> getAllUsers();
+
+  Future<Either<Failure, AuthEntity>> getMe(); // ✅ Added getMe()
 }

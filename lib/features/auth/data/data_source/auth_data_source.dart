@@ -22,4 +22,5 @@ abstract interface class IAuthDataSource {
   Future<AuthEntity> getUserById(String userId);
 
   Future<List<AuthEntity>> getAllUsers();
+  Future<AuthEntity> getMe(); // ✅ Fetch user details from API
 }

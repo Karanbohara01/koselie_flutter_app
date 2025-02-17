@@ -45,14 +45,16 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   Future<void> _onAddCategory(
       AddCategory event, Emitter<CategoryState> emit) async {
     emit(state.copyWith(isLoading: true));
+
     final result = await _createCategoryUseCase
-        .call(CreateCategoryParams(name: event.name));
+        .call(CreateCategoryParams(name: event.name)); // ✅ Only pass name
+
     result.fold(
       (failure) =>
           emit(state.copyWith(isLoading: false, error: failure.message)),
-      (categories) {
+      (_) {
         emit(state.copyWith(isLoading: false, error: null));
-        add(LoadCategories());
+        add(LoadCategories()); // ✅ Reload categories after adding
       },
     );
   }

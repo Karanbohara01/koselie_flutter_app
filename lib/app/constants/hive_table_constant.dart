@@ -7,4 +7,8 @@ class HiveTableConstant {
   static const String postBox = 'postBox';
   static const int categoryTableId = 2;
   static const String categoryBox = 'categoryBox';
+  static const int messageTableId = 3;
+  static const String messageBox = 'messageBox';
+  static const int conversationTableId = 4;
+  static const String conversationBox = 'conversationBox';
 }

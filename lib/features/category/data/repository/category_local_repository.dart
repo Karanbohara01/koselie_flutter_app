@@ -11,9 +11,9 @@ class CategoryLocalRepository implements ICategoryRepository {
       : _categoryLocalDataSource = categoryLocalDataSource;
 
   @override
-  Future<Either<Failure, void>> createCategory(CategoryEntity category) {
+  Future<Either<Failure, void>> createCategory(CategoryEntity category, token) {
     try {
-      _categoryLocalDataSource.createCategory(category);
+      _categoryLocalDataSource.createCategory(category, token);
       return Future.value(const Right(null));
     } catch (e) {
       return Future.value(Left(LocalDatabaseFailure(message: e.toString())));
@@ -32,7 +32,7 @@ class CategoryLocalRepository implements ICategoryRepository {
   }
 
   @override
-  Future<Either<Failure, List<CategoryEntity>>> getCategories() {
+  Future<Either<Failure, List<CategoryEntity>>> getAllCategories() {
     try {
       return _categoryLocalDataSource.getAllCategories().then(
         (value) {

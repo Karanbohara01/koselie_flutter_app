@@ -7,10 +7,16 @@ import 'package:koselie/features/auth/data/data_source/local_datasource/auth_loc
 import 'package:koselie/features/auth/data/data_source/remote_datasource/auth_remote_datasource.dart';
 import 'package:koselie/features/auth/data/repository/auth_local_repository.dart';
 import 'package:koselie/features/auth/data/repository/auth_remote_repository.dart';
+import 'package:koselie/features/auth/domain/repository/auth_repository.dart';
+import 'package:koselie/features/auth/domain/usecase/get_all_users_usecase.dart';
+import 'package:koselie/features/auth/domain/usecase/get_current_user_usecase.dart';
 import 'package:koselie/features/auth/domain/usecase/login_user_usecase.dart';
+import 'package:koselie/features/auth/domain/usecase/logout_usecase.dart';
 import 'package:koselie/features/auth/domain/usecase/register_user_usecase.dart';
+import 'package:koselie/features/auth/domain/usecase/update_user_usecase.dart';
 import 'package:koselie/features/auth/domain/usecase/upload_image_usecase.dart';
 import 'package:koselie/features/auth/presentation/view_model/login/login_bloc.dart';
+import 'package:koselie/features/auth/presentation/view_model/signup/auth_bloc.dart';
 import 'package:koselie/features/auth/presentation/view_model/signup/register_bloc.dart';
 import 'package:koselie/features/category/data/data_source/local_datasource/category_local_data_source.dart';
 import 'package:koselie/features/category/data/data_source/remote_datasource/category_remote_data_source.dart';
@@ -20,7 +26,22 @@ import 'package:koselie/features/category/domain/usecase/create_category_usecase
 import 'package:koselie/features/category/domain/usecase/delete_category_usecase.dart';
 import 'package:koselie/features/category/domain/usecase/get_all_category_usecase.dart';
 import 'package:koselie/features/category/presentation/view_model/category_bloc.dart';
+import 'package:koselie/features/chat/data/data_source/remote_data_source/chat_remote_data_source.dart';
+import 'package:koselie/features/chat/data/repository/chat_remote_repository/chat_remote_repository.dart';
+import 'package:koselie/features/chat/domain/usecase/delete_message_usecase.dart';
+import 'package:koselie/features/chat/domain/usecase/get_message_usecase.dart';
+import 'package:koselie/features/chat/domain/usecase/send_message_usecase.dart';
+import 'package:koselie/features/chat/presentation/view_model/bloc/chat_bloc.dart';
 import 'package:koselie/features/home/presentation/view_model/home_cubit.dart';
+import 'package:koselie/features/posts/data/data_source/local_datasource/posts_local_data_source.dart';
+import 'package:koselie/features/posts/data/data_source/remote_datasource/posts_remote_data_source.dart';
+import 'package:koselie/features/posts/data/repository/posts_local_repository.dart';
+import 'package:koselie/features/posts/data/repository/posts_remote_repository.dart';
+import 'package:koselie/features/posts/domain/usecase/create_posts_usecase.dart';
+import 'package:koselie/features/posts/domain/usecase/delete_posts_usecase.dart';
+import 'package:koselie/features/posts/domain/usecase/get_all_posts_usecase.dart';
+import 'package:koselie/features/posts/domain/usecase/upload_posts_image_usecase.dart';
+import 'package:koselie/features/posts/presentation/view_model/posts_bloc.dart';
 import 'package:koselie/features/splash/presentation/view_model/splash_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -35,6 +56,9 @@ Future<void> initDependencies() async {
   await _initSplashScreenDependencies();
   await _initSharedPreferences();
   await _initCategoryDependencies();
+  await _initPostsDependencies();
+  await _initAuthDependencies();
+  await _initChatDependencies();
 }
 
 Future<void> _initSharedPreferences() async {
@@ -59,8 +83,10 @@ _initRegisterDependencies() {
     () => AuthLocalDataSource(getIt<HiveService>()),
   );
   getIt.registerLazySingleton<AuthRemoteDatasource>(
-    () => AuthRemoteDatasource(getIt<Dio>()),
+    () => AuthRemoteDatasource(
+        getIt<Dio>(), getIt<TokenSharedPrefs>()), // ✅ Inject TokenSharedPrefs
   );
+
   // =========================== Repository ===========================
   getIt.registerLazySingleton(
     () => AuthLocalRepository(getIt<AuthLocalDataSource>()),
@@ -93,13 +119,76 @@ _initHomeDependencies() async {
   );
 }
 
+// _initLoginDependencies() async {
+//   // =========================== Register IAuthRepository First ===========================
+//   if (!getIt.isRegistered<AuthRemoteDatasource>()) {
+//     getIt.registerLazySingleton<AuthRemoteDatasource>(
+//       () => AuthRemoteDatasource(
+//           getIt<Dio>(), getIt<TokenSharedPrefs>()), // ✅ Inject TokenSharedPrefs
+//     );
+//   }
+
+//   if (!getIt.isRegistered<IAuthRepository>()) {
+//     getIt.registerLazySingleton<IAuthRepository>(
+//       () => AuthRemoteRepository(getIt<AuthRemoteDatasource>()),
+//     );
+//   }
+
+//   // =========================== Token Shared Preferences ===========================
+//   getIt.registerLazySingleton<TokenSharedPrefs>(
+//     () => TokenSharedPrefs(getIt<SharedPreferences>()),
+//   );
+
+//   // =========================== Usecases ===========================
+//   getIt.registerLazySingleton<GetCurrentUserUseCase>(
+//     () => GetCurrentUserUseCase(
+//         getIt<IAuthRepository>()), // ✅ Fix: Correct Dependency Injection
+//   );
+
+//   getIt.registerLazySingleton<LoginUseCase>(
+//     () => LoginUseCase(
+//       getIt<AuthRemoteRepository>(),
+//       getIt<TokenSharedPrefs>(),
+//     ),
+//   );
+
+//   // =========================== Bloc ===========================
+//   getIt.registerFactory<LoginBloc>(
+//     () => LoginBloc(
+//         registerBloc: getIt<RegisterBloc>(), // only for testing
+//         homeCubit: getIt<HomeCubit>(),
+//         loginUseCase: getIt<LoginUseCase>(),
+//         tokenSharedPrefs: getIt<TokenSharedPrefs>(),
+//         getCurrentUserUseCase: getIt<
+//             GetCurrentUserUseCase>()), // ✅ Now `getCurrentUserUseCase` has the correct dependency
+//   );
+// }
+
 _initLoginDependencies() async {
+  // =========================== Register IAuthRepository First ===========================
+  if (!getIt.isRegistered<AuthRemoteDatasource>()) {
+    getIt.registerLazySingleton<AuthRemoteDatasource>(
+      () => AuthRemoteDatasource(
+          getIt<Dio>(), getIt<TokenSharedPrefs>()), // ✅ Inject TokenSharedPrefs
+    );
+  }
+
+  if (!getIt.isRegistered<IAuthRepository>()) {
+    getIt.registerLazySingleton<IAuthRepository>(
+      () => AuthRemoteRepository(getIt<AuthRemoteDatasource>()),
+    );
+  }
+
   // =========================== Token Shared Preferences ===========================
   getIt.registerLazySingleton<TokenSharedPrefs>(
     () => TokenSharedPrefs(getIt<SharedPreferences>()),
   );
 
   // =========================== Usecases ===========================
+  getIt.registerLazySingleton<GetCurrentUserUseCase>(
+    () => GetCurrentUserUseCase(getIt<IAuthRepository>()),
+  );
+
   getIt.registerLazySingleton<LoginUseCase>(
     () => LoginUseCase(
       getIt<AuthRemoteRepository>(),
@@ -107,19 +196,34 @@ _initLoginDependencies() async {
     ),
   );
 
+  getIt.registerLazySingleton<UpdateUserUseCase>(
+    // ✅ FIX: Register UpdateUserUseCase
+    () => UpdateUserUseCase(getIt<IAuthRepository>()),
+  );
+
+  // =========================== Bloc ===========================
   getIt.registerFactory<LoginBloc>(
     () => LoginBloc(
-      registerBloc: getIt<RegisterBloc>(), // only for testing
+      registerBloc: getIt<RegisterBloc>(),
       homeCubit: getIt<HomeCubit>(),
       loginUseCase: getIt<LoginUseCase>(),
+      tokenSharedPrefs: getIt<TokenSharedPrefs>(),
+      getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
+      updateUserUseCase:
+          getIt<UpdateUserUseCase>(), // ✅ Inject UpdateUserUseCase
     ),
   );
 }
 
-_initSplashScreenDependencies() async {
-  getIt.registerFactory<SplashCubit>(
-    () => SplashCubit(getIt<LoginBloc>()),
-  );
+Future<void> _initSplashScreenDependencies() async {
+  if (!getIt.isRegistered<SplashCubit>()) {
+    getIt.registerFactory<SplashCubit>(
+      () => SplashCubit(
+        getIt<TokenSharedPrefs>(), // ✅ Inject Token Storage
+        getIt<SharedPreferences>(), // ✅ Inject SharedPreferences
+      ),
+    );
+  }
 }
 
 _initCategoryDependencies() async {
@@ -149,7 +253,8 @@ _initCategoryDependencies() async {
 
   getIt.registerLazySingleton<CreateCategoryUseCase>(
     () => CreateCategoryUseCase(
-        categoryRepository: getIt<CategoryRemoteRepository>()),
+        categoryRepository: getIt<CategoryRemoteRepository>(),
+        tokenSharedPrefs: getIt<TokenSharedPrefs>()),
   );
 
   getIt.registerLazySingleton<GetAllCategoryUseCase>(
@@ -172,4 +277,152 @@ _initCategoryDependencies() async {
       deleteCategoryUsecase: getIt<DeleteCategoryUsecase>(),
     ),
   );
+}
+
+_initPostsDependencies() async {
+  // =========================== Data Source ===========================
+  getIt.registerFactory<PostsLocalDataSource>(
+      () => PostsLocalDataSource(hiveService: getIt<HiveService>()));
+
+  getIt.registerLazySingleton<PostsRemoteDataSource>(
+    () => PostsRemoteDataSource(
+      getIt<Dio>(),
+    ),
+  );
+
+  // =========================== Repository ===========================
+
+  getIt.registerLazySingleton<PostsLocalRepository>(() => PostsLocalRepository(
+      postsLocalDataSource: getIt<PostsLocalDataSource>()));
+
+  getIt.registerLazySingleton(
+    () => PostsRemoteRepository(
+      remoteDataSource: getIt<PostsRemoteDataSource>(),
+    ),
+  );
+
+  // =========================== Usecases ===========================
+
+  getIt.registerLazySingleton<CreatePostsUseCase>(
+    () => CreatePostsUseCase(postsRepository: getIt<PostsRemoteRepository>()),
+  );
+  getIt.registerLazySingleton<UploadPostsImageUsecase>(
+    () => UploadPostsImageUsecase(
+      getIt<PostsRemoteRepository>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<GetAllPostsUseCase>(
+    () => GetAllPostsUseCase(postRepository: getIt<PostsRemoteRepository>()),
+  );
+
+  getIt.registerLazySingleton<DeletePostsUsecase>(
+    () => DeletePostsUsecase(
+      postsRepository: getIt<PostsRemoteRepository>(),
+      tokenSharedPrefs: getIt<TokenSharedPrefs>(),
+    ),
+  );
+
+  // =========================== Bloc ===========================
+  getIt.registerFactory<PostsBloc>(
+    () => PostsBloc(
+        createPostsUseCase: getIt<CreatePostsUseCase>(),
+        getAllPostsUseCase: getIt<GetAllPostsUseCase>(),
+        // deletePostsUsecase: getIt<DeletePostsUsecase>(),
+        uploadPostsImageUsecase: getIt<UploadPostsImageUsecase>(),
+        categoryBloc: getIt<CategoryBloc>()),
+  );
+}
+
+Future<void> _initChatDependencies() async {
+  if (!getIt.isRegistered<ChatRemoteDataSource>()) {
+    getIt.registerLazySingleton<ChatRemoteDataSource>(
+      () => ChatRemoteDataSource(getIt<Dio>()),
+    );
+  }
+
+  if (!getIt.isRegistered<ChatRemoteRepository>()) {
+    getIt.registerLazySingleton<ChatRemoteRepository>(
+      () => ChatRemoteRepository(
+        getIt<ChatRemoteDataSource>(),
+      ),
+    );
+  }
+
+  if (!getIt.isRegistered<SendMessageUseCase>()) {
+    getIt.registerLazySingleton<SendMessageUseCase>(
+      () => SendMessageUseCase(
+        chatRepository: getIt<ChatRemoteRepository>(),
+        tokenSharedPrefs: getIt<TokenSharedPrefs>(),
+      ),
+    );
+  }
+
+  if (!getIt.isRegistered<GetMessagesUseCase>()) {
+    getIt.registerLazySingleton<GetMessagesUseCase>(
+      () => GetMessagesUseCase(
+        chatRepository: getIt<ChatRemoteRepository>(),
+        tokenSharedPrefs: getIt<TokenSharedPrefs>(),
+      ),
+    );
+  }
+
+  if (!getIt.isRegistered<DeleteMessageUseCase>()) {
+    getIt.registerLazySingleton<DeleteMessageUseCase>(
+      () => DeleteMessageUseCase(
+        chatRepository: getIt<ChatRemoteRepository>(),
+        tokenSharedPrefs: getIt<TokenSharedPrefs>(),
+      ),
+    );
+  }
+
+  if (!getIt.isRegistered<ChatBloc>()) {
+    getIt.registerFactory<ChatBloc>(
+      () => ChatBloc(
+          sendMessageUseCase: getIt<SendMessageUseCase>(),
+          // getMessageUseCase: getIt<GetMessagesUseCase>(), // Corrected here
+          deletemessageUseCase: getIt<DeleteMessageUseCase>(),
+          getMessagesUseCase: getIt<GetMessagesUseCase>()
+          // tokenSharedPrefs: getIt<TokenSharedPrefs>(),
+          ),
+    );
+  }
+}
+
+Future<void> _initAuthDependencies() async {
+  if (!getIt.isRegistered<TokenSharedPrefs>()) {
+    getIt.registerLazySingleton<TokenSharedPrefs>(
+      () => TokenSharedPrefs(getIt<SharedPreferences>()),
+    );
+  }
+
+  if (!getIt.isRegistered<LoginUseCase>()) {
+    getIt.registerLazySingleton<LoginUseCase>(
+      () => LoginUseCase(
+          getIt<AuthRemoteRepository>(), getIt<TokenSharedPrefs>()),
+    );
+  }
+
+  if (!getIt.isRegistered<LogoutUseCase>()) {
+    getIt.registerLazySingleton<LogoutUseCase>(
+      () => LogoutUseCase(getIt<TokenSharedPrefs>()),
+    );
+  }
+
+  if (!getIt.isRegistered<GetAllUsersUseCase>()) {
+    getIt.registerLazySingleton<GetAllUsersUseCase>(
+      () => GetAllUsersUseCase(getIt<AuthRemoteRepository>()),
+    );
+  }
+
+  if (!getIt.isRegistered<AuthBloc>()) {
+    getIt.registerFactory<AuthBloc>(
+      () => AuthBloc(
+        loginUseCase: getIt<LoginUseCase>(),
+        logoutUseCase: getIt<LogoutUseCase>(),
+        tokenPrefs: getIt<TokenSharedPrefs>(),
+        getAllUsersUseCase: getIt<GetAllUsersUseCase>(), // ✅ Corrected
+      ),
+    );
+  }
 }

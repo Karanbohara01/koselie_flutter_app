@@ -12,6 +12,6 @@ class GetAllCategoryUseCase
 
   @override
   Future<Either<Failure, List<CategoryEntity>>> call() {
-    return categoryRepository.getCategories();
+    return categoryRepository.getAllCategories();
   }
 }

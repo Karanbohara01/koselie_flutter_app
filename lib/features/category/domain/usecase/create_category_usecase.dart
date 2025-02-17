@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import 'package:koselie/app/shared_prefs/token_shared_prefs.dart';
 import 'package:koselie/app/usecase/usecase.dart';
 import 'package:koselie/core/error/failure.dart';
 import 'package:koselie/features/category/domain/entity/category_entity.dart';
@@ -20,15 +21,26 @@ class CreateCategoryParams extends Equatable {
 class CreateCategoryUseCase
     implements UsecaseWithParams<void, CreateCategoryParams> {
   final ICategoryRepository categoryRepository;
+  final TokenSharedPrefs tokenSharedPrefs; // ✅ Inject Token Shared Prefs
 
-  CreateCategoryUseCase({required this.categoryRepository});
+  CreateCategoryUseCase({
+    required this.categoryRepository,
+    required this.tokenSharedPrefs,
+  });
 
   @override
   Future<Either<Failure, void>> call(CreateCategoryParams params) async {
-    return await categoryRepository.createCategory(
-      CategoryEntity(
-        name: params.name,
-      ),
+    // ✅ Get token from Shared Preferences
+    final tokenResult = await tokenSharedPrefs.getToken();
+
+    return tokenResult.fold(
+      (failure) => Left(failure), // ✅ Handle token retrieval failure
+      (token) async {
+        return await categoryRepository.createCategory(
+          CategoryEntity(name: params.name),
+          token ?? '', // ✅ Pass token to repository
+        );
+      },
     );
   }
 }

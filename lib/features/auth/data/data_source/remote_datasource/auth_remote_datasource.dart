@@ -2,12 +2,59 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:koselie/app/constants/api_endpoints.dart';
+import 'package:koselie/app/shared_prefs/token_shared_prefs.dart';
 import 'package:koselie/features/auth/data/data_source/auth_data_source.dart';
 import 'package:koselie/features/auth/domain/entity/auth_entity.dart';
 
 class AuthRemoteDatasource implements IAuthDataSource {
   final Dio _dio;
-  AuthRemoteDatasource(this._dio);
+  final TokenSharedPrefs _tokenSharedPrefs; // ✅ Inject TokenSharedPrefs
+
+  AuthRemoteDatasource(this._dio, this._tokenSharedPrefs);
+  @override
+  Future<AuthEntity> getMe() async {
+    try {
+      // Retrieve token
+      final tokenResult = await _tokenSharedPrefs.getToken();
+
+      return tokenResult.fold(
+        (failure) =>
+            throw Exception("Failed to retrieve token: ${failure.message}"),
+        (token) async {
+          if (token == null || token.isEmpty) {
+            throw Exception("No authentication token found");
+          }
+
+          print("🔹 Retrieved Token: $token"); // ✅ Log token before request
+
+          Response response = await _dio.get(
+            ApiEndpoints.getMe,
+            options: Options(
+              headers: {
+                "Authorization": "Bearer $token", // ✅ Ensure token is attached
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+              },
+            ),
+          );
+
+          if (response.statusCode == 200) {
+            final data = response.data;
+            return AuthEntity.fromJson(data);
+          } else {
+            throw Exception("Error: ${response.statusMessage}");
+          }
+        },
+      );
+    } on DioException catch (e) {
+      print("❌ DioException: ${e.toString()}");
+      throw Exception("Failed to fetch user data: ${e.toString()}");
+    } catch (e) {
+      print("❌ Unexpected Error: ${e.toString()}");
+      throw Exception("An unexpected error occurred: ${e.toString()}");
+    }
+  }
+
   @override
   Future<AuthEntity> getCurrentUser() async {
     try {
@@ -175,21 +222,39 @@ class AuthRemoteDatasource implements IAuthDataSource {
   @override
   Future<void> updateUser(AuthEntity entity) async {
     try {
-      Response response = await _dio.put(ApiEndpoints.updateUser, data: {
-        "username": entity.username,
-        "email": entity.email,
-        // ... other fields
-      });
+      final tokenResult = await _tokenSharedPrefs.getToken();
 
-      if (response.statusCode == 200) {
-        return;
-      } else {
-        throw Exception(response.statusMessage);
+      final token = tokenResult.fold(
+        (failure) =>
+            throw Exception("Failed to retrieve token: ${failure.message}"),
+        (token) => token,
+      );
+
+      if (token == null) {
+        throw Exception("No authentication token found");
       }
-    } on DioException catch (e) {
-      throw Exception(e);
+
+      final response = await _dio.put(
+        // ✅ Use PUT instead of POST
+        "http://10.0.2.2:8000/api/v1/user/profile/edit",
+        data: {
+          "username": entity.username,
+          "bio": entity.bio,
+          "role": entity.role,
+        },
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $token",
+            "Content-Type": "application/json",
+          },
+        ),
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception("Profile update failed: ${response.statusMessage}");
+      }
     } catch (e) {
-      throw Exception(e);
+      throw Exception("Error updating profile: $e");
     }
   }
 
@@ -219,20 +284,22 @@ class AuthRemoteDatasource implements IAuthDataSource {
       Response response = await _dio.get(ApiEndpoints.getAllUsers);
 
       if (response.statusCode == 200) {
-        // Assuming the response data is a list of maps, where each map
-        // represents an AuthEntity
-        final List<dynamic> data = response.data;
-        final List<AuthEntity> authEntities = data
+        final List<dynamic> data = response.data is List
+            ? response.data // ✅ Case 1: If API returns a direct list
+            : response.data['users'] ??
+                []; // ✅ Case 2: If API wraps users in a key
+
+        return data
             .map((item) => AuthEntity.fromJson(item as Map<String, dynamic>))
             .toList();
-        return authEntities;
       } else {
-        throw Exception(response.statusMessage);
+        throw Exception("Failed to fetch users: ${response.statusMessage}");
       }
     } on DioException catch (e) {
-      throw Exception(e);
+      throw Exception(
+          e.response?.data["message"] ?? "Network Error: ${e.message}");
     } catch (e) {
-      throw Exception(e);
+      throw Exception("Unexpected Error: $e");
     }
   }
 }

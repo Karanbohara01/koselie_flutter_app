@@ -16,4 +16,18 @@ class CategoryEntity extends Equatable {
 
   @override
   List<Object?> get props => [categoryId, name];
+
+  factory CategoryEntity.fromJson(Map<dynamic, dynamic> json) {
+    return CategoryEntity(
+      categoryId: json['categoryId'] as String?,
+      name: json['name'] as String,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'categoryId': categoryId,
+      'name': name,
+    };
+  }
 }
