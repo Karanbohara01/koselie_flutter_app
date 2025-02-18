@@ -10,7 +10,7 @@ abstract interface class IAuthRepository {
   Future<Either<Failure, String>> uploadProfilePicture(File file);
   Future<Either<Failure, AuthEntity>> getCurrentUser();
   Future<Either<Failure, void>> updateUser(
-      AuthEntity entity); // Assume you pass the updated entity
+      AuthEntity entity, String token); // Assume you pass the updated entity
   Future<Either<Failure, void>> deleteUser(
       String userId); // Assuming you pass the userId
   // or  Future<Either<Failure, void>> deleteUser(AuthEntity entity);

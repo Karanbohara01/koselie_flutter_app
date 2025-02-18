@@ -231,9 +231,10 @@ class AuthRemoteRepository implements IAuthRepository {
 
   /// ✅ Update User Profile
   @override
-  Future<Either<Failure, void>> updateUser(AuthEntity entity) async {
+  Future<Either<Failure, void>> updateUser(
+      AuthEntity entity, String token) async {
     try {
-      await _authRemoteDatasource.updateUser(entity);
+      await _authRemoteDatasource.updateUser(entity, token);
       return const Right(null);
     } catch (e) {
       return Left(ApiFailure(message: e.toString()));

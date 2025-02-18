@@ -117,14 +117,13 @@ class _UserListScreenState extends State<UserListScreen> {
     );
   }
 
-  /// 🔹 Navigates to `ChatScreen` with Debounce
   void _navigateToChatScreen(BuildContext context, AuthEntity user) {
     if (_isNavigating) return;
-    _isNavigating = true; // ✅ Prevents multiple taps
+    _isNavigating = true;
 
-    final senderId = context.read<LoginBloc>().state.user?.userId;
+    final sender = context.read<LoginBloc>().state.user;
 
-    if (senderId == null) {
+    if (sender == null) {
       showMySnackBar(
         context: context,
         message: "Error: User not logged in!",
@@ -138,14 +137,16 @@ class _UserListScreenState extends State<UserListScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => ChatScreen(
-          senderId: senderId,
+          senderId: sender.userId!,
           receiverId: user.userId!,
-          key:
-              ValueKey(user.userId!), // Forces Flutter to rebuild for each user
+          receiverUsername: user.username, // Pass receiver's username
+          receiverImage: user.image ??
+              '', // Pass receiver's image (or empty string if null)
+          key: ValueKey(user.userId!),
         ),
       ),
     ).then((_) {
-      _isNavigating = false; // ✅ Reset navigation flag after returning
+      _isNavigating = false;
     });
   }
 }

@@ -259,7 +259,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final HomeCubit _homeCubit;
   final LoginUseCase _loginUseCase;
   final GetCurrentUserUseCase _getCurrentUserUseCase;
-  final UpdateUserUseCase _updateUserUseCase;
+  final UpdateUserUsecase _updateUserUseCase;
   final TokenSharedPrefs _tokenSharedPrefs;
 
   LoginBloc({
@@ -267,7 +267,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     required HomeCubit homeCubit,
     required LoginUseCase loginUseCase,
     required GetCurrentUserUseCase getCurrentUserUseCase,
-    required UpdateUserUseCase updateUserUseCase,
+    required UpdateUserUsecase updateUserUseCase,
     required TokenSharedPrefs tokenSharedPrefs,
   })  : _registerBloc = registerBloc,
         _homeCubit = homeCubit,
@@ -366,23 +366,95 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         emit(state.copyWith(isLoading: false));
       },
       (user) {
-        print("User fetched successfully: ${user.username}, ${user.email}");
+        print(
+            "User fetched successfully: ${user.username}, ${user.email},${user.bio}");
         emit(state.copyWith(isLoading: false, user: user));
       },
     );
   }
 
-  /// 🔹 Fix: Prevent ScaffoldMessenger Error
+  // /// 🔹 Fix: Prevent ScaffoldMessenger Error
+  // Future<void> _onUpdateUserProfile(
+  //     UpdateUserProfileEvent event, Emitter<LoginState> emit) async {
+  //   emit(state.copyWith(isLoading: true));
+
+  //   if (state.user == null) {
+  //     emit(state.copyWith(isLoading: false));
+  //     if (event.context.mounted) {
+  //       showMySnackBar(
+  //         context: event.context,
+  //         message: "No user data available!",
+  //         color: Colors.red,
+  //       );
+  //     }
+  //     return;
+  //   }
+
+  //   final updatedUser = state.user!.copyWith(
+  //     username: event.username,
+  //     bio: event.bio,
+  //     role: event.role,
+  //   );
+
+  //   final result = await _updateUserUseCase(updatedUser);
+
+  //   result.fold(
+  //     (failure) {
+  //       emit(state.copyWith(isLoading: false));
+  //       if (event.context.mounted) {
+  //         showMySnackBar(
+  //           context: event.context,
+  //           message: "Profile update failed: ${failure.message}",
+  //           color: Colors.red,
+  //         );
+  //       }
+  //     },
+  //     (_) {
+  //       emit(state.copyWith(isLoading: false, user: updatedUser));
+  //       if (event.context.mounted) {
+  //         showMySnackBar(
+  //           context: event.context,
+  //           message: "Profile updated successfully!",
+  //           color: Colors.green,
+  //         );
+  //       }
+  //     },
+  //   );
+  // }
+
   Future<void> _onUpdateUserProfile(
       UpdateUserProfileEvent event, Emitter<LoginState> emit) async {
     emit(state.copyWith(isLoading: true));
 
     if (state.user == null) {
-      emit(state.copyWith(isLoading: false));
+      emit(state.copyWith(
+        isLoading: false,
+      ));
       if (event.context.mounted) {
         showMySnackBar(
           context: event.context,
           message: "No user data available!",
+          color: Colors.red,
+        );
+      }
+      return;
+    }
+
+    // ✅ Retrieve token before making API call
+    final tokenResult = await _tokenSharedPrefs.getToken();
+    final token = tokenResult.fold(
+      (failure) => null,
+      (token) => token,
+    );
+
+    if (token == null) {
+      emit(state.copyWith(
+        isLoading: false,
+      ));
+      if (event.context.mounted) {
+        showMySnackBar(
+          context: event.context,
+          message: "Authentication failed. Please log in again.",
           color: Colors.red,
         );
       }
@@ -395,11 +467,14 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       role: event.role,
     );
 
-    final result = await _updateUserUseCase(updatedUser);
+    final result =
+        await _updateUserUseCase.call(UpdateUserParams(entity: updatedUser));
 
     result.fold(
       (failure) {
-        emit(state.copyWith(isLoading: false));
+        emit(state.copyWith(
+          isLoading: false,
+        ));
         if (event.context.mounted) {
           showMySnackBar(
             context: event.context,

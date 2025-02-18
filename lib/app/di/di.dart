@@ -196,9 +196,11 @@ _initLoginDependencies() async {
     ),
   );
 
-  getIt.registerLazySingleton<UpdateUserUseCase>(
+  getIt.registerLazySingleton<UpdateUserUsecase>(
     // ✅ FIX: Register UpdateUserUseCase
-    () => UpdateUserUseCase(getIt<IAuthRepository>()),
+    () => UpdateUserUsecase(getIt<IAuthRepository>(),
+        authRepository: getIt<IAuthRepository>(),
+        tokenSharedPrefs: getIt<TokenSharedPrefs>()),
   );
 
   // =========================== Bloc ===========================
@@ -210,7 +212,7 @@ _initLoginDependencies() async {
       tokenSharedPrefs: getIt<TokenSharedPrefs>(),
       getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
       updateUserUseCase:
-          getIt<UpdateUserUseCase>(), // ✅ Inject UpdateUserUseCase
+          getIt<UpdateUserUsecase>(), // ✅ Inject UpdateUserUseCase
     ),
   );
 }

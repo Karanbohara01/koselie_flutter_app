@@ -219,23 +219,50 @@ class AuthRemoteDatasource implements IAuthDataSource {
     }
   }
 
+  // @override
+  // Future<void> updateUser(AuthEntity entity, String token) async {
+  //   try {
+  //     final tokenResult = await _tokenSharedPrefs.getToken();
+
+  //     final token = tokenResult.fold(
+  //       (failure) =>
+  //           throw Exception("Failed to retrieve token: ${failure.message}"),
+  //       (token) => token,
+  //     );
+
+  //     if (token == null) {
+  //       throw Exception("No authentication token found");
+  //     }
+
+  //     final response = await _dio.put(
+  //       // ✅ Use PUT instead of POST
+  //       "http://10.0.2.2:8000/api/v1/user/profile/edit",
+  //       data: {
+  //         "username": entity.username,
+  //         "bio": entity.bio,
+  //         "role": entity.role,
+  //       },
+  //       options: Options(
+  //         headers: {
+  //           "Authorization": "Bearer $token",
+  //           "Content-Type": "application/json",
+  //         },
+  //       ),
+  //     );
+
+  //     if (response.statusCode != 200) {
+  //       throw Exception("Profile update failed: ${response.statusMessage}");
+  //     }
+  //   } catch (e) {
+  //     throw Exception("Error updating profile: $e");
+  //   }
+  // }
+
   @override
-  Future<void> updateUser(AuthEntity entity) async {
+  Future<void> updateUser(AuthEntity entity, String? token) async {
     try {
-      final tokenResult = await _tokenSharedPrefs.getToken();
-
-      final token = tokenResult.fold(
-        (failure) =>
-            throw Exception("Failed to retrieve token: ${failure.message}"),
-        (token) => token,
-      );
-
-      if (token == null) {
-        throw Exception("No authentication token found");
-      }
-
-      final response = await _dio.put(
-        // ✅ Use PUT instead of POST
+      final response = await _dio.post(
+        // ✅ Using POST as required
         "http://10.0.2.2:8000/api/v1/user/profile/edit",
         data: {
           "username": entity.username,
@@ -244,17 +271,21 @@ class AuthRemoteDatasource implements IAuthDataSource {
         },
         options: Options(
           headers: {
-            "Authorization": "Bearer $token",
+            "Authorization": "Bearer $token", // ✅ Follow deleteCategory pattern
             "Content-Type": "application/json",
           },
         ),
       );
 
-      if (response.statusCode != 200) {
-        throw Exception("Profile update failed: ${response.statusMessage}");
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw Exception(response.statusMessage);
       }
+    } on DioException catch (e) {
+      throw Exception(e);
     } catch (e) {
-      throw Exception("Error updating profile: $e");
+      throw Exception(e);
     }
   }
 
