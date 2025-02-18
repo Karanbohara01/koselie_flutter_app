@@ -1,3 +1,47 @@
+// class Failure {
+//   final String message;
+//   final int? statusCode;
+
+//   Failure({
+//     required this.message,
+//     this.statusCode,
+//   });
+
+//   @override
+//   String toString() => 'Failure (message: $message, statusCode: $statusCode)';
+// }
+
+// class LocalDatabaseFailure extends Failure {
+//   LocalDatabaseFailure({
+//     required super.message,
+//   });
+// }
+
+// class ApiFailure extends Failure {
+//   ApiFailure({
+//     required super.message,
+//     super.statusCode,
+//   });
+// }
+
+// class SharedPrefsFailure extends Failure {
+//   SharedPrefsFailure({
+//     required super.message,
+//   });
+// }
+
+// class CacheFailure extends Failure {
+//   CacheFailure({required super.message});
+// }
+
+// class FileFailure extends Failure {
+//   FileFailure(String message) : super(message: message);
+// }
+
+// class ServerFailure extends Failure {
+//   ServerFailure(String message, {super.statusCode}) : super(message: message);
+// }
+
 class Failure {
   final String message;
   final int? statusCode;
@@ -6,31 +50,42 @@ class Failure {
     required this.message,
     this.statusCode,
   });
+
   @override
   String toString() => 'Failure (message: $message, statusCode: $statusCode)';
 }
 
+/// ✅ Handles **No Internet Connection / Network Issues**
+class NetworkFailure extends Failure {
+  NetworkFailure({required super.message});
+}
+
+/// ✅ Handles **Local Database Errors**
 class LocalDatabaseFailure extends Failure {
-  LocalDatabaseFailure({
-    required super.message,
-  });
+  LocalDatabaseFailure({required super.message});
 }
 
+/// ✅ Handles **API Request Failures**
 class ApiFailure extends Failure {
-  @override
-  final int? statusCode;
-  ApiFailure({
-    required super.message,
-    this.statusCode,
-  });
+  ApiFailure({required super.message, super.statusCode});
 }
 
+/// ✅ Handles **Shared Preferences Errors**
 class SharedPrefsFailure extends Failure {
-  SharedPrefsFailure({
-    required super.message,
-  });
+  SharedPrefsFailure({required super.message});
 }
 
+/// ✅ Handles **Cache Failures**
+class CacheFailure extends Failure {
+  CacheFailure({required super.message});
+}
+
+/// ✅ Handles **File Handling Failures**
+class FileFailure extends Failure {
+  FileFailure(String message) : super(message: message);
+}
+
+/// ✅ Handles **Server Failures**
 class ServerFailure extends Failure {
-  ServerFailure({required super.message, super.statusCode});
+  ServerFailure(String message, {super.statusCode}) : super(message: message);
 }

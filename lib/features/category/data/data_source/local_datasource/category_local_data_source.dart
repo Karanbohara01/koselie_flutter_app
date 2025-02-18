@@ -9,7 +9,7 @@ class CategoryLocalDataSource implements ICategoryDataSource {
   CategoryLocalDataSource({required this.hiveService});
 
   @override
-  Future<void> createCategory(CategoryEntity category) async {
+  Future<void> createCategory(CategoryEntity category, String token) async {
     try {
       // Convert BatchEntity to BatchHiveModel
       final categoryHiveModel = CategoryHiveModel.fromEntity(category);

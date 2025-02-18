@@ -5,35 +5,35 @@ class ApiEndpoints {
   static const Duration receiveTimeout = Duration(seconds: 5000);
   static const String baseUrl = "http://10.0.2.2:8000/api/v1/";
 
-  // ================= user Routes =========================
+  // ===================== ✅ User Routes =====================
   static const String login = "user/login";
   static const String register = "user/register";
-  static const String getAllStudents = "user/getAllUsers";
-  static const String getCurrentUser = "user/getCurrentUser";
-  static const String getStudentsByBatch = "user/getStudentsByBatch/";
-  static const String getStudentsByCourse = "user/getStudentsByCourse/";
-  static const String updateStudent = "user/updateStudent/";
-  static const String updateUser = "user/updateUser/";
+  static const String getAllUsers = "user/all";
+  static const String getCurrentUser = "user/getMe";
+
+  // ======================== Post Routes =============================
+  static const String createPost = "post/addpost/";
+  static const String getAllPosts = "post/all";
+  static const String deletePost = "post/";
+
+  static const String getMe = "user/getMe";
   static const String getUserById = "user/getUserById/";
-  static const String getAllUsers = "user/getAllUsers/";
+  static const String updateUser = "user/profile/edit/";
   static const String deleteUser = "user/deleteUser/";
-  static const String deleteStudent = "user/deleteStudent/";
 
   static const String imageUrl = "http://10.0.2.2:8000/uploads";
   static const String uploadImage = "user/uploadImage";
+  static const String uploadPostsImage = "post/uploadPostsImage";
   static const String updateProfilePicture = "user/updateProfilePicture";
   static const String deleteProfilePicture = "user/deleteProfilePicture";
 
-  // ======================== Batch Routes =============================
-  static const String createBatch = "batch/createBatch";
-  static const String getAllBatch = "batch/getAllBatches";
   // ======================== Category Routes =============================
   static const String createCategory = "category/";
   static const String getAllCategories = "category/getAllCategories";
   static const String deleteCategory = "category/";
-
-  // ======================== Batch Routes =============================
-  static const String createCourse = "course/createCourse";
-  static const String deleteCourse = "course/";
-  static const String getAllCourse = "course/getAllCourse";
+// ===================== ✅ Chat (Message) Routes =====================
+  static const String sendMessage = "message/send/"; // ✅ Fix: Matches Backend
+  static const String getMessages = "message/all/"; // ✅ Fix: Matches Backend
+  static const String deleteMessage =
+      "message/"; // ❓ Check if exists in backend
 }

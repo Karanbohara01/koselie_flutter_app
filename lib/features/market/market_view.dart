@@ -72,9 +72,9 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
         backgroundColor: Colors.grey[300],
         title: const Text('Marketplace', style: TextStyle(color: Colors.pink)),
         actions: const [
-          Icon(Icons.person, color: Colors.pink),
+          Icon(Icons.person, color: Colors.black),
           SizedBox(width: 16),
-          Icon(Icons.menu, color: Colors.pink),
+          Icon(Icons.menu, color: Colors.black),
           SizedBox(width: 8),
         ],
         bottom: PreferredSize(
@@ -87,7 +87,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
                   child: ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pink,
+                      backgroundColor: Colors.black,
                       foregroundColor: Colors.white,
                     ),
                     child: const Text('Sell'),
@@ -98,7 +98,7 @@ class _MarketplaceScreenState extends State<MarketplaceScreen> {
                   child: ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pink,
+                      backgroundColor: Colors.black,
                       foregroundColor: Colors.white,
                     ),
                     child: const Text('Categories'),

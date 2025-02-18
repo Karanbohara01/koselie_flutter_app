@@ -35,17 +35,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      body: SafeArea(
-        child: Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color.fromARGB(255, 246, 5, 85), Colors.pinkAccent],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color(0xFF6A0DAD), // Dark Purple
+              Color(0xFF9C27B0), // Light Purple
+              Color(0xFFEC407A), // Pinkish Gradient
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
+        ),
+        child: SafeArea(
           child: Stack(
             children: [
               PageView.builder(
@@ -62,12 +66,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        // ✅ Onboarding Image
                         Image.asset(
                           onboardingData[index]['image']!,
-                          height: size.height * 0.2,
+                          height: size.height * 0.15,
                           fit: BoxFit.contain,
                         ),
                         const SizedBox(height: 30),
+
+                        // ✅ Title
                         Center(
                           child: Text(
                             onboardingData[index]['title']!,
@@ -79,13 +86,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           ),
                         ),
                         const SizedBox(height: 10),
+
+                        // ✅ Subtitle
                         Center(
                           child: Text(
                             onboardingData[index]['subtitle']!,
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               fontSize: 16,
-                              color: Colors.white,
+                              color: Colors.white70,
                             ),
                           ),
                         ),
@@ -94,13 +103,16 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   );
                 },
               ),
+
+              // ✅ Bottom Navigation Controls
               Positioned(
-                bottom: 30,
+                bottom: 40,
                 left: 20,
                 right: 20,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    // ✅ Skip Button
                     TextButton(
                       onPressed: () {
                         _pageController.jumpToPage(onboardingData.length - 1);
@@ -113,6 +125,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         ),
                       ),
                     ),
+
+                    // ✅ Page Indicator Dots
                     Row(
                       children: List.generate(
                         onboardingData.length,
@@ -124,12 +138,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           decoration: BoxDecoration(
                             color: _currentPage == index
                                 ? Colors.white
-                                : Colors.white,
+                                : Colors.white38,
                             borderRadius: BorderRadius.circular(4),
                           ),
                         ),
                       ),
                     ),
+
+                    // ✅ Next / Done Button
                     TextButton(
                       onPressed: () {
                         if (_currentPage == onboardingData.length - 1) {
