@@ -241,7 +241,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Koselie Chat"),
+        title: const Text("Koselie"),
         backgroundColor: Colors.purple,
       ),
       body: BlocListener<ChatBloc, ChatState>(
