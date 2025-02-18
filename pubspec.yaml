@@ -58,6 +58,7 @@ dependencies:
   bloc_test: ^10.0.0
   test_cov_console: ^0.2.2
   socket_io_client: ^3.0.2
+  badges: ^3.1.2
   
  
   

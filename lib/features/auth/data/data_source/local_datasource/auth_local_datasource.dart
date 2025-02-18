@@ -67,7 +67,7 @@ class AuthLocalDataSource implements IAuthDataSource {
   }
 
   @override
-  Future<void> updateUser(AuthEntity entity) {
+  Future<void> updateUser(AuthEntity entity, String token) {
     // TODO: implement updateUser
     throw UnimplementedError();
   }

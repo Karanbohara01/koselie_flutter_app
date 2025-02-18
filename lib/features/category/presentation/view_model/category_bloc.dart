@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:koselie/features/category/domain/entity/category_entity.dart';
 import 'package:koselie/features/category/domain/usecase/create_category_usecase.dart';
 import 'package:koselie/features/category/domain/usecase/delete_category_usecase.dart';
@@ -45,16 +44,14 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   Future<void> _onAddCategory(
       AddCategory event, Emitter<CategoryState> emit) async {
     emit(state.copyWith(isLoading: true));
-
     final result = await _createCategoryUseCase
-        .call(CreateCategoryParams(name: event.name)); // ✅ Only pass name
-
+        .call(CreateCategoryParams(name: event.name));
     result.fold(
       (failure) =>
           emit(state.copyWith(isLoading: false, error: failure.message)),
-      (_) {
+      (categories) {
         emit(state.copyWith(isLoading: false, error: null));
-        add(LoadCategories()); // ✅ Reload categories after adding
+        add(LoadCategories());
       },
     );
   }
