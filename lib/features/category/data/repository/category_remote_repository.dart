@@ -4,55 +4,6 @@ import 'package:koselie/features/category/data/data_source/remote_datasource/cat
 import 'package:koselie/features/category/domain/entity/category_entity.dart';
 import 'package:koselie/features/category/domain/repository/category_repository.dart';
 
-// class CategoryRemoteRepository implements ICategoryRepository {
-//   final CategoryRemoteDataSource remoteDataSource;
-
-//   CategoryRemoteRepository({required this.remoteDataSource});
-
-//   @override
-//   Future<Either<Failure, void>> createCategory(CategoryEntity category,token) async {
-//     try {
-//       remoteDataSource.createCategory(category,token);
-//       return const Right(null);
-//     } catch (e) {
-//       return Left(
-//         ApiFailure(
-//           message: e.toString(),
-//         ),
-//       );
-//     }
-//   }
-
-//   @override
-//   Future<Either<Failure, void>> deleteCategory(
-//       String categoryId, String? token) async {
-//     try {
-//       remoteDataSource.deleteCategory(categoryId, token);
-//       return const Right(null);
-//     } catch (e) {
-//       return Left(
-//         ApiFailure(
-//           message: e.toString(),
-//         ),
-//       );
-//     }
-//   }
-
-//   @override
-//   Future<Either<Failure, List<CategoryEntity>>> getAllCategories() async {
-//     try {
-//       final categories = await remoteDataSource.getAllCategories();
-//       return Right(categories);
-//     } catch (e) {
-//       return Left(
-//         ApiFailure(
-//           message: e.toString(),
-//         ),
-//       );
-//     }
-//   }
-// }
-
 class CategoryRemoteRepository implements ICategoryRepository {
   final CategoryRemoteDataSource remoteDataSource;
 

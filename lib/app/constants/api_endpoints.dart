@@ -15,6 +15,8 @@ class ApiEndpoints {
   static const String createPost = "post/addpost/";
   static const String getAllPosts = "post/all";
   static const String deletePost = "post/";
+  static const String getPostById =
+      "post"; // ✅ Fetch single post (ID will be appended in requests)
 
   static const String getMe = "user/getMe";
   static const String getUserById = "user/getUserById/";
@@ -36,4 +38,8 @@ class ApiEndpoints {
   static const String getMessages = "message/all/"; // ✅ Fix: Matches Backend
   static const String deleteMessage =
       "message/"; // ❓ Check if exists in backend
+
+  // ===================== ✅ Password Routes =====================
+  static const String forgotPassword = "user/forgot-password";
+  static const String resetPassword = "user/reset-password";
 }

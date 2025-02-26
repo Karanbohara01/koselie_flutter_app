@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:koselie/app/constants/api_endpoints.dart';
+import 'package:koselie/core/error/failure.dart';
 import 'package:koselie/features/posts/data/data_source/posts_data_source.dart';
 import 'package:koselie/features/posts/domain/entity/posts_entity.dart';
 
@@ -10,26 +11,58 @@ class PostsRemoteDataSource implements IPostsDataSource {
 
   PostsRemoteDataSource(this._dio);
 
+  // @override
+  // Future<void> createPost(PostsEntity post) async {
+  //   try {
+  //     Response response = await _dio.post(ApiEndpoints.createPost, data: {
+  //       "caption": post.caption,
+  //       "location": post.location,
+  //       "image": post.image,
+  //       "price": post.price,
+  //       "description": post.description,
+  //       "category": post.category.categoryId
+  //     });
+  //     if (response.statusCode == 200) {
+  //       return;
+  //     } else {
+  //       throw Exception(response.statusMessage);
+  //     }
+  //   } on DioException catch (e) {
+  //     throw Exception(e);
+  //   } catch (e) {
+  //     throw Exception(e);
+  //   }
+  // }
+  /// ✅ CREATE POST (Fix: Added Token)
   @override
-  Future<void> createPost(PostsEntity post) async {
+  Future<void> createPost(PostsEntity post, String? token) async {
     try {
-      Response response = await _dio.post(ApiEndpoints.createPost, data: {
-        "caption": post.caption,
-        "location": post.location,
-        "image": post.image,
-        "price": post.price,
-        "description": post.description,
-        "category": post.category.categoryId
-      });
-      if (response.statusCode == 200) {
-        return;
-      } else {
-        throw Exception(response.statusMessage);
+      Response response = await _dio.post(
+        ApiEndpoints.createPost,
+        data: {
+          "caption": post.caption,
+          "location": post.location,
+          "image": post.image,
+          "price": post.price,
+          "description": post.description,
+          "category": post.category.categoryId
+        },
+        options: Options(headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token', // ✅ Added Authorization Token
+        }),
+      );
+
+      if (response.statusCode != 201) {
+        throw ServerFailure('Failed to create post',
+            statusCode: response.statusCode);
       }
     } on DioException catch (e) {
-      throw Exception(e);
+      throw ServerFailure('Dio Error: ${e.response?.data ?? e.message}',
+          statusCode: e.response?.statusCode);
     } catch (e) {
-      throw Exception(e);
+      throw ServerFailure('Error: ${e.toString()}');
     }
   }
 
@@ -114,6 +147,54 @@ class PostsRemoteDataSource implements IPostsDataSource {
       throw Exception(e);
     } catch (e) {
       throw Exception(e);
+    }
+  }
+
+  @override
+  @override
+  Future<PostsEntity> getPostById(String postId) async {
+    try {
+      Response response = await _dio.get("${ApiEndpoints.getPostById}/$postId");
+
+      if (response.statusCode == 200) {
+        final data = response.data;
+
+        // Ensure the response contains the 'post' key
+        if (data is Map<String, dynamic> && data.containsKey('post')) {
+          final postJson = data['post'];
+
+          if (postJson is Map<String, dynamic>) {
+            // Handle category field properly
+            var categoryJson = postJson['category'];
+            Map<String, dynamic>? parsedCategory;
+
+            if (categoryJson is List && categoryJson.isNotEmpty) {
+              parsedCategory = categoryJson.first as Map<String, dynamic>;
+            } else if (categoryJson is Map<String, dynamic>) {
+              parsedCategory = categoryJson;
+            } else if (categoryJson is String) {
+              // ❌ This prevents the crash if 'category' is returned as a String
+              parsedCategory = {}; // Empty map to prevent errors
+            }
+
+            return PostsEntity.fromJson({
+              ...postJson,
+              'category': parsedCategory ?? {},
+            });
+          } else {
+            throw Exception(
+                "Invalid response format: Expected a Map for 'post'");
+          }
+        } else {
+          throw Exception("Invalid response format: 'post' key missing");
+        }
+      } else {
+        throw Exception("Failed to fetch post: ${response.statusMessage}");
+      }
+    } on DioException catch (e) {
+      throw Exception("DioError: ${e.message}");
+    } catch (e) {
+      throw Exception("Error: ${e.toString()}");
     }
   }
 }

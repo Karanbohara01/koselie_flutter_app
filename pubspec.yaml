@@ -59,6 +59,12 @@ dependencies:
   test_cov_console: ^0.2.2
   socket_io_client: ^3.0.2
   badges: ^3.1.2
+  shimmer: ^3.0.0
+  google_fonts: ^6.2.1
+  flutter_signin_button: ^2.0.0
+  local_auth: ^2.3.0
+  sensors_plus: ^6.1.1
+
   
  
   

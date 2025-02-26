@@ -10,6 +10,6 @@ void main() async {
 // Initialize the dependencies
   await initDependencies();
   runApp(
-    const App(),
+    App(),
   );
 }

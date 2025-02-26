@@ -1,0 +1,2 @@
+C:/Users/Acer/Downloads/Flutter_with_sensor/koselie_flutter_app/koselie_flutter_app/android/app/.cxx/Debug/1n445562/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/Acer/Downloads/Flutter_with_sensor/koselie_flutter_app/koselie_flutter_app/android/app/.cxx/Debug/1n445562/armeabi-v7a/CMakeFiles/rebuild_cache.dir
