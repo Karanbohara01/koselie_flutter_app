@@ -12,9 +12,9 @@ class PostsLocalRepository implements IPostsRepository {
       : _postsLocalDataSource = postsLocalDataSource;
 
   @override
-  Future<Either<Failure, void>> createPost(PostsEntity post) {
+  Future<Either<Failure, void>> createPost(PostsEntity post, String? token) {
     try {
-      _postsLocalDataSource.createPost(post);
+      _postsLocalDataSource.createPost(post, token);
       return Future.value(const Right(null));
     } catch (e) {
       return Future.value(Left(LocalDatabaseFailure(message: e.toString())));
@@ -47,6 +47,12 @@ class PostsLocalRepository implements IPostsRepository {
   @override
   Future<Either<Failure, String>> uploadImage(File file) {
     // TODO: implement uploadImage
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Either<Failure, PostsEntity>> getPostById(String postId) {
+    // TODO: implement getPostById
     throw UnimplementedError();
   }
 }
