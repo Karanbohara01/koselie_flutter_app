@@ -12,9 +12,10 @@ class PostsRemoteRepository implements IPostsRepository {
   PostsRemoteRepository({required this.remoteDataSource});
 
   @override
-  Future<Either<Failure, void>> createPost(PostsEntity post) async {
+  Future<Either<Failure, void>> createPost(
+      PostsEntity post, String? token) async {
     try {
-      remoteDataSource.createPost(post);
+      remoteDataSource.createPost(post, token);
       return const Right(null);
     } catch (e) {
       return Left(
@@ -62,4 +63,17 @@ class PostsRemoteRepository implements IPostsRepository {
       return Left(ApiFailure(message: e.toString()));
     }
   }
+
+  /// ✅ Fetch a single post by ID
+  @override
+  Future<Either<Failure, PostsEntity>> getPostById(String postId) async {
+    try {
+      final post = await remoteDataSource.getPostById(postId);
+      return Right(post);
+    } catch (e) {
+      return Left(ApiFailure(message: e.toString()));
+    }
+  }
 }
+
+//  add getPostById here

@@ -244,9 +244,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:koselie/app/shared_prefs/token_shared_prefs.dart';
 import 'package:koselie/core/common/snackbar/snackbar.dart';
 import 'package:koselie/features/auth/domain/entity/auth_entity.dart';
+import 'package:koselie/features/auth/domain/usecase/forgot_password_usecase.dart';
 import 'package:koselie/features/auth/domain/usecase/get_current_user_usecase.dart';
 import 'package:koselie/features/auth/domain/usecase/login_user_usecase.dart';
+import 'package:koselie/features/auth/domain/usecase/reset_password_usecase.dart';
 import 'package:koselie/features/auth/domain/usecase/update_user_usecase.dart';
+import 'package:koselie/features/auth/presentation/view/reset_password_view.dart';
 import 'package:koselie/features/auth/presentation/view_model/signup/register_bloc.dart';
 import 'package:koselie/features/home/presentation/view/home_view.dart';
 import 'package:koselie/features/home/presentation/view_model/home_cubit.dart';
@@ -261,6 +264,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   final GetCurrentUserUseCase _getCurrentUserUseCase;
   final UpdateUserUsecase _updateUserUseCase;
   final TokenSharedPrefs _tokenSharedPrefs;
+  final ForgotPasswordUseCase _forgotPasswordUseCase;
+  final ResetPasswordUseCase _resetPasswordUseCase;
 
   LoginBloc({
     required RegisterBloc registerBloc,
@@ -269,12 +274,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     required GetCurrentUserUseCase getCurrentUserUseCase,
     required UpdateUserUsecase updateUserUseCase,
     required TokenSharedPrefs tokenSharedPrefs,
+    required ForgotPasswordUseCase forgotPasswordUseCase,
+    required ResetPasswordUseCase resetPasswordUseCase,
   })  : _registerBloc = registerBloc,
         _homeCubit = homeCubit,
         _loginUseCase = loginUseCase,
         _getCurrentUserUseCase = getCurrentUserUseCase,
         _updateUserUseCase = updateUserUseCase,
         _tokenSharedPrefs = tokenSharedPrefs,
+        _forgotPasswordUseCase = forgotPasswordUseCase,
+        _resetPasswordUseCase = resetPasswordUseCase,
         super(LoginState.initial()) {
     on<NavigateRegisterScreenEvent>(_onNavigateRegisterScreen);
     on<NavigateHomeScreenEvent>(_onNavigateHomeScreen);
@@ -282,6 +291,84 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<GetUserInfoEvent>(_onGetUserInfo);
     on<UpdateUserProfileEvent>(_onUpdateUserProfile);
     on<UpdateProfilePictureEvent>(_onUpdateProfilePicture);
+    on<ForgotPasswordRequested>(_onForgotPasswordRequested);
+    on<ResetPasswordRequested>(_onResetPasswordRequested);
+  }
+
+  /// 🔹 Handle Forgot Password Request
+  Future<void> _onForgotPasswordRequested(
+      ForgotPasswordRequested event, Emitter<LoginState> emit) async {
+    emit(state.copyWith(isLoading: true));
+
+    final result = await _forgotPasswordUseCase(
+      ForgotPasswordParams(email: event.email, phone: event.phone),
+    );
+
+    result.fold(
+      (failure) {
+        emit(state.copyWith(isLoading: false));
+        showMySnackBar(
+          context: event.context,
+          message: "Failed to send OTP: ${failure.message}",
+          color: Colors.red,
+        );
+      },
+      (_) {
+        emit(state.copyWith(isLoading: false, isSuccess: true));
+        showMySnackBar(
+          context: event.context,
+          message: "OTP sent successfully. Check your email/phone.",
+          color: Colors.green,
+        );
+
+        // Navigate to Reset Password View
+        Navigator.push(
+          event.context,
+          MaterialPageRoute(
+            builder: (context) => ResetPasswordView(
+              emailOrPhone: event.email ?? event.phone!,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /// 🔹 Handle Reset Password Request
+  Future<void> _onResetPasswordRequested(
+      ResetPasswordRequested event, Emitter<LoginState> emit) async {
+    emit(state.copyWith(isLoading: true));
+
+    final result = await _resetPasswordUseCase(
+      ResetPasswordParams(
+        email: event.emailOrPhone.contains("@") ? event.emailOrPhone : null,
+        phone: event.emailOrPhone.contains("@") ? null : event.emailOrPhone,
+        otp: event.otp,
+        newPassword: event.newPassword,
+      ),
+    );
+
+    result.fold(
+      (failure) {
+        emit(state.copyWith(isLoading: false));
+        showMySnackBar(
+          context: event.context,
+          message: "Failed to reset password: ${failure.message}",
+          color: Colors.red,
+        );
+      },
+      (_) {
+        emit(state.copyWith(isLoading: false, isSuccess: true));
+        showMySnackBar(
+          context: event.context,
+          message: "Password reset successfully. Please log in.",
+          color: Colors.green,
+        );
+
+        // Redirect to login screen
+        Navigator.pop(event.context);
+      },
+    );
   }
 
   /// 🔹 Navigate to Register Screen
@@ -372,55 +459,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       },
     );
   }
-
-  // /// 🔹 Fix: Prevent ScaffoldMessenger Error
-  // Future<void> _onUpdateUserProfile(
-  //     UpdateUserProfileEvent event, Emitter<LoginState> emit) async {
-  //   emit(state.copyWith(isLoading: true));
-
-  //   if (state.user == null) {
-  //     emit(state.copyWith(isLoading: false));
-  //     if (event.context.mounted) {
-  //       showMySnackBar(
-  //         context: event.context,
-  //         message: "No user data available!",
-  //         color: Colors.red,
-  //       );
-  //     }
-  //     return;
-  //   }
-
-  //   final updatedUser = state.user!.copyWith(
-  //     username: event.username,
-  //     bio: event.bio,
-  //     role: event.role,
-  //   );
-
-  //   final result = await _updateUserUseCase(updatedUser);
-
-  //   result.fold(
-  //     (failure) {
-  //       emit(state.copyWith(isLoading: false));
-  //       if (event.context.mounted) {
-  //         showMySnackBar(
-  //           context: event.context,
-  //           message: "Profile update failed: ${failure.message}",
-  //           color: Colors.red,
-  //         );
-  //       }
-  //     },
-  //     (_) {
-  //       emit(state.copyWith(isLoading: false, user: updatedUser));
-  //       if (event.context.mounted) {
-  //         showMySnackBar(
-  //           context: event.context,
-  //           message: "Profile updated successfully!",
-  //           color: Colors.green,
-  //         );
-  //       }
-  //     },
-  //   );
-  // }
 
   Future<void> _onUpdateUserProfile(
       UpdateUserProfileEvent event, Emitter<LoginState> emit) async {

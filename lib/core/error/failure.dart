@@ -1,47 +1,3 @@
-// class Failure {
-//   final String message;
-//   final int? statusCode;
-
-//   Failure({
-//     required this.message,
-//     this.statusCode,
-//   });
-
-//   @override
-//   String toString() => 'Failure (message: $message, statusCode: $statusCode)';
-// }
-
-// class LocalDatabaseFailure extends Failure {
-//   LocalDatabaseFailure({
-//     required super.message,
-//   });
-// }
-
-// class ApiFailure extends Failure {
-//   ApiFailure({
-//     required super.message,
-//     super.statusCode,
-//   });
-// }
-
-// class SharedPrefsFailure extends Failure {
-//   SharedPrefsFailure({
-//     required super.message,
-//   });
-// }
-
-// class CacheFailure extends Failure {
-//   CacheFailure({required super.message});
-// }
-
-// class FileFailure extends Failure {
-//   FileFailure(String message) : super(message: message);
-// }
-
-// class ServerFailure extends Failure {
-//   ServerFailure(String message, {super.statusCode}) : super(message: message);
-// }
-
 class Failure {
   final String message;
   final int? statusCode;
@@ -88,4 +44,9 @@ class FileFailure extends Failure {
 /// ✅ Handles **Server Failures**
 class ServerFailure extends Failure {
   ServerFailure(String message, {super.statusCode}) : super(message: message);
+}
+
+/// ✅ Handles **Authentication Failures (e.g., Invalid Token, Expired Session)**
+class AuthFailure extends Failure {
+  AuthFailure(String message, {super.statusCode}) : super(message: message);
 }

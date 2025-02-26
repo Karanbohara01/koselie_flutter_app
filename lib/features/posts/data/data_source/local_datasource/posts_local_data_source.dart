@@ -11,7 +11,7 @@ class PostsLocalDataSource implements IPostsDataSource {
   PostsLocalDataSource({required this.hiveService});
 
   @override
-  Future<void> createPost(PostsEntity post) async {
+  Future<void> createPost(PostsEntity post, String? token) async {
     try {
       // Convert PostsEntity to PostsHiveModel
       final postsHiveModel = PostsHiveModel.fromEntity(post);
@@ -46,5 +46,11 @@ class PostsLocalDataSource implements IPostsDataSource {
     // Local data source typically does not handle image uploads
     // But if you want to implement it for local storage, you could store the file on the device
     throw UnimplementedError('Local data source does not handle image uploads');
+  }
+
+  @override
+  Future<PostsEntity> getPostById(String postId) {
+    // TODO: implement getPostById
+    throw UnimplementedError();
   }
 }

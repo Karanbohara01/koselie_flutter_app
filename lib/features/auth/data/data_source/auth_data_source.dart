@@ -23,4 +23,14 @@ abstract interface class IAuthDataSource {
 
   Future<List<AuthEntity>> getAllUsers();
   Future<AuthEntity> getMe(); // ✅ Fetch user details from API
+
+  // New methods for OTP-based forgot and reset password
+  Future<void> forgotPassword({String? email, String? phone});
+
+  Future<void> resetPassword({
+    String? email,
+    String? phone,
+    required String otp,
+    required String newPassword,
+  });
 }

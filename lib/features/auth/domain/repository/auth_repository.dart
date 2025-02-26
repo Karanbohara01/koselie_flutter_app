@@ -22,4 +22,11 @@ abstract interface class IAuthRepository {
   Future<Either<Failure, List<AuthEntity>>> getAllUsers();
 
   Future<Either<Failure, AuthEntity>> getMe(); // ✅ Added getMe()
+
+  Future<Either<Failure, void>> forgotPassword({String? email, String? phone});
+  Future<Either<Failure, void>> resetPassword(
+      {String? email,
+      String? phone,
+      required String otp,
+      required String newPassword});
 }
