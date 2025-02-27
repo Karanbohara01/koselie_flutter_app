@@ -1,3 +1,4 @@
+// // ----------------------------------------------------------------------//
 // import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:koselie/app/constants/api_endpoints.dart';
@@ -9,19 +10,18 @@
 
 // class UserListScreen extends StatefulWidget {
 //   const UserListScreen({super.key});
+
 //   @override
 //   State<UserListScreen> createState() => _UserListScreenState();
 // }
 
 // class _UserListScreenState extends State<UserListScreen> {
 //   String _searchQuery = "";
-//   bool _isNavigating = false; // ✅ Prevent multiple navigation taps
+//   bool _isNavigating = false;
 
 //   @override
 //   void initState() {
 //     super.initState();
-
-//     // ✅ Use addPostFrameCallback to avoid calling context.read in initState()
 //     WidgetsBinding.instance.addPostFrameCallback((_) {
 //       context.read<AuthBloc>().add(GetAllUsersRequested());
 //     });
@@ -32,24 +32,24 @@
 //     final loggedInUserId = context.read<LoginBloc>().state.user?.userId;
 
 //     return Scaffold(
-//       backgroundColor: Colors.black,
+//       backgroundColor: Colors.white,
 //       appBar: AppBar(
 //         title: const Text(
 //           "Chats",
 //           style: TextStyle(
 //               fontWeight: FontWeight.bold, fontSize: 24, color: Colors.white),
 //         ),
+//         centerTitle: true,
+//         elevation: 5,
 //         flexibleSpace: Container(
 //           decoration: const BoxDecoration(
 //             gradient: LinearGradient(
-//               colors: [Color(0xFF833AB4), Color(0xFFFF4081)],
-//               begin: Alignment.topLeft,
-//               end: Alignment.bottomRight,
+//               colors: [Color(0xFF8E2DE2), Color(0xFFEC008C)], // 🌟 Gradient
+//               begin: Alignment.topCenter,
+//               end: Alignment.bottomCenter,
 //             ),
 //           ),
 //         ),
-//         centerTitle: true,
-//         elevation: 5,
 //       ),
 //       body: Column(
 //         children: [
@@ -60,14 +60,16 @@
 //                 if (state is AuthLoadingUsers) {
 //                   return const Center(child: CircularProgressIndicator());
 //                 } else if (state is AuthUsersFailure) {
-//                   return Center(child: Text("Error: ${state.message}"));
+//                   return Center(
+//                       child: Text("Error: ${state.message}",
+//                           style: const TextStyle(color: Colors.red)));
 //                 } else if (state is AuthUsersLoaded) {
 //                   final filteredUsers = state.users
 //                       .where((user) =>
 //                           user.userId != loggedInUserId &&
-//                           (user.username
+//                           user.username
 //                               .toLowerCase()
-//                               .contains(_searchQuery.toLowerCase())))
+//                               .contains(_searchQuery.toLowerCase()))
 //                       .toList();
 
 //                   return ListView.builder(
@@ -82,7 +84,9 @@
 //                     },
 //                   );
 //                 }
-//                 return const Center(child: Text("No users found."));
+//                 return const Center(
+//                     child: Text("No users found.",
+//                         style: TextStyle(color: Colors.black54)));
 //               },
 //             ),
 //           ),
@@ -101,16 +105,16 @@
 //             _searchQuery = query;
 //           });
 //         },
-//         style: const TextStyle(color: Colors.white),
+//         style: const TextStyle(color: Colors.black),
 //         decoration: InputDecoration(
 //           hintText: "Search users...",
-//           hintStyle: const TextStyle(color: Colors.white54),
-//           prefixIcon: const Icon(Icons.search, color: Colors.white70),
+//           hintStyle: const TextStyle(color: Colors.black54),
+//           prefixIcon: const Icon(Icons.search, color: Colors.black87),
 //           filled: true,
-//           fillColor: Colors.white10,
+//           fillColor: Colors.white,
 //           border: OutlineInputBorder(
 //             borderRadius: BorderRadius.circular(30),
-//             borderSide: BorderSide.none,
+//             borderSide: const BorderSide(color: Colors.black26),
 //           ),
 //         ),
 //       ),
@@ -139,9 +143,8 @@
 //         builder: (context) => ChatScreen(
 //           senderId: sender.userId!,
 //           receiverId: user.userId!,
-//           receiverUsername: user.username, // Pass receiver's username
-//           receiverImage: user.image ??
-//               '', // Pass receiver's image (or empty string if null)
+//           receiverUsername: user.username,
+//           receiverImage: user.image ?? '',
 //           key: ValueKey(user.userId!),
 //         ),
 //       ),
@@ -166,14 +169,14 @@
 //         color: Colors.transparent,
 //         child: InkWell(
 //           borderRadius: BorderRadius.circular(20),
-//           onTap: onTap, // ✅ Uses debounced onTap from `_navigateToChatScreen`
+//           onTap: onTap,
 //           child: Container(
 //             decoration: BoxDecoration(
-//               color: Colors.white10,
+//               color: Colors.white,
 //               borderRadius: BorderRadius.circular(20),
 //               boxShadow: [
 //                 BoxShadow(
-//                   color: Colors.white.withOpacity(0.05),
+//                   color: Colors.black.withOpacity(0.05),
 //                   blurRadius: 10,
 //                   spreadRadius: 2,
 //                 ),
@@ -191,7 +194,7 @@
 //                       Text(
 //                         user.username,
 //                         style: const TextStyle(
-//                           color: Colors.white,
+//                           color: Colors.black,
 //                           fontWeight: FontWeight.bold,
 //                           fontSize: 16,
 //                         ),
@@ -200,14 +203,14 @@
 //                       Text(
 //                         user.email,
 //                         style: const TextStyle(
-//                           color: Colors.white70,
+//                           color: Colors.black54,
 //                           fontSize: 13,
 //                         ),
 //                       ),
 //                     ],
 //                   ),
 //                 ),
-//                 const Icon(Icons.chat_bubble_outline, color: Colors.white70),
+//                 const Icon(Icons.chat_bubble_outline, color: Colors.black87),
 //               ],
 //             ),
 //           ),
@@ -234,15 +237,17 @@
 //   }
 // }
 
-// ----------------------------------------------------------------------//
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:koselie/app/constants/api_endpoints.dart';
 import 'package:koselie/core/common/snackbar/snackbar.dart';
 import 'package:koselie/features/auth/domain/entity/auth_entity.dart';
 import 'package:koselie/features/auth/presentation/view_model/login/login_bloc.dart';
 import 'package:koselie/features/auth/presentation/view_model/signup/auth_bloc.dart';
 import 'package:koselie/features/chat/presentation/view/chat_view.dart';
+import 'package:koselie/features/theme/presentation/bloc/theme_bloc.dart';
+import 'package:koselie/features/theme/presentation/bloc/theme_state.dart';
 
 class UserListScreen extends StatefulWidget {
   const UserListScreen({super.key});
@@ -267,72 +272,96 @@ class _UserListScreenState extends State<UserListScreen> {
   Widget build(BuildContext context) {
     final loggedInUserId = context.read<LoginBloc>().state.user?.userId;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: const Text(
-          "Chats",
-          style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 24, color: Colors.white),
-        ),
-        centerTitle: true,
-        elevation: 5,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF8E2DE2), Color(0xFFEC008C)], // 🌟 Gradient
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
-        ),
-      ),
-      body: Column(
-        children: [
-          _buildSearchBar(),
-          Expanded(
-            child: BlocBuilder<AuthBloc, AuthState>(
-              builder: (context, state) {
-                if (state is AuthLoadingUsers) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is AuthUsersFailure) {
-                  return Center(
-                      child: Text("Error: ${state.message}",
-                          style: const TextStyle(color: Colors.red)));
-                } else if (state is AuthUsersLoaded) {
-                  final filteredUsers = state.users
-                      .where((user) =>
-                          user.userId != loggedInUserId &&
-                          user.username
-                              .toLowerCase()
-                              .contains(_searchQuery.toLowerCase()))
-                      .toList();
+    return BlocBuilder<ThemeBloc, ThemeState>(
+      builder: (context, themeState) {
+        final isDarkMode = themeState is DarkThemeState;
 
-                  return ListView.builder(
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: filteredUsers.length,
-                    itemBuilder: (context, index) {
-                      return UserTile(
-                        user: filteredUsers[index],
-                        onTap: () => _navigateToChatScreen(
-                            context, filteredUsers[index]),
-                      );
-                    },
-                  );
-                }
-                return const Center(
-                    child: Text("No users found.",
-                        style: TextStyle(color: Colors.black54)));
-              },
+        // Define colors based on theme
+        final backgroundColor = isDarkMode ? Colors.black : Colors.white;
+        final textColor = isDarkMode ? Colors.white : Colors.black;
+        final appBarGradient = isDarkMode
+            ? [Colors.black87, Colors.black54]
+            : [const Color(0xFF8E2DE2), const Color(0xFFEC008C)];
+        final cardColor = isDarkMode ? Colors.grey[800]! : Colors.white;
+        final searchFillColor = isDarkMode ? Colors.grey[850]! : Colors.white;
+        final hintTextColor = isDarkMode ? Colors.grey[500]! : Colors.black54;
+
+        return Scaffold(
+          backgroundColor: backgroundColor,
+          appBar: AppBar(
+            title: Text(
+              "Chats",
+              style: GoogleFonts.poppins(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24,
+                  color: Colors.white),
+            ),
+            centerTitle: true,
+            elevation: 5,
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: appBarGradient,
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
             ),
           ),
-        ],
-      ),
+          body: Column(
+            children: [
+              _buildSearchBar(searchFillColor, hintTextColor, textColor),
+              Expanded(
+                child: BlocBuilder<AuthBloc, AuthState>(
+                  builder: (context, state) {
+                    if (state is AuthLoadingUsers) {
+                      return Center(
+                          child: CircularProgressIndicator(
+                        color: Theme.of(context).primaryColor,
+                      ));
+                    } else if (state is AuthUsersFailure) {
+                      return Center(
+                          child: Text("Error: ${state.message}",
+                              style: const TextStyle(color: Colors.red)));
+                    } else if (state is AuthUsersLoaded) {
+                      final filteredUsers = state.users
+                          .where((user) =>
+                              user.userId != loggedInUserId &&
+                              user.username
+                                  .toLowerCase()
+                                  .contains(_searchQuery.toLowerCase()))
+                          .toList();
+
+                      return ListView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: filteredUsers.length,
+                        itemBuilder: (context, index) {
+                          return UserTile(
+                            user: filteredUsers[index],
+                            cardColor: cardColor,
+                            textColor: textColor,
+                            onTap: () => _navigateToChatScreen(
+                                context, filteredUsers[index]),
+                          );
+                        },
+                      );
+                    }
+                    return Center(
+                        child: Text("No users found.",
+                            style: GoogleFonts.poppins(color: Colors.black54)));
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
-  /// 🔹 Search Bar
-  Widget _buildSearchBar() {
+  /// Search Bar
+  Widget _buildSearchBar(
+      Color searchFillColor, Color hintTextColor, Color textColor) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: TextField(
@@ -341,13 +370,13 @@ class _UserListScreenState extends State<UserListScreen> {
             _searchQuery = query;
           });
         },
-        style: const TextStyle(color: Colors.black),
+        style: TextStyle(color: textColor),
         decoration: InputDecoration(
           hintText: "Search users...",
-          hintStyle: const TextStyle(color: Colors.black54),
+          hintStyle: TextStyle(color: hintTextColor),
           prefixIcon: const Icon(Icons.search, color: Colors.black87),
           filled: true,
-          fillColor: Colors.white,
+          fillColor: searchFillColor,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
             borderSide: const BorderSide(color: Colors.black26),
@@ -390,12 +419,20 @@ class _UserListScreenState extends State<UserListScreen> {
   }
 }
 
-/// 🔹 User Tile Component
+/// User Tile Component
 class UserTile extends StatelessWidget {
   final AuthEntity user;
   final VoidCallback onTap;
+  final Color cardColor;
+  final Color textColor;
 
-  const UserTile({super.key, required this.user, required this.onTap});
+  const UserTile({
+    super.key,
+    required this.user,
+    required this.onTap,
+    required this.cardColor,
+    required this.textColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -408,7 +445,7 @@ class UserTile extends StatelessWidget {
           onTap: onTap,
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: cardColor,
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
@@ -429,8 +466,8 @@ class UserTile extends StatelessWidget {
                     children: [
                       Text(
                         user.username,
-                        style: const TextStyle(
-                          color: Colors.black,
+                        style: GoogleFonts.poppins(
+                          color: textColor,
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
@@ -438,8 +475,8 @@ class UserTile extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         user.email,
-                        style: const TextStyle(
-                          color: Colors.black54,
+                        style: GoogleFonts.poppins(
+                          color: textColor.withOpacity(0.6),
                           fontSize: 13,
                         ),
                       ),
@@ -455,7 +492,7 @@ class UserTile extends StatelessWidget {
     );
   }
 
-  /// 🔹 User Avatar
+  /// User Avatar
   Widget _buildAvatar(AuthEntity user) {
     return Container(
       width: 50,

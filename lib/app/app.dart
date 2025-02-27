@@ -76,6 +76,111 @@
 //   }
 // }
 
+// **************************Sensor is working***************************************//
+
+// import 'package:flutter/material.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:koselie/app/di/di.dart';
+// import 'package:koselie/core/theme/app_theme.dart';
+// import 'package:koselie/features/auth/presentation/view/login_view.dart';
+// import 'package:koselie/features/auth/presentation/view_model/login/login_bloc.dart';
+// import 'package:koselie/features/auth/presentation/view_model/signup/auth_bloc.dart';
+// import 'package:koselie/features/category/presentation/view_model/category_bloc.dart';
+// import 'package:koselie/features/chat/presentation/view_model/bloc/chat_bloc.dart';
+// import 'package:koselie/features/home/presentation/view/home_view.dart';
+// import 'package:koselie/features/posts/presentation/view_model/posts_bloc.dart';
+// import 'package:koselie/features/sensor/presentation/bloc/sensor_bloc.dart';
+// import 'package:koselie/features/sensor/presentation/bloc/sensor_event.dart';
+// import 'package:koselie/features/sensor/presentation/bloc/sensor_state.dart';
+// import 'package:koselie/features/splash/presentation/view/splash_view.dart';
+// import 'package:koselie/features/splash/presentation/view_model/splash_cubit.dart';
+
+// class App extends StatelessWidget {
+//   App({super.key});
+
+//   // ✅ Global key for navigation
+//   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+//   /// ✅ Navigates to a specific screen while clearing the navigation stack
+//   void _navigateToScreen(Widget screen) {
+//     navigatorKey.currentState?.pushAndRemoveUntil(
+//       MaterialPageRoute(builder: (context) => screen),
+//       (route) => false, // ✅ Clears the navigation stack
+//     );
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MultiBlocProvider(
+//       providers: [
+//         BlocProvider<SplashCubit>(
+//           create: (_) {
+//             final splashCubit = getIt<SplashCubit>();
+//             splashCubit.init();
+//             return splashCubit;
+//           },
+//         ),
+//         BlocProvider<AuthBloc>(
+//           create: (_) => getIt<AuthBloc>(),
+//         ),
+//         BlocProvider<CategoryBloc>(
+//           create: (_) => getIt<CategoryBloc>(),
+//         ),
+//         BlocProvider<LoginBloc>(
+//           create: (_) => getIt<LoginBloc>(),
+//         ),
+//         BlocProvider<PostsBloc>(
+//           create: (_) => getIt<PostsBloc>(),
+//         ),
+//         BlocProvider<ChatBloc>(
+//           create: (_) => getIt<ChatBloc>(),
+//         ),
+//         BlocProvider<SensorBloc>(
+//           create: (context) {
+//             final sensorBloc = getIt<SensorBloc>();
+//             sensorBloc.add(StartListeningForShake()); // ✅ Start shake detection
+//             return sensorBloc;
+//           },
+//         ),
+//       ],
+//       child: MultiBlocListener(
+//         listeners: [
+//           // ✅ Listen for AuthState changes
+//           BlocListener<AuthBloc, AuthState>(
+//             listenWhen: (previous, current) =>
+//                 previous.runtimeType != current.runtimeType,
+//             listener: (context, state) {
+//               if (state is AuthAuthenticated) {
+//                 _navigateToScreen(const HomeView()); // ✅ Navigate to HomeView
+//               } else if (state is AuthUnauthenticated) {
+//                 _navigateToScreen(const LoginView()); // ✅ Navigate to LoginView
+//               }
+//             },
+//           ),
+//           // ✅ Listen for SensorState changes
+//           BlocListener<SensorBloc, SensorState>(
+//             listener: (context, state) {
+//               if (state is ShakeDetected) {
+//                 context
+//                     .read<AuthBloc>()
+//                     .add(AuthLogoutRequested()); // ✅ Logout on shake
+//               }
+//             },
+//           ),
+//         ],
+//         child: MaterialApp(
+//           debugShowCheckedModeBanner: false,
+//           title: 'Koselie',
+//           theme: AppTheme.getApplicationTheme(isDarkMode: false),
+//           navigatorKey: navigatorKey, // ✅ Use the global navigator key
+//           home: const SplashView(),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+//  For dark theme
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:koselie/app/di/di.dart';
@@ -92,6 +197,8 @@ import 'package:koselie/features/sensor/presentation/bloc/sensor_event.dart';
 import 'package:koselie/features/sensor/presentation/bloc/sensor_state.dart';
 import 'package:koselie/features/splash/presentation/view/splash_view.dart';
 import 'package:koselie/features/splash/presentation/view_model/splash_cubit.dart';
+import 'package:koselie/features/theme/presentation/bloc/theme_bloc.dart';
+import 'package:koselie/features/theme/presentation/bloc/theme_state.dart';
 
 class App extends StatelessWidget {
   App({super.key});
@@ -140,6 +247,9 @@ class App extends StatelessWidget {
             return sensorBloc;
           },
         ),
+        BlocProvider<ThemeBloc>(
+          create: (_) => ThemeBloc(), // ✅ Added ThemeBloc
+        ),
       ],
       child: MultiBlocListener(
         listeners: [
@@ -166,12 +276,19 @@ class App extends StatelessWidget {
             },
           ),
         ],
-        child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Koselie',
-          theme: AppTheme.getApplicationTheme(isDarkMode: false),
-          navigatorKey: navigatorKey, // ✅ Use the global navigator key
-          home: const SplashView(),
+        child: BlocBuilder<ThemeBloc, ThemeState>(
+          builder: (context, state) {
+            return MaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Koselie',
+              theme: AppTheme.getApplicationTheme(isDarkMode: false),
+              darkTheme: AppTheme.getApplicationTheme(isDarkMode: true),
+              themeMode:
+                  state is DarkThemeState ? ThemeMode.dark : ThemeMode.light,
+              navigatorKey: navigatorKey, // ✅ Use the global navigator key
+              home: const SplashView(),
+            );
+          },
         ),
       ),
     );
