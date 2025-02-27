@@ -1,5 +1,6 @@
 // import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:google_fonts/google_fonts.dart'; // For Google Fonts
 // import 'package:koselie/app/constants/api_endpoints.dart';
 // import 'package:koselie/core/common/snackbar/snackbar.dart';
 // import 'package:koselie/features/auth/domain/entity/auth_entity.dart';
@@ -32,14 +33,28 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
-//       backgroundColor: Colors.white,
+//       backgroundColor: Colors.grey[100],
 //       appBar: AppBar(
-//         title: const Text("Product Details",
-//             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black)),
+//         title: Text(
+//           "Product Details",
+//           style: GoogleFonts.poppins(
+//             fontWeight: FontWeight.bold,
+//             fontSize: 24,
+//             color: Colors.white,
+//           ),
+//         ),
 //         centerTitle: true,
-//         elevation: 0,
-//         backgroundColor: Colors.white,
-//         iconTheme: const IconThemeData(color: Colors.black),
+//         elevation: 5,
+//         backgroundColor: Colors.transparent,
+//         flexibleSpace: Container(
+//           decoration: const BoxDecoration(
+//             gradient: LinearGradient(
+//               colors: [Color(0xFF8E2DE2), Color(0xFFEC008C)],
+//               begin: Alignment.topCenter,
+//               end: Alignment.bottomCenter,
+//             ),
+//           ),
+//         ),
 //       ),
 //       body: BlocBuilder<PostsBloc, PostsState>(
 //         builder: (context, state) {
@@ -47,18 +62,30 @@
 //             return const Center(child: CircularProgressIndicator());
 //           } else if (state.error != null) {
 //             return Center(
-//                 child: Text(
-//               "Error: ${state.error!}",
-//               style: const TextStyle(color: Colors.red, fontSize: 16),
-//               textAlign: TextAlign.center,
-//             ));
+//               child: Text(
+//                 "Error: ${state.error!}",
+//                 style: GoogleFonts.poppins(
+//                   color: Colors.red,
+//                   fontSize: 16,
+//                 ),
+//                 textAlign: TextAlign.center,
+//               ),
+//             );
 //           } else if (state.selectedPost == null) {
-//             return const Center(child: Text("Post not found"));
+//             return Center(
+//               child: Text(
+//                 "Post not found",
+//                 style: GoogleFonts.poppins(
+//                   color: Colors.black54,
+//                   fontSize: 16,
+//                 ),
+//               ),
+//             );
 //           }
 
 //           final post = state.selectedPost!;
 //           const postAuthor = AuthEntity(
-//             userId: "67ac643a0cc29040b0e248a6", // static author id
+//             userId: "67ac643a0cc29040b0e248a6",
 //             username: 'Rekha',
 //             email: 'rekha@gmail.com',
 //           );
@@ -78,22 +105,22 @@
 //                 // 🏷️ Product Title
 //                 Text(
 //                   post.caption,
-//                   style: const TextStyle(
-//                     fontSize: 24,
+//                   style: GoogleFonts.poppins(
+//                     fontSize: 26,
 //                     fontWeight: FontWeight.bold,
 //                     color: Colors.black87,
 //                   ),
 //                 ),
-//                 const SizedBox(height: 10),
+//                 const SizedBox(height: 12),
 
-//                 // 💰 Price Display
+//                 // 💰 Price Display & Category
 //                 Row(
 //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //                   children: [
 //                     Text(
 //                       "Rs. ${post.price}",
-//                       style: const TextStyle(
-//                         fontSize: 20,
+//                       style: GoogleFonts.poppins(
+//                         fontSize: 22,
 //                         fontWeight: FontWeight.bold,
 //                         color: Colors.green,
 //                       ),
@@ -101,22 +128,28 @@
 //                     Chip(
 //                       label: Text(
 //                         post.category.name,
-//                         style: const TextStyle(color: Colors.white),
+//                         style: GoogleFonts.poppins(
+//                           color: Colors.white,
+//                           fontSize: 12,
+//                         ),
 //                       ),
 //                       backgroundColor: Colors.black,
 //                     ),
 //                   ],
 //                 ),
-//                 const SizedBox(height: 10),
+//                 const SizedBox(height: 12),
 
 //                 // 📍 Location
 //                 Row(
 //                   children: [
-//                     const Icon(Icons.location_on, color: Colors.grey),
-//                     const SizedBox(width: 4),
+//                     const Icon(Icons.location_on, color: Colors.red),
+//                     const SizedBox(width: 6),
 //                     Text(
 //                       post.location,
-//                       style: const TextStyle(fontSize: 16, color: Colors.grey),
+//                       style: GoogleFonts.poppins(
+//                         fontSize: 16,
+//                         color: Colors.grey,
+//                       ),
 //                     ),
 //                   ],
 //                 ),
@@ -124,9 +157,21 @@
 
 //                 // 📄 Description
 //                 Text(
+//                   "Description",
+//                   style: GoogleFonts.poppins(
+//                     fontSize: 20,
+//                     fontWeight: FontWeight.bold,
+//                     color: Colors.black87,
+//                   ),
+//                 ),
+//                 const SizedBox(height: 8),
+//                 Text(
 //                   post.description,
-//                   style: const TextStyle(
-//                       fontSize: 16, color: Colors.black87, height: 1.5),
+//                   style: GoogleFonts.poppins(
+//                     fontSize: 16,
+//                     color: Colors.black87,
+//                     height: 1.5,
+//                   ),
 //                 ),
 //                 const SizedBox(height: 20),
 
@@ -140,12 +185,11 @@
 //                 ),
 //                 const SizedBox(height: 20),
 
-//                 // 🛒 Call to Action (Buy Now, Message Seller)
-//                 Row(
-//                   children: [
-//                     _buildActionButton("Message Seller", Colors.black,
-//                         () => _navigateToChatScreen(context, postAuthor)),
-//                   ],
+//                 // 🛒 Call to Action (Message Seller)
+//                 _buildActionButton(
+//                   "Message Seller",
+//                   Colors.black,
+//                   () => _navigateToChatScreen(context, postAuthor),
 //                 ),
 //               ],
 //             ),
@@ -204,25 +248,38 @@
 //     return Row(
 //       children: [
 //         Icon(icon, color: color),
-//         const SizedBox(width: 4),
-//         Text(text, style: const TextStyle(color: Colors.grey)),
+//         const SizedBox(width: 6),
+//         Text(
+//           text,
+//           style: GoogleFonts.poppins(
+//             color: Colors.grey,
+//             fontSize: 14,
+//           ),
+//         ),
 //       ],
 //     );
 //   }
 
 //   /// ✅ **Reusable Action Button**
 //   Widget _buildActionButton(String text, Color color, VoidCallback onPressed) {
-//     return Expanded(
+//     return SizedBox(
+//       width: double.infinity,
 //       child: ElevatedButton(
 //         onPressed: onPressed,
 //         style: ElevatedButton.styleFrom(
 //           backgroundColor: color,
 //           padding: const EdgeInsets.symmetric(vertical: 14),
-//           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+//           shape: RoundedRectangleBorder(
+//             borderRadius: BorderRadius.circular(8),
+//           ),
 //         ),
 //         child: Text(
 //           text,
-//           style: const TextStyle(fontSize: 16, color: Colors.white),
+//           style: GoogleFonts.poppins(
+//             fontSize: 16,
+//             color: Colors.white,
+//             fontWeight: FontWeight.bold,
+//           ),
 //         ),
 //       ),
 //     );
@@ -232,25 +289,29 @@
 //   Widget _buildPlaceholderImage() {
 //     return Container(
 //       height: 250,
-//       color: Colors.grey[200],
+//       color: Colors.grey[300],
 //       child: const Center(
 //         child: Icon(Icons.image_not_supported, size: 50, color: Colors.grey),
 //       ),
 //     );
 //   }
 // }
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart'; // For Google Fonts
+import 'package:google_fonts/google_fonts.dart';
 import 'package:koselie/app/constants/api_endpoints.dart';
 import 'package:koselie/core/common/snackbar/snackbar.dart';
 import 'package:koselie/features/auth/domain/entity/auth_entity.dart';
 import 'package:koselie/features/auth/presentation/view_model/login/login_bloc.dart';
 import 'package:koselie/features/chat/presentation/view/chat_view.dart';
 import 'package:koselie/features/posts/presentation/view_model/posts_bloc.dart';
+import 'package:koselie/features/theme/presentation/bloc/theme_bloc.dart';
+import 'package:koselie/features/theme/presentation/bloc/theme_state.dart';
 
 class PostDetailsView extends StatefulWidget {
   final String postId;
+
   const PostDetailsView({super.key, required this.postId});
 
   @override
@@ -273,175 +334,205 @@ class _PostDetailsViewState extends State<PostDetailsView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        title: Text(
-          "Product Details",
-          style: GoogleFonts.poppins(
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-            color: Colors.white,
-          ),
-        ),
-        centerTitle: true,
-        elevation: 5,
-        backgroundColor: Colors.transparent,
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF8E2DE2), Color(0xFFEC008C)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
+    return BlocBuilder<ThemeBloc, ThemeState>(
+      builder: (context, themeState) {
+        final isDarkMode = themeState is DarkThemeState;
+
+        // Define colors based on theme
+        final backgroundColor = isDarkMode ? Colors.black : Colors.grey[100]!;
+        final textColor = isDarkMode ? Colors.white : Colors.black87;
+        final appBarGradient = isDarkMode
+            ? [Colors.black87, Colors.black54]
+            : [const Color(0xFF8E2DE2), const Color(0xFFEC008C)];
+        final cardColor = isDarkMode ? Colors.grey[700]! : Colors.white;
+        final descriptionTextColor =
+            isDarkMode ? Colors.grey[400]! : Colors.black87;
+        final chipBackgroundColor =
+            isDarkMode ? Colors.grey[900]! : Colors.black;
+        final placeholderColor =
+            isDarkMode ? Colors.grey[700]! : Colors.grey[300]!;
+
+        return Scaffold(
+          backgroundColor: backgroundColor,
+          appBar: AppBar(
+            title: Text(
+              "Product Details",
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+                color: Colors.white,
+              ),
+            ),
+            centerTitle: true,
+            elevation: 5,
+            backgroundColor: Colors.transparent,
+            flexibleSpace: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: appBarGradient,
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-      body: BlocBuilder<PostsBloc, PostsState>(
-        builder: (context, state) {
-          if (state.isLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state.error != null) {
-            return Center(
-              child: Text(
-                "Error: ${state.error!}",
-                style: GoogleFonts.poppins(
-                  color: Colors.red,
-                  fontSize: 16,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            );
-          } else if (state.selectedPost == null) {
-            return Center(
-              child: Text(
-                "Post not found",
-                style: GoogleFonts.poppins(
-                  color: Colors.black54,
-                  fontSize: 16,
-                ),
-              ),
-            );
-          }
-
-          final post = state.selectedPost!;
-          const postAuthor = AuthEntity(
-            userId: "67ac643a0cc29040b0e248a6",
-            username: 'Rekha',
-            email: 'rekha@gmail.com',
-          );
-
-          return SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // 🖼 Image Display
-                Hero(
-                  tag: 'post-image-${post.postId}',
-                  child: _buildImage(post.image),
-                ),
-                const SizedBox(height: 20),
-
-                // 🏷️ Product Title
-                Text(
-                  post.caption,
-                  style: GoogleFonts.poppins(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+          body: BlocBuilder<PostsBloc, PostsState>(
+            builder: (context, state) {
+              if (state.isLoading) {
+                return Center(
+                    child: CircularProgressIndicator(
+                        color: Theme.of(context)
+                            .primaryColor)); // Themed indicator
+              } else if (state.error != null) {
+                return Center(
+                  child: Text(
+                    "Error: ${state.error!}",
+                    style: GoogleFonts.poppins(
+                      color: Colors.red,
+                      fontSize: 16,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-                const SizedBox(height: 12),
+                );
+              } else if (state.selectedPost == null) {
+                return Center(
+                  child: Text(
+                    "Post not found",
+                    style: GoogleFonts.poppins(
+                      color: textColor.withOpacity(0.6),
+                      fontSize: 16,
+                    ),
+                  ),
+                );
+              }
 
-                // 💰 Price Display & Category
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              final post = state.selectedPost!;
+              const postAuthor = AuthEntity(
+                userId: "67ac643a0cc29040b0e248a6",
+                username: 'Rekha',
+                email: 'rekha@gmail.com',
+              );
+
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Image Display
+                    Hero(
+                      tag: 'post-image-${post.postId}',
+                      child: _buildImage(post.image, placeholderColor),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Product Title
                     Text(
-                      "Rs. ${post.price}",
+                      post.caption,
                       style: GoogleFonts.poppins(
-                        fontSize: 22,
+                        fontSize: 26,
                         fontWeight: FontWeight.bold,
-                        color: Colors.green,
+                        color: textColor,
                       ),
                     ),
-                    Chip(
-                      label: Text(
-                        post.category.name,
-                        style: GoogleFonts.poppins(
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                      ),
-                      backgroundColor: Colors.black,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
+                    const SizedBox(height: 12),
 
-                // 📍 Location
-                Row(
-                  children: [
-                    const Icon(Icons.location_on, color: Colors.red),
-                    const SizedBox(width: 6),
+                    // Price Display & Category
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Rs. ${post.price}",
+                          style: GoogleFonts.poppins(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
+                        ),
+                        Chip(
+                          label: Text(
+                            post.category.name,
+                            style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 12,
+                            ),
+                          ),
+                          backgroundColor: chipBackgroundColor,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Location
+                    Row(
+                      children: [
+                        const Icon(Icons.location_on, color: Colors.red),
+                        const SizedBox(width: 6),
+                        Text(
+                          post.location,
+                          style: GoogleFonts.poppins(
+                            fontSize: 16,
+                            color:
+                                descriptionTextColor, // Adjusted location color
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Description
                     Text(
-                      post.location,
+                      "Description",
+                      style: GoogleFonts.poppins(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: textColor,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      post.description,
                       style: GoogleFonts.poppins(
                         fontSize: 16,
-                        color: Colors.grey,
+                        color:
+                            descriptionTextColor, // Adjusted description color
+                        height: 1.5,
                       ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Likes & Comments
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildIconText(Icons.favorite, "6 Likes", Colors.red,
+                            descriptionTextColor), // Adjusted icon text color
+                        _buildIconText(
+                            Icons.comment,
+                            "8 Comments",
+                            descriptionTextColor,
+                            descriptionTextColor), // Adjusted icon text color
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Call to Action (Message Seller)
+                    _buildActionButton(
+                      "Message Seller",
+                      textColor,
+                      () => _navigateToChatScreen(context, postAuthor),
                     ),
                   ],
                 ),
-                const SizedBox(height: 20),
-
-                // 📄 Description
-                Text(
-                  "Description",
-                  style: GoogleFonts.poppins(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  post.description,
-                  style: GoogleFonts.poppins(
-                    fontSize: 16,
-                    color: Colors.black87,
-                    height: 1.5,
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // ❤️ Likes & Comments
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildIconText(Icons.favorite, "6 Likes", Colors.red),
-                    _buildIconText(Icons.comment, "8 Comments", Colors.black),
-                  ],
-                ),
-                const SizedBox(height: 20),
-
-                // 🛒 Call to Action (Message Seller)
-                _buildActionButton(
-                  "Message Seller",
-                  Colors.black,
-                  () => _navigateToChatScreen(context, postAuthor),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
-  /// ✅ **Build Image with Placeholder Handling**
-  Widget _buildImage(String? imageUrl) {
+  /// Build Image with Placeholder Handling
+  Widget _buildImage(String? imageUrl, Color placeholderColor) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(12),
       child: imageUrl != null && imageUrl.isNotEmpty
@@ -451,13 +542,13 @@ class _PostDetailsViewState extends State<PostDetailsView> {
               height: 250,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) =>
-                  _buildPlaceholderImage(),
+                  _buildPlaceholderImage(placeholderColor),
             )
-          : _buildPlaceholderImage(),
+          : _buildPlaceholderImage(placeholderColor),
     );
   }
 
-  /// ✅ **Navigate to Chat Screen**
+  /// Navigate to Chat Screen
   void _navigateToChatScreen(BuildContext context, AuthEntity postAuthor) {
     final loggedInUser = context.read<LoginBloc>().state.user;
 
@@ -484,16 +575,17 @@ class _PostDetailsViewState extends State<PostDetailsView> {
     );
   }
 
-  /// ✅ **Reusable Method for Like/Comment Display**
-  Widget _buildIconText(IconData icon, String text, Color color) {
+  /// Reusable Method for Like/Comment Display
+  Widget _buildIconText(
+      IconData icon, String text, Color iconColor, Color textColor) {
     return Row(
       children: [
-        Icon(icon, color: color),
+        Icon(icon, color: iconColor),
         const SizedBox(width: 6),
         Text(
           text,
           style: GoogleFonts.poppins(
-            color: Colors.grey,
+            color: textColor,
             fontSize: 14,
           ),
         ),
@@ -501,14 +593,16 @@ class _PostDetailsViewState extends State<PostDetailsView> {
     );
   }
 
-  /// ✅ **Reusable Action Button**
-  Widget _buildActionButton(String text, Color color, VoidCallback onPressed) {
+  /// Reusable Action Button
+  Widget _buildActionButton(
+      String text, Color textColor, VoidCallback onPressed) {
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: color,
+          backgroundColor: Colors.black, // Keep this fixed
+          foregroundColor: Colors.white,
           padding: const EdgeInsets.symmetric(vertical: 14),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
@@ -526,11 +620,11 @@ class _PostDetailsViewState extends State<PostDetailsView> {
     );
   }
 
-  /// ✅ **Placeholder Image**
-  Widget _buildPlaceholderImage() {
+  /// Placeholder Image
+  Widget _buildPlaceholderImage(Color placeholderColor) {
     return Container(
       height: 250,
-      color: Colors.grey[300],
+      color: placeholderColor,
       child: const Center(
         child: Icon(Icons.image_not_supported, size: 50, color: Colors.grey),
       ),
