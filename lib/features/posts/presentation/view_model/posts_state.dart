@@ -4,52 +4,8 @@
 //   final bool isLoading;
 //   final bool isSuccess;
 //   final String? imageName;
-//   final List<PostsEntity> posts; // Added list of posts
-//   final String? error; // Added error message to handle errors
-
-//   const PostsState({
-//     required this.isLoading,
-//     required this.isSuccess,
-//     this.imageName,
-//     this.posts = const [], // Initialize with an empty list
-//     this.error,
-//   });
-
-//   const PostsState.initial()
-//       : isLoading = false,
-//         isSuccess = false,
-//         imageName = null,
-//         posts = const [],
-//         error = null;
-
-//   PostsState copyWith({
-//     bool? isLoading,
-//     bool? isSuccess,
-//     String? imageName,
-//     List<PostsEntity>? posts,
-//     String? error,
-//   }) {
-//     return PostsState(
-//       isLoading: isLoading ?? this.isLoading,
-//       isSuccess: isSuccess ?? this.isSuccess,
-//       imageName: imageName ?? this.imageName,
-//       posts: posts ?? this.posts,
-//       error: error ?? this.error,
-//     );
-//   }
-
-//   @override
-//   List<Object?> get props => [isLoading, isSuccess, imageName, posts, error];
-// }
-
-// part of 'posts_bloc.dart';
-
-// class PostsState extends Equatable {
-//   final bool isLoading;
-//   final bool isSuccess;
-//   final String? imageName;
 //   final List<PostsEntity> posts;
-//   final PostsEntity? selectedPost; // ✅ Added selectedPost for single post
+//   final PostsEntity? selectedPost; // ✅ Stores a single post when needed
 //   final String? error;
 
 //   const PostsState({
@@ -57,7 +13,7 @@
 //     required this.isSuccess,
 //     this.imageName,
 //     this.posts = const [],
-//     this.selectedPost, // ✅ Default is null
+//     this.selectedPost,
 //     this.error,
 //   });
 
@@ -67,7 +23,7 @@
 //         isSuccess = false,
 //         imageName = null,
 //         posts = const [],
-//         selectedPost = null, // ✅ Initial state for selectedPost
+//         selectedPost = null,
 //         error = null;
 
 //   /// ✅ Allow updating state with `copyWith`
@@ -76,7 +32,7 @@
 //     bool? isSuccess,
 //     String? imageName,
 //     List<PostsEntity>? posts,
-//     PostsEntity? selectedPost, // ✅ Added selectedPost
+//     PostsEntity? selectedPost,
 //     String? error,
 //   }) {
 //     return PostsState(
@@ -84,8 +40,8 @@
 //       isSuccess: isSuccess ?? this.isSuccess,
 //       imageName: imageName ?? this.imageName,
 //       posts: posts ?? this.posts,
-//       selectedPost: selectedPost ?? this.selectedPost, // ✅ Keep new post
-//       error: error ?? this.error,
+//       selectedPost: selectedPost ?? this.selectedPost,
+//       error: isSuccess == true ? null : error, // ✅ Reset error on success
 //     );
 //   }
 
@@ -103,6 +59,7 @@ class PostsState extends Equatable {
   final List<PostsEntity> posts;
   final PostsEntity? selectedPost; // ✅ Stores a single post when needed
   final String? error;
+  final String? deletedPostId; // ✅ Stores the ID of a deleted post
 
   const PostsState({
     required this.isLoading,
@@ -111,6 +68,7 @@ class PostsState extends Equatable {
     this.posts = const [],
     this.selectedPost,
     this.error,
+    this.deletedPostId, // ✅ Added deletedPostId
   });
 
   /// ✅ Initial state with default values
@@ -120,7 +78,8 @@ class PostsState extends Equatable {
         imageName = null,
         posts = const [],
         selectedPost = null,
-        error = null;
+        error = null,
+        deletedPostId = null;
 
   /// ✅ Allow updating state with `copyWith`
   PostsState copyWith({
@@ -130,6 +89,7 @@ class PostsState extends Equatable {
     List<PostsEntity>? posts,
     PostsEntity? selectedPost,
     String? error,
+    String? deletedPostId, // ✅ Add deletedPostId parameter
   }) {
     return PostsState(
       isLoading: isLoading ?? this.isLoading,
@@ -138,10 +98,18 @@ class PostsState extends Equatable {
       posts: posts ?? this.posts,
       selectedPost: selectedPost ?? this.selectedPost,
       error: isSuccess == true ? null : error, // ✅ Reset error on success
+      deletedPostId: deletedPostId, // ✅ Allow tracking deleted post ID
     );
   }
 
   @override
-  List<Object?> get props =>
-      [isLoading, isSuccess, imageName, posts, selectedPost, error];
+  List<Object?> get props => [
+        isLoading,
+        isSuccess,
+        imageName,
+        posts,
+        selectedPost,
+        error,
+        deletedPostId
+      ];
 }

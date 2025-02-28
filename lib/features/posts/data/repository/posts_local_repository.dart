@@ -55,4 +55,11 @@ class PostsLocalRepository implements IPostsRepository {
     // TODO: implement getPostById
     throw UnimplementedError();
   }
+
+  @override
+  Future<Either<Failure, void>> updatePost(
+      String postId, PostsEntity post, String? token) {
+    // TODO: implement updatePost
+    throw UnimplementedError();
+  }
 }

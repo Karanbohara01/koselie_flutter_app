@@ -1,11 +1,12 @@
 // import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
-// import 'package:google_fonts/google_fonts.dart'; // Google Fonts
+// import 'package:google_fonts/google_fonts.dart';
 // import 'package:koselie/app/constants/api_endpoints.dart';
 // import 'package:koselie/features/posts/domain/entity/posts_entity.dart';
 // import 'package:koselie/features/posts/presentation/view/post_detail_view.dart';
 // import 'package:koselie/features/posts/presentation/view_model/posts_bloc.dart';
-// import 'package:shimmer/shimmer.dart'; // Shimmer Effect
+// import 'package:koselie/features/theme/presentation/bloc/theme_bloc.dart';
+// import 'package:koselie/features/theme/presentation/bloc/theme_state.dart';
 
 // class PostView extends StatefulWidget {
 //   const PostView({super.key});
@@ -15,7 +16,7 @@
 // }
 
 // class _PostViewState extends State<PostView> {
-//   String _searchQuery = ""; // 🔍 Search Query State
+//   String _searchQuery = "";
 
 //   @override
 //   void initState() {
@@ -25,82 +26,81 @@
 
 //   @override
 //   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.grey[100],
-//       appBar: AppBar(
-//         title: Text(
-//           'Marketplace',
-//           style: GoogleFonts.poppins(
-//             fontWeight: FontWeight.bold,
-//             fontSize: 24,
-//             color: Colors.white,
-//           ),
-//         ),
-//         centerTitle: true,
-//         elevation: 5,
-//         backgroundColor: Colors.transparent,
-//         flexibleSpace: Container(
-//           decoration: const BoxDecoration(
-//             gradient: LinearGradient(
-//               colors: [Color(0xFF8E2DE2), Color(0xFFEC008C)],
-//               begin: Alignment.topCenter,
-//               end: Alignment.bottomCenter,
+//     return BlocBuilder<ThemeBloc, ThemeState>(
+//       builder: (context, themeState) {
+//         final isDarkMode = themeState is DarkThemeState;
+//         final backgroundColor = isDarkMode ? Colors.black : Colors.grey[100]!;
+//         final textColor = isDarkMode ? Colors.white : Colors.black;
+//         final cardColor = isDarkMode ? Colors.grey[900]! : Colors.white;
+//         final contrastColor = isDarkMode ? Colors.white : Colors.purple;
+//         final searchFillColor = isDarkMode ? Colors.grey[850]! : Colors.white;
+
+//         return Scaffold(
+//           backgroundColor: backgroundColor,
+//           appBar: AppBar(
+//             title: Text(
+//               'Marketplace',
+//               style: GoogleFonts.poppins(
+//                 fontWeight: FontWeight.bold,
+//                 fontSize: 24,
+//                 color: Colors.white,
+//               ),
+//             ),
+//             centerTitle: true,
+//             elevation: 5,
+//             flexibleSpace: Container(
+//               decoration: const BoxDecoration(
+//                 gradient: LinearGradient(
+//                   colors: [Color(0xFF8E2DE2), Color(0xFFEC008C)],
+//                   begin: Alignment.topCenter,
+//                   end: Alignment.bottomCenter,
+//                 ),
+//               ),
 //             ),
 //           ),
-//         ),
-//       ),
-//       body: Column(
-//         children: [
-//           _buildSearchBar(), // ✅ Search Bar
-//           Expanded(
-//             child: BlocBuilder<PostsBloc, PostsState>(
-//               builder: (context, state) {
-//                 if (state.isLoading) {
-//                   return _buildShimmerLoading();
-//                 } else if (state.error != null) {
-//                   return _buildErrorScreen(state.error!);
-//                 }
+//           body: Column(
+//             children: [
+//               _buildSearchBar(searchFillColor, textColor),
+//               Expanded(
+//                 child: BlocBuilder<PostsBloc, PostsState>(
+//                   builder: (context, state) {
+//                     final filteredPosts = state.posts
+//                         .where((post) => post.caption
+//                             .toLowerCase()
+//                             .contains(_searchQuery.toLowerCase()))
+//                         .toList();
 
-//                 // ✅ Apply search filter
-//                 final filteredPosts = state.posts
-//                     .where((post) => post.caption
-//                         .toLowerCase()
-//                         .contains(_searchQuery.toLowerCase()))
-//                     .toList();
+//                     if (filteredPosts.isEmpty) {
+//                       return _buildNoPostsScreen(textColor);
+//                     }
 
-//                 if (filteredPosts.isEmpty) {
-//                   return _buildNoPostsScreen();
-//                 }
-
-//                 return Padding(
-//                   padding: const EdgeInsets.all(8.0),
-//                   child: GridView.builder(
-//                     gridDelegate:
-//                         const SliverGridDelegateWithFixedCrossAxisCount(
-//                       crossAxisCount: 2,
-//                       crossAxisSpacing: 10.0,
-//                       mainAxisSpacing: 12.0,
-//                       childAspectRatio: 0.8,
-//                     ),
-//                     itemCount: filteredPosts.length,
-//                     itemBuilder: (context, index) {
-//                       return PostCard(post: filteredPosts[index]);
-//                     },
-//                   ),
-//                 );
-//               },
-//             ),
+//                     return ListView.builder(
+//                       padding: const EdgeInsets.all(8),
+//                       itemCount: filteredPosts.length,
+//                       itemBuilder: (context, index) {
+//                         return PostCard(
+//                           post: filteredPosts[index],
+//                           cardColor: cardColor,
+//                           textColor: textColor,
+//                           contrastColor: contrastColor,
+//                         );
+//                       },
+//                     );
+//                   },
+//                 ),
+//               ),
+//             ],
 //           ),
-//         ],
-//       ),
+//         );
+//       },
 //     );
 //   }
 
-//   /// 🔍 **Search Bar Widget**
-//   Widget _buildSearchBar() {
+//   Widget _buildSearchBar(Color searchFillColor, Color textColor) {
 //     return Padding(
-//       padding: const EdgeInsets.all(8.0),
+//       padding: const EdgeInsets.all(16.0),
 //       child: TextField(
+//         style: GoogleFonts.poppins(color: textColor),
 //         onChanged: (query) {
 //           setState(() {
 //             _searchQuery = query;
@@ -108,86 +108,26 @@
 //         },
 //         decoration: InputDecoration(
 //           hintText: 'Search for products...',
+//           hintStyle: GoogleFonts.poppins(color: textColor.withOpacity(0.6)),
 //           prefixIcon: const Icon(Icons.search, color: Colors.grey),
+//           filled: true,
+//           fillColor: searchFillColor,
 //           border: OutlineInputBorder(
-//             borderRadius: BorderRadius.circular(10),
+//             borderRadius: BorderRadius.circular(15),
 //             borderSide: BorderSide.none,
 //           ),
-//           filled: true,
-//           fillColor: Colors.white,
+//           contentPadding: const EdgeInsets.symmetric(vertical: 12),
 //         ),
 //       ),
 //     );
 //   }
 
-//   /// ✨ **Shimmer Loading Effect**
-//   Widget _buildShimmerLoading() {
-//     return Padding(
-//       padding: const EdgeInsets.all(8.0),
-//       child: GridView.builder(
-//         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-//           crossAxisCount: 2,
-//           crossAxisSpacing: 10.0,
-//           mainAxisSpacing: 12.0,
-//           childAspectRatio: 0.8,
-//         ),
-//         itemCount: 6, // Number of shimmer placeholders
-//         itemBuilder: (context, index) {
-//           return Shimmer.fromColors(
-//             baseColor: Colors.grey[300]!,
-//             highlightColor: Colors.grey[100]!,
-//             child: Container(
-//               decoration: BoxDecoration(
-//                 color: Colors.white,
-//                 borderRadius: BorderRadius.circular(12),
-//               ),
-//             ),
-//           );
-//         },
-//       ),
-//     );
-//   }
-
-//   /// ⚠️ **Error UI with Retry Button**
-//   Widget _buildErrorScreen(String error) {
-//     return Center(
-//       child: Column(
-//         mainAxisAlignment: MainAxisAlignment.center,
-//         children: [
-//           Text(
-//             'Error loading posts: $error',
-//             style: GoogleFonts.poppins(
-//               color: Colors.red,
-//               fontSize: 16,
-//             ),
-//             textAlign: TextAlign.center,
-//           ),
-//           const SizedBox(height: 10),
-//           ElevatedButton(
-//             onPressed: () {
-//               context.read<PostsBloc>().add(LoadPosts(context: context));
-//             },
-//             style: ElevatedButton.styleFrom(
-//               backgroundColor: Colors.black,
-//               foregroundColor: Colors.white,
-//               shape: RoundedRectangleBorder(
-//                 borderRadius: BorderRadius.circular(10),
-//               ),
-//             ),
-//             child: const Text('Retry'),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   /// ❌ **No Posts Available UI**
-//   Widget _buildNoPostsScreen() {
+//   Widget _buildNoPostsScreen(Color textColor) {
 //     return Center(
 //       child: Text(
 //         'No posts found.',
 //         style: GoogleFonts.poppins(
-//           color: Colors.black54,
+//           color: textColor.withOpacity(0.6),
 //           fontSize: 16,
 //         ),
 //       ),
@@ -195,28 +135,32 @@
 //   }
 // }
 
-// /// **Post Card Widget**
 // class PostCard extends StatelessWidget {
-//   const PostCard({super.key, required this.post});
+//   const PostCard({
+//     super.key,
+//     required this.post,
+//     required this.cardColor,
+//     required this.textColor,
+//     required this.contrastColor,
+//   });
 
 //   final PostsEntity post;
+//   final Color cardColor;
+//   final Color textColor;
+//   final Color contrastColor;
 
 //   @override
 //   Widget build(BuildContext context) {
-//     return Material(
-//       elevation: 5,
-//       borderRadius: BorderRadius.circular(12),
-//       color: Colors.white,
-//       shadowColor: Colors.black.withOpacity(0.2),
+//     return Card(
+//       elevation: 4,
+//       margin: const EdgeInsets.symmetric(vertical: 8),
+//       shape: RoundedRectangleBorder(
+//         borderRadius: BorderRadius.circular(16),
+//       ),
+//       color: cardColor,
 //       child: InkWell(
-//         borderRadius: BorderRadius.circular(12),
+//         borderRadius: BorderRadius.circular(16),
 //         onTap: () {
-//           // ✅ Dispatch `GetPostById` event when tapped
-//           context
-//               .read<PostsBloc>()
-//               .add(GetPostById(postId: post.postId ?? "", context: context));
-
-//           // ✅ Navigate to Post Details Page
 //           Navigator.push(
 //             context,
 //             MaterialPageRoute(
@@ -224,58 +168,127 @@
 //             ),
 //           );
 //         },
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             // 📷 Image Section
-//             Expanded(
-//               child: ClipRRect(
-//                 borderRadius:
-//                     const BorderRadius.vertical(top: Radius.circular(12)),
+//         child: Padding(
+//           padding: const EdgeInsets.all(12),
+//           child: Row(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               // Product Image
+//               ClipRRect(
+//                 borderRadius: BorderRadius.circular(12),
 //                 child: Image.network(
 //                   "${ApiEndpoints.imageUrl}/${post.image!}",
-//                   width: double.infinity,
+//                   width: 100,
+//                   height: 100,
 //                   fit: BoxFit.cover,
-//                   errorBuilder: (context, error, stackTrace) =>
-//                       _buildPlaceholderImage(),
 //                 ),
 //               ),
-//             ),
-
-//             // 🔥 Post Details Section
-//             Padding(
-//               padding: const EdgeInsets.all(10.0),
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   Text(post.caption,
-//                       style: GoogleFonts.poppins(
-//                         fontWeight: FontWeight.bold,
-//                         fontSize: 14,
-//                         // overflow: TextOverflow.ellipsis,
-//                       )),
-//                   const SizedBox(height: 4.0),
-//                   Text('Rs. ${post.price}',
+//               const SizedBox(width: 12),
+//               // Product Details
+//               Expanded(
+//                 child: Column(
+//                   crossAxisAlignment: CrossAxisAlignment.start,
+//                   children: [
+//                     // Product Title
+//                     Text(
+//                       post.caption,
 //                       style: GoogleFonts.poppins(
 //                         fontWeight: FontWeight.bold,
 //                         fontSize: 16,
-//                         color: Colors.green,
-//                       )),
-//                 ],
+//                         color: textColor,
+//                       ),
+//                       maxLines: 2,
+//                       overflow: TextOverflow.ellipsis,
+//                     ),
+//                     const SizedBox(height: 4),
+//                     // Price
+//                     Text(
+//                       'Rs. ${post.price}',
+//                       style: GoogleFonts.poppins(
+//                         fontWeight: FontWeight.bold,
+//                         fontSize: 18,
+//                         color: contrastColor,
+//                       ),
+//                     ),
+//                     const SizedBox(height: 4),
+//                     // Location and Time
+//                     Row(
+//                       children: [
+//                         Icon(
+//                           Icons.location_on,
+//                           size: 16,
+//                           color: textColor.withOpacity(0.6),
+//                         ),
+//                         const SizedBox(width: 4),
+//                         Text(
+//                           post.location,
+//                           style: GoogleFonts.poppins(
+//                             fontSize: 14,
+//                             color: textColor.withOpacity(0.6),
+//                           ),
+//                         ),
+//                         const SizedBox(width: 12),
+//                         Icon(
+//                           Icons.access_time,
+//                           size: 16,
+//                           color: textColor.withOpacity(0.6),
+//                         ),
+//                         const SizedBox(width: 4),
+//                         Text(
+//                           '2 hours ago',
+//                           style: GoogleFonts.poppins(
+//                             fontSize: 14,
+//                             color: textColor.withOpacity(0.6),
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   ],
+//                 ),
 //               ),
-//             ),
-//           ],
+//               // Action Button
+//               IconButton(
+//                 icon: const Icon(Icons.more_vert, color: Colors.grey),
+//                 onPressed: () {
+//                   _showActionSheet(context, post.postId ?? "");
+//                 },
+//               ),
+//             ],
+//           ),
 //         ),
 //       ),
 //     );
 //   }
 
-//   /// 📷 **Placeholder Image**
-//   Widget _buildPlaceholderImage() {
-//     return Container(
-//       color: Colors.grey[300],
-//       child: const Center(
-//         child: Icon(Icons.image_outlined, color: Colors.grey),
+//   void _showActionSheet(BuildContext context, String postId) {
+//     showModalBottomSheet(
+//       context: context,
+//       builder: (context) => Wrap(
+//         children: [
+//           ListTile(
+//             leading: const Icon(Icons.remove_red_eye),
+//             title: const Text("View Details"),
+//             onTap: () {
+//               Navigator.pop(context);
+//               Navigator.push(
+//                 context,
+//                 MaterialPageRoute(
+//                   builder: (context) => PostDetailsView(postId: postId),
+//                 ),
+//               );
+//             },
+//           ),
+//           ListTile(
+//             leading: const Icon(Icons.delete, color: Colors.red),
+//             title: const Text("Delete Post"),
+//             onTap: () {
+//               context
+//                   .read<PostsBloc>()
+//                   .add(DeletePost(postId: postId, context: context));
+//               Navigator.pop(context);
+//             },
+//           ),
+//         ],
 //       ),
 //     );
 //   }
@@ -287,10 +300,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:koselie/app/constants/api_endpoints.dart';
 import 'package:koselie/features/posts/domain/entity/posts_entity.dart';
 import 'package:koselie/features/posts/presentation/view/post_detail_view.dart';
+import 'package:koselie/features/posts/presentation/view/update_post_view.dart';
 import 'package:koselie/features/posts/presentation/view_model/posts_bloc.dart';
 import 'package:koselie/features/theme/presentation/bloc/theme_bloc.dart';
 import 'package:koselie/features/theme/presentation/bloc/theme_state.dart';
-import 'package:shimmer/shimmer.dart';
 
 class PostView extends StatefulWidget {
   const PostView({super.key});
@@ -313,19 +326,11 @@ class _PostViewState extends State<PostView> {
     return BlocBuilder<ThemeBloc, ThemeState>(
       builder: (context, themeState) {
         final isDarkMode = themeState is DarkThemeState;
-
-        // Define colors based on theme
         final backgroundColor = isDarkMode ? Colors.black : Colors.grey[100]!;
         final textColor = isDarkMode ? Colors.white : Colors.black;
-        final appBarGradient = isDarkMode
-            ? [Colors.black87, Colors.black54]
-            : [const Color(0xFF8E2DE2), const Color(0xFFEC008C)];
-        final cardColor = isDarkMode ? Colors.grey[700]! : Colors.white;
-        final shimmerBaseColor =
-            isDarkMode ? Colors.grey[700]! : Colors.grey[300]!;
-        final shimmerHighlightColor =
-            isDarkMode ? Colors.grey[500]! : Colors.grey[100]!;
-        final searchFillColor = isDarkMode ? Colors.grey[800]! : Colors.white;
+        final cardColor = isDarkMode ? Colors.grey[900]! : Colors.white;
+        final contrastColor = isDarkMode ? Colors.white : Colors.purple;
+        final searchFillColor = isDarkMode ? Colors.grey[850]! : Colors.white;
 
         return Scaffold(
           backgroundColor: backgroundColor,
@@ -340,11 +345,10 @@ class _PostViewState extends State<PostView> {
             ),
             centerTitle: true,
             elevation: 5,
-            backgroundColor: Colors.transparent,
             flexibleSpace: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: appBarGradient,
+                  colors: [Color(0xFF8E2DE2), Color(0xFFEC008C)],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
@@ -357,13 +361,6 @@ class _PostViewState extends State<PostView> {
               Expanded(
                 child: BlocBuilder<PostsBloc, PostsState>(
                   builder: (context, state) {
-                    if (state.isLoading) {
-                      return _buildShimmerLoading(
-                          shimmerBaseColor, shimmerHighlightColor);
-                    } else if (state.error != null) {
-                      return _buildErrorScreen(state.error!, textColor);
-                    }
-
                     final filteredPosts = state.posts
                         .where((post) => post.caption
                             .toLowerCase()
@@ -374,25 +371,17 @@ class _PostViewState extends State<PostView> {
                       return _buildNoPostsScreen(textColor);
                     }
 
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 10.0,
-                          mainAxisSpacing: 12.0,
-                          childAspectRatio: 0.8,
-                        ),
-                        itemCount: filteredPosts.length,
-                        itemBuilder: (context, index) {
-                          return PostCard(
-                            post: filteredPosts[index],
-                            cardColor: cardColor,
-                            textColor: textColor,
-                          );
-                        },
-                      ),
+                    return ListView.builder(
+                      padding: const EdgeInsets.all(8),
+                      itemCount: filteredPosts.length,
+                      itemBuilder: (context, index) {
+                        return PostCard(
+                          post: filteredPosts[index],
+                          cardColor: cardColor,
+                          textColor: textColor,
+                          contrastColor: contrastColor,
+                        );
+                      },
                     );
                   },
                 ),
@@ -404,12 +393,11 @@ class _PostViewState extends State<PostView> {
     );
   }
 
-  /// 🔍 Search Bar Widget
   Widget _buildSearchBar(Color searchFillColor, Color textColor) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(16.0),
       child: TextField(
-        style: TextStyle(color: textColor),
+        style: GoogleFonts.poppins(color: textColor),
         onChanged: (query) {
           setState(() {
             _searchQuery = query;
@@ -417,81 +405,20 @@ class _PostViewState extends State<PostView> {
         },
         decoration: InputDecoration(
           hintText: 'Search for products...',
-          hintStyle: TextStyle(color: textColor.withOpacity(0.6)),
+          hintStyle: GoogleFonts.poppins(color: textColor.withOpacity(0.6)),
           prefixIcon: const Icon(Icons.search, color: Colors.grey),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide.none,
-          ),
           filled: true,
           fillColor: searchFillColor,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: const EdgeInsets.symmetric(vertical: 12),
         ),
       ),
     );
   }
 
-  /// ✨ Shimmer Loading Effect
-  Widget _buildShimmerLoading(Color baseColor, Color highlightColor) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 10.0,
-          mainAxisSpacing: 12.0,
-          childAspectRatio: 0.8,
-        ),
-        itemCount: 6,
-        itemBuilder: (context, index) {
-          return Shimmer.fromColors(
-            baseColor: baseColor,
-            highlightColor: highlightColor,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  /// ⚠️ Error UI with Retry Button
-  Widget _buildErrorScreen(String error, Color textColor) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            'Error loading posts: $error',
-            style: GoogleFonts.poppins(
-              color: Colors.red,
-              fontSize: 16,
-            ),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () {
-              context.read<PostsBloc>().add(LoadPosts(context: context));
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.black,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-            ),
-            child: const Text('Retry'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /// ❌ No Posts Available UI
   Widget _buildNoPostsScreen(Color textColor) {
     return Center(
       child: Text(
@@ -505,33 +432,32 @@ class _PostViewState extends State<PostView> {
   }
 }
 
-/// Post Card Widget
 class PostCard extends StatelessWidget {
   const PostCard({
     super.key,
     required this.post,
     required this.cardColor,
     required this.textColor,
+    required this.contrastColor,
   });
 
   final PostsEntity post;
   final Color cardColor;
   final Color textColor;
+  final Color contrastColor;
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      elevation: 5,
-      borderRadius: BorderRadius.circular(12),
+    return Card(
+      elevation: 4,
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
       color: cardColor,
-      shadowColor: Colors.black.withOpacity(0.2),
       child: InkWell(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(16),
         onTap: () {
-          context
-              .read<PostsBloc>()
-              .add(GetPostById(postId: post.postId ?? "", context: context));
-
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -539,61 +465,122 @@ class PostCard extends StatelessWidget {
             ),
           );
         },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: ClipRRect(
-                borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(12)),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
                 child: Image.network(
                   "${ApiEndpoints.imageUrl}/${post.image!}",
-                  width: double.infinity,
+                  width: 100,
+                  height: 100,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) =>
-                      _buildPlaceholderImage(cardColor),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    post.caption,
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: textColor,
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      post.caption,
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: textColor,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 4.0),
-                  Text(
-                    'Rs. ${post.price}',
-                    style: GoogleFonts.poppins(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.green,
+                    const SizedBox(height: 4),
+                    Text(
+                      'Rs. ${post.price}',
+                      style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                        color: contrastColor,
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Icon(Icons.location_on,
+                            size: 16, color: textColor.withOpacity(0.6)),
+                        const SizedBox(width: 4),
+                        Text(post.location,
+                            style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                color: textColor.withOpacity(0.6))),
+                        const SizedBox(width: 12),
+                        Icon(Icons.access_time,
+                            size: 16, color: textColor.withOpacity(0.6)),
+                        const SizedBox(width: 4),
+                        Text('2 hours ago',
+                            style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                color: textColor.withOpacity(0.6))),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+              IconButton(
+                icon: const Icon(Icons.more_vert, color: Colors.grey),
+                onPressed: () {
+                  _showActionSheet(context, post.postId ?? "", post);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  /// Placeholder Image
-  Widget _buildPlaceholderImage(Color cardColor) {
-    return Container(
-      color: cardColor,
-      child: const Center(
-        child: Icon(Icons.image_outlined, color: Colors.grey),
+  void _showActionSheet(BuildContext context, String postId, PostsEntity post) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Wrap(
+        children: [
+          ListTile(
+            leading: const Icon(Icons.remove_red_eye),
+            title: const Text("View Details"),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PostDetailsView(postId: postId),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.edit, color: Colors.blue),
+            title: const Text("Edit Post"),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PostUpdateView(post: post),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.delete, color: Colors.red),
+            title: const Text("Delete Post"),
+            onTap: () {
+              context
+                  .read<PostsBloc>()
+                  .add(DeletePost(postId: postId, context: context));
+              Navigator.pop(context);
+            },
+          ),
+        ],
       ),
     );
   }

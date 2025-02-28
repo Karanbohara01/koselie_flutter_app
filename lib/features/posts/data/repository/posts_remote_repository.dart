@@ -74,6 +74,15 @@ class PostsRemoteRepository implements IPostsRepository {
       return Left(ApiFailure(message: e.toString()));
     }
   }
-}
 
-//  add getPostById here
+  @override
+  Future<Either<Failure, void>> updatePost(
+      String postId, PostsEntity post, String? token) async {
+    try {
+      await remoteDataSource.updatePost(postId, post, token);
+      return const Right(null);
+    } catch (e) {
+      return Left(ApiFailure(message: e.toString()));
+    }
+  }
+}

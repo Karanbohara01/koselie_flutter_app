@@ -43,6 +43,7 @@ import 'package:koselie/features/posts/domain/usecase/create_posts_usecase.dart'
 import 'package:koselie/features/posts/domain/usecase/delete_posts_usecase.dart';
 import 'package:koselie/features/posts/domain/usecase/get_all_posts_usecase.dart';
 import 'package:koselie/features/posts/domain/usecase/get_post_by_id_usecase.dart';
+import 'package:koselie/features/posts/domain/usecase/update_post_usecase.dart';
 import 'package:koselie/features/posts/domain/usecase/upload_posts_image_usecase.dart';
 import 'package:koselie/features/posts/presentation/view_model/posts_bloc.dart';
 import 'package:koselie/features/sensor/data/datasources/sensor_local_data_source.dart';
@@ -316,6 +317,13 @@ _initPostsDependencies() async {
       tokenSharedPrefs: getIt<TokenSharedPrefs>(),
     ),
   );
+  // =========================== Use Cases ===========================
+  getIt.registerLazySingleton<UpdatePostsUsecase>(
+    () => UpdatePostsUsecase(
+      postsRepository: getIt<PostsRemoteRepository>(),
+      tokenSharedPrefs: getIt<TokenSharedPrefs>(),
+    ),
+  );
 
   getIt.registerLazySingleton<GetPostByIdUseCase>(
     () => GetPostByIdUseCase(postsRepository: getIt<PostsRemoteRepository>()),
@@ -344,6 +352,8 @@ _initPostsDependencies() async {
       uploadPostsImageUsecase: getIt<UploadPostsImageUsecase>(),
       categoryBloc: getIt<CategoryBloc>(),
       getPostByIdUseCase: getIt<GetPostByIdUseCase>(),
+      deletePostUseCase: getIt<DeletePostsUsecase>(),
+      updatePostsUseCase: getIt<UpdatePostsUsecase>(),
     ),
   );
 }

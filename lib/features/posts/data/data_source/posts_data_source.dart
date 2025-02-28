@@ -10,4 +10,6 @@ abstract interface class IPostsDataSource {
 
   /// ✅ Fetch a single post by ID
   Future<PostsEntity> getPostById(String postId);
+
+  Future<void> updatePost(String postId, PostsEntity post, String? token);
 }

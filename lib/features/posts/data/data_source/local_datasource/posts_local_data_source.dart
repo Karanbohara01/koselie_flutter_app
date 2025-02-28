@@ -53,4 +53,10 @@ class PostsLocalDataSource implements IPostsDataSource {
     // TODO: implement getPostById
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> updatePost(String postId, PostsEntity post, String? token) {
+    // TODO: implement updatePost
+    throw UnimplementedError();
+  }
 }

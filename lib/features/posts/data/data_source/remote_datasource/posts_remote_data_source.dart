@@ -11,29 +11,6 @@ class PostsRemoteDataSource implements IPostsDataSource {
 
   PostsRemoteDataSource(this._dio);
 
-  // @override
-  // Future<void> createPost(PostsEntity post) async {
-  //   try {
-  //     Response response = await _dio.post(ApiEndpoints.createPost, data: {
-  //       "caption": post.caption,
-  //       "location": post.location,
-  //       "image": post.image,
-  //       "price": post.price,
-  //       "description": post.description,
-  //       "category": post.category.categoryId
-  //     });
-  //     if (response.statusCode == 200) {
-  //       return;
-  //     } else {
-  //       throw Exception(response.statusMessage);
-  //     }
-  //   } on DioException catch (e) {
-  //     throw Exception(e);
-  //   } catch (e) {
-  //     throw Exception(e);
-  //   }
-  // }
-  /// ✅ CREATE POST (Fix: Added Token)
   @override
   Future<void> createPost(PostsEntity post, String? token) async {
     try {
@@ -67,9 +44,29 @@ class PostsRemoteDataSource implements IPostsDataSource {
   }
 
   @override
-  Future<void> deletePost(String postId, String? token) {
-    // TODO: implement deletePost
-    throw UnimplementedError();
+  Future<void> deletePost(String postId, String? token) async {
+    try {
+      Response response = await _dio.delete(
+        "${ApiEndpoints.deletePost}/delete/$postId", // Add "/delete/" before ID
+        options: Options(headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        }),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        // Successfully deleted
+        return;
+      } else {
+        throw ServerFailure('Failed to delete post',
+            statusCode: response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw ServerFailure('Dio Error: ${e.response?.data ?? e.message}',
+          statusCode: e.response?.statusCode);
+    } catch (e) {
+      throw ServerFailure('Error: ${e.toString()}');
+    }
   }
 
   @override
@@ -195,6 +192,39 @@ class PostsRemoteDataSource implements IPostsDataSource {
       throw Exception("DioError: ${e.message}");
     } catch (e) {
       throw Exception("Error: ${e.toString()}");
+    }
+  }
+
+  @override
+  Future<void> updatePost(
+      String postId, PostsEntity post, String? token) async {
+    try {
+      Response response = await _dio.put(
+        "${ApiEndpoints.updatePost}/$postId", // Update post API endpoint
+        data: {
+          "caption": post.caption,
+          "location": post.location,
+          "image": post.image,
+          "price": post.price,
+          "description": post.description,
+          "category": post.category.categoryId,
+        },
+        options: Options(headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token', // ✅ Added Authorization Token
+        }),
+      );
+
+      if (response.statusCode != 200) {
+        throw ServerFailure('Failed to update post',
+            statusCode: response.statusCode);
+      }
+    } on DioException catch (e) {
+      throw ServerFailure('Dio Error: ${e.response?.data ?? e.message}',
+          statusCode: e.response?.statusCode);
+    } catch (e) {
+      throw ServerFailure('Error: ${e.toString()}');
     }
   }
 }

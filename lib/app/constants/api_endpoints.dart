@@ -18,6 +18,8 @@ class ApiEndpoints {
   static const String deletePost = "post/";
   static const String getPostById =
       "post"; // ✅ Fetch single post (ID will be appended in requests)
+  static const String updatePost =
+      "post"; // The ID will be appended in requests
 
   static const String getMe = "user/getMe";
   static const String getUserById = "user/getUserById/";

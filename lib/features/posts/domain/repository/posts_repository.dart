@@ -12,4 +12,8 @@ abstract interface class IPostsRepository {
 
   /// ✅ Fetch a single post by ID
   Future<Either<Failure, PostsEntity>> getPostById(String postId);
+
+  /// ✅ New: Update Post
+  Future<Either<Failure, void>> updatePost(
+      String postId, PostsEntity post, String? token);
 }
