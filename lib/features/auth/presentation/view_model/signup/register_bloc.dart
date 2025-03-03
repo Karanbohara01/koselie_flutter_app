@@ -23,22 +23,48 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
     on<UploadImage>(_onLoadImage);
   }
 
+  // void _onRegisterEvent(
+  //   RegisterUser event,
+  //   Emitter<RegisterState> emit,
+  // ) async {
+  //   if (!state.imageUploaded) {
+  //     showMySnackBar(
+  //         context: event.context, message: "Please upload an image first!");
+  //     return;
+  //   }
+  //   emit(state.copyWith(isLoading: true));
+  //   final result = await _registerUseCase.call(RegisterUserParams(
+  //     username: event.username,
+  //     password: event.password,
+  //     email: event.email,
+  //     image: state.imageName,
+  //   ));
+  //   result.fold((l) => emit(state.copyWith(isLoading: false, isSuccess: false)),
+  //       (r) {
+  //     emit(state.copyWith(isLoading: false, isSuccess: true));
+  //     showMySnackBar(context: event.context, message: "Signup successful");
+  //   });
+  // }
+
   void _onRegisterEvent(
     RegisterUser event,
     Emitter<RegisterState> emit,
   ) async {
     if (!state.imageUploaded) {
-      showMySnackBar(
-          context: event.context, message: "Please upload an image first!");
+      emit(state.copyWith(
+          isSuccess: false, errorMessage: "Please upload an image first!"));
       return;
     }
-    emit(state.copyWith(isLoading: true));
+
+    emit(state.copyWith(isLoading: true, errorMessage: null));
+
     final result = await _registerUseCase.call(RegisterUserParams(
       username: event.username,
       password: event.password,
       email: event.email,
       image: state.imageName,
     ));
+
     result.fold((l) => emit(state.copyWith(isLoading: false, isSuccess: false)),
         (r) {
       emit(state.copyWith(isLoading: false, isSuccess: true));

@@ -42,7 +42,7 @@ void main() {
     'Should return a Left(Failure) when the repository call fails',
     () async {
       // Arrange
-      var tFailure = ServerFailure(message: 'Failed to delete user.');
+      var tFailure = ServerFailure('Failed to delete user.');
       when(() => mockAuthRepository.deleteUser(tUserId))
           .thenAnswer((_) async => Left(tFailure));
 
