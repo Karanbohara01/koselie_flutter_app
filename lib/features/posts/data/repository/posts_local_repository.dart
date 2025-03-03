@@ -32,15 +32,14 @@ class PostsLocalRepository implements IPostsRepository {
   }
 
   @override
-  Future<Either<Failure, List<PostsEntity>>> getAllPosts() {
+  Future<Either<Failure, List<PostsEntity>>> getAllPosts() async {
+    // Add async
     try {
-      return _postsLocalDataSource.getAllPosts().then(
-        (value) {
-          return Right(value);
-        },
-      );
+      final posts =
+          await _postsLocalDataSource.getAllPosts(); // Await the result
+      return Right(posts);
     } catch (e) {
-      return Future.value(Left(LocalDatabaseFailure(message: e.toString())));
+      return Left(LocalDatabaseFailure(message: e.toString()));
     }
   }
 

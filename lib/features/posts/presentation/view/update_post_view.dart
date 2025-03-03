@@ -53,7 +53,9 @@ class _PostUpdateViewState extends State<PostUpdateView> {
       if (image != null) {
         setState(() {
           _image = File(image.path);
-          context.read<PostsBloc>().add(UploadPostsImage(file: _image!));
+          context
+              .read<PostsBloc>()
+              .add(UploadPostsImage(file: _image!, context: context));
         });
       }
     } catch (e) {
@@ -249,7 +251,6 @@ class _PostUpdateViewState extends State<PostUpdateView> {
       style: TextStyle(color: textColor),
       decoration: InputDecoration(
         labelText: 'Price in Rs',
-        // prefixIcon: const Icon(Icons.attach_money, color: Colors.green),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         filled: true,
         fillColor: fillColor,

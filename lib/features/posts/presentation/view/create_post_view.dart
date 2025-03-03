@@ -44,7 +44,7 @@ class _CreatePostViewState extends State<CreatePostView> {
         setState(() {
           _img = File(image.path);
           context.read<PostsBloc>().add(
-                UploadPostsImage(file: _img!),
+                UploadPostsImage(file: _img!, context: context),
               );
         });
       }

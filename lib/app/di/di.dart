@@ -37,7 +37,6 @@ import 'package:koselie/features/chat/presentation/view_model/bloc/chat_bloc.dar
 import 'package:koselie/features/home/presentation/view_model/home_cubit.dart';
 import 'package:koselie/features/posts/data/data_source/local_datasource/posts_local_data_source.dart';
 import 'package:koselie/features/posts/data/data_source/remote_datasource/posts_remote_data_source.dart';
-import 'package:koselie/features/posts/data/repository/posts_local_repository.dart';
 import 'package:koselie/features/posts/data/repository/posts_remote_repository.dart';
 import 'package:koselie/features/posts/domain/usecase/create_posts_usecase.dart';
 import 'package:koselie/features/posts/domain/usecase/delete_posts_usecase.dart';
@@ -46,6 +45,7 @@ import 'package:koselie/features/posts/domain/usecase/get_post_by_id_usecase.dar
 import 'package:koselie/features/posts/domain/usecase/update_post_usecase.dart';
 import 'package:koselie/features/posts/domain/usecase/upload_posts_image_usecase.dart';
 import 'package:koselie/features/posts/presentation/view_model/posts_bloc.dart';
+import 'package:koselie/features/posts/service/connectivity_service.dart';
 import 'package:koselie/features/sensor/data/datasources/sensor_local_data_source.dart';
 import 'package:koselie/features/sensor/data/repositories/sensor_repository_impl.dart';
 import 'package:koselie/features/sensor/domain/repositories/sensor_repository.dart';
@@ -257,6 +257,7 @@ _initCategoryDependencies() async {
   getIt.registerLazySingleton(
     () => CategoryRemoteRepository(
       remoteDataSource: getIt<CategoryRemoteDataSource>(),
+      connectivityService: getIt<ConnectivityService>(),
     ),
   );
 
@@ -290,6 +291,69 @@ _initCategoryDependencies() async {
   );
 }
 
+// _initPostsDependencies() async {
+//   // =========================== Data Source ===========================
+//   getIt.registerFactory<PostsLocalDataSource>(
+//       () => PostsLocalDataSource(hiveService: getIt<HiveService>()));
+
+//   getIt.registerLazySingleton<PostsRemoteDataSource>(
+//     () => PostsRemoteDataSource(getIt<Dio>()),
+//   );
+
+//   // =========================== Repository ===========================
+//   getIt.registerLazySingleton<PostsLocalRepository>(
+//     () => PostsLocalRepository(
+//         postsLocalDataSource: getIt<PostsLocalDataSource>()),
+//   );
+
+//   // =========================== Usecases ===========================
+//   getIt.registerLazySingleton<CreatePostsUseCase>(
+//     () => CreatePostsUseCase(
+//       postsRepository: getIt<PostsRemoteRepository>(),
+//       tokenSharedPrefs: getIt<TokenSharedPrefs>(),
+//     ),
+//   );
+//   // =========================== Use Cases ===========================
+//   getIt.registerLazySingleton<UpdatePostsUsecase>(
+//     () => UpdatePostsUsecase(
+//       postsRepository: getIt<PostsRemoteRepository>(),
+//       tokenSharedPrefs: getIt<TokenSharedPrefs>(),
+//     ),
+//   );
+
+//   getIt.registerLazySingleton<GetPostByIdUseCase>(
+//     () => GetPostByIdUseCase(postsRepository: getIt<PostsRemoteRepository>()),
+//   );
+
+//   getIt.registerLazySingleton<UploadPostsImageUsecase>(
+//     () => UploadPostsImageUsecase(getIt<PostsRemoteRepository>()),
+//   );
+
+//   getIt.registerLazySingleton<GetAllPostsUseCase>(
+//     () => GetAllPostsUseCase(postRepository: getIt<PostsRemoteRepository>()),
+//   );
+
+//   getIt.registerLazySingleton<DeletePostsUsecase>(
+//     () => DeletePostsUsecase(
+//       postsRepository: getIt<PostsRemoteRepository>(),
+//       tokenSharedPrefs: getIt<TokenSharedPrefs>(),
+//     ),
+//   );
+
+//   // =========================== Bloc ===========================
+//   getIt.registerFactory<PostsBloc>(
+//     () => PostsBloc(
+//       createPostsUseCase: getIt<CreatePostsUseCase>(),
+//       getAllPostsUseCase: getIt<GetAllPostsUseCase>(),
+//       uploadPostsImageUsecase: getIt<UploadPostsImageUsecase>(),
+//       categoryBloc: getIt<CategoryBloc>(),
+//       getPostByIdUseCase: getIt<GetPostByIdUseCase>(),
+//       deletePostUseCase: getIt<DeletePostsUsecase>(),
+//       updatePostsUseCase: getIt<UpdatePostsUsecase>(),
+//     ),
+//   );
+// }
+
 _initPostsDependencies() async {
   // =========================== Data Source ===========================
   getIt.registerFactory<PostsLocalDataSource>(
@@ -300,14 +364,20 @@ _initPostsDependencies() async {
   );
 
   // =========================== Repository ===========================
-  getIt.registerLazySingleton<PostsLocalRepository>(
-    () => PostsLocalRepository(
-        postsLocalDataSource: getIt<PostsLocalDataSource>()),
+  getIt.registerLazySingleton<PostsRemoteRepository>(
+    // Changed from PostsLocalRepository
+    () => PostsRemoteRepository(
+      remoteDataSource: getIt<PostsRemoteDataSource>(),
+      localDataSource:
+          getIt<PostsLocalDataSource>(), // Inject local data source
+      connectivityService:
+          getIt<ConnectivityService>(), // Inject connectivity service
+    ),
   );
 
-  getIt.registerLazySingleton<PostsRemoteRepository>(
-    () =>
-        PostsRemoteRepository(remoteDataSource: getIt<PostsRemoteDataSource>()),
+  getIt.registerLazySingleton<ConnectivityService>(
+    // Register Connectivity Service
+    () => ConnectivityService(),
   );
 
   // =========================== Usecases ===========================
@@ -344,7 +414,6 @@ _initPostsDependencies() async {
     ),
   );
 
-  // =========================== Bloc ===========================
   getIt.registerFactory<PostsBloc>(
     () => PostsBloc(
       createPostsUseCase: getIt<CreatePostsUseCase>(),
@@ -354,6 +423,7 @@ _initPostsDependencies() async {
       getPostByIdUseCase: getIt<GetPostByIdUseCase>(),
       deletePostUseCase: getIt<DeletePostsUsecase>(),
       updatePostsUseCase: getIt<UpdatePostsUsecase>(),
+      connectivityService: getIt<ConnectivityService>(),
     ),
   );
 }

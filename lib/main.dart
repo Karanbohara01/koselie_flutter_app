@@ -7,7 +7,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // initialized the hive database
   await HiveService.init();
+  await HiveService().logDatabasePath(); // Log the database path
+
 // Initialize the dependencies
+
   await initDependencies();
   runApp(
     App(),
