@@ -11,6 +11,15 @@ class PostsEntity extends Equatable {
   final String location; // Location associated with the post
   final String? image; // Image URL or file path
   final CategoryEntity category; // Associated category of the post
+  final String? authorId; // Post author's ID
+  final String? username; // Post author's ID
+  // ✅ Added Author Information
+  final String? author; // Post author's username
+  final String? profilePicture; // Post author's profile picture URL
+
+  // ✅ Added Likes & Comments
+  final List<String>? comments; // List of comment IDs
+  final List<String>? likes; // List of user IDs who liked the post
 
   /// Default empty constructor with placeholder values.
   const PostsEntity.empty()
@@ -20,18 +29,29 @@ class PostsEntity extends Equatable {
         price = '_empty.price',
         description = '_empty.description',
         image = '_empty.image',
-        category = const CategoryEntity.empty(); // Ensuring proper type.
+        username = '_empty.username',
+        category = const CategoryEntity.empty(), // Ensuring proper type.
+        authorId = '_empty.authorId',
+        author = '_empty.author',
+        profilePicture = '_empty.profilePicture',
+        comments = const [],
+        likes = const [];
 
   /// Main constructor for creating a [PostsEntity].
-  const PostsEntity({
-    this.postId,
-    required this.caption,
-    required this.description,
-    required this.price,
-    required this.location,
-    this.image,
-    required this.category,
-  });
+  const PostsEntity(
+      {this.postId,
+      required this.caption,
+      required this.description,
+      required this.price,
+      required this.location,
+      this.image,
+      required this.category,
+      this.comments,
+      this.likes,
+      this.author,
+      this.username,
+      this.authorId,
+      this.profilePicture});
 
   factory PostsEntity.fromJson(Map<String, dynamic> json) {
     var categoryJson = json['category'];
@@ -54,7 +74,20 @@ class PostsEntity extends Equatable {
       price: json['price'] as String,
       location: json['location'] as String,
       image: json['image'] as String?,
+      username: json['username'] as String?,
       category: categoryEntity, // Using the properly parsed category
+      // ✅ Author Parsing (Ensure null safety)
+      authorId: json['author']?['_id'] as String?,
+      author: json['author']?['username'] as String?,
+      profilePicture: json['author']?['image'] as String?,
+
+      // ✅ Comments & Likes Handling
+      comments: (json['comments'] as List<dynamic>?)
+          ?.map((comment) => comment.toString())
+          .toList(),
+      likes: (json['likes'] as List<dynamic>?)
+          ?.map((like) => like.toString())
+          .toList(),
     );
   }
 
@@ -68,6 +101,13 @@ class PostsEntity extends Equatable {
       'location': location,
       'image': image,
       'category': category.toJson(),
+      'author': {
+        '_id': authorId,
+        'username': author,
+        'image': profilePicture,
+      },
+      'comments': comments ?? [],
+      'likes': likes ?? [],
     };
   }
 
@@ -80,6 +120,11 @@ class PostsEntity extends Equatable {
     String? location,
     String? image,
     CategoryEntity? category,
+    String? authorId,
+    String? author,
+    String? profilePicture,
+    List<String>? comments,
+    List<String>? likes,
   }) {
     return PostsEntity(
       postId: postId ?? this.postId,
@@ -89,6 +134,11 @@ class PostsEntity extends Equatable {
       location: location ?? this.location,
       image: image ?? this.image,
       category: category ?? this.category,
+      authorId: authorId ?? this.authorId,
+      author: author ?? this.author,
+      profilePicture: profilePicture ?? this.profilePicture,
+      comments: comments ?? this.comments,
+      likes: likes ?? this.likes,
     );
   }
 
@@ -101,5 +151,10 @@ class PostsEntity extends Equatable {
         description,
         image,
         category,
+        authorId,
+        author,
+        profilePicture,
+        comments,
+        likes,
       ];
 }

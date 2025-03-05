@@ -410,8 +410,38 @@ class _UserProfileViewState extends State<UserProfileScreen> {
     }
   }
 
+  // // Listings Section
+  // Widget _buildListingsSection(Color cardColor, Color iconColor) {
+  //   return GridView.builder(
+  //     padding: const EdgeInsets.all(10),
+  //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+  //       crossAxisCount: 3,
+  //       crossAxisSpacing: 4.0,
+  //       mainAxisSpacing: 4.0,
+  //       childAspectRatio: 0.8,
+  //     ),
+  //     itemCount: 6,
+  //     itemBuilder: (context, index) {
+  //       return Container(
+  //         decoration: BoxDecoration(
+  //           color: cardColor,
+  //           borderRadius: BorderRadius.circular(8),
+  //         ),
+  //         child: Icon(Icons.image, color: iconColor),
+  //       );
+  //     },
+  //   );
+  // }
+
   // Listings Section
   Widget _buildListingsSection(Color cardColor, Color iconColor) {
+    // List of image asset paths
+    final List<String> imagePaths = [
+      'assets/images/smart_watch.jpg',
+      'assets/images/duke.jpg',
+      'assets/images/bicycle.jpg',
+    ];
+
     return GridView.builder(
       padding: const EdgeInsets.all(10),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -420,24 +450,59 @@ class _UserProfileViewState extends State<UserProfileScreen> {
         mainAxisSpacing: 4.0,
         childAspectRatio: 0.8,
       ),
-      itemCount: 6,
+      itemCount: imagePaths.length, // Use the length of the images list
       itemBuilder: (context, index) {
         return Container(
           decoration: BoxDecoration(
             color: cardColor,
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(Icons.image, color: iconColor),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.asset(
+              imagePaths[index],
+              fit: BoxFit.cover, // Ensures the image fills the container
+            ),
+          ),
         );
       },
     );
   }
 
   // Archived Listings Section
+  // Widget _buildArchivedListings(Color cardColor, Color iconColor) {
+  //   return GridView.builder(
+  //     padding: const EdgeInsets.all(10),
+  //     itemCount: 3,
+  //     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+  //       crossAxisCount: 3,
+  //       crossAxisSpacing: 4.0,
+  //       mainAxisSpacing: 4.0,
+  //       childAspectRatio: 0.8,
+  //     ),
+  //     itemBuilder: (context, index) {
+  //       return Container(
+  //         decoration: BoxDecoration(
+  //           color: cardColor,
+  //           borderRadius: BorderRadius.circular(8),
+  //         ),
+  //         child: Icon(Icons.archive, color: iconColor),
+  //       );
+  //     },
+  //   );
+  // }
+
+  // Archived Listings Section
   Widget _buildArchivedListings(Color cardColor, Color iconColor) {
+    // List of image asset paths (Only 2 images)
+    final List<String> archivedImagePaths = [
+      'assets/images/earpods.jpg',
+      'assets/images/headphone.jpg'
+    ];
+
     return GridView.builder(
       padding: const EdgeInsets.all(10),
-      itemCount: 3,
+      itemCount: archivedImagePaths.length, // Use the length of the images list
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
         crossAxisSpacing: 4.0,
@@ -450,7 +515,13 @@ class _UserProfileViewState extends State<UserProfileScreen> {
             color: cardColor,
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(Icons.archive, color: iconColor),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.asset(
+              archivedImagePaths[index],
+              fit: BoxFit.cover, // Ensures the image fills the container
+            ),
+          ),
         );
       },
     );

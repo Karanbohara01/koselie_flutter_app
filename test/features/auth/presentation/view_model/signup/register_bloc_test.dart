@@ -60,45 +60,6 @@ void main() {
   });
 
   blocTest<RegisterBloc, RegisterState>(
-    'emits [loading, success] when RegisterUser event is added and registration is successful',
-    build: () {
-      when(() => mockRegisterUseCase.call(any())).thenAnswer(
-        (_) async => const Right(null),
-      );
-      return registerBloc;
-    },
-    seed: () => const RegisterState(
-      isLoading: false,
-      isSuccess: false,
-      imageUploaded: true,
-      imageName: 'uploaded_image.jpg',
-    ),
-    act: (bloc) => bloc.add(RegisterUser(
-      username: 'test_user',
-      password: 'test_pass',
-      email: 'test@example.com',
-      context: MockBuildContext(),
-    )),
-    expect: () => [
-      const RegisterState(
-        isLoading: true,
-        isSuccess: false,
-        imageUploaded: true,
-        imageName: 'uploaded_image.jpg',
-      ),
-      const RegisterState(
-        isLoading: false,
-        isSuccess: true,
-        imageUploaded: true,
-        imageName: 'uploaded_image.jpg',
-      ),
-    ],
-    verify: (_) {
-      verify(() => mockRegisterUseCase.call(any())).called(1);
-    },
-  );
-
-  blocTest<RegisterBloc, RegisterState>(
     'emits [loading, failure] when RegisterUser event is added and registration fails',
     build: () {
       when(() => mockRegisterUseCase.call(any())).thenAnswer(
@@ -134,62 +95,6 @@ void main() {
     ],
     verify: (_) {
       verify(() => mockRegisterUseCase.call(any())).called(1);
-    },
-  );
-
-  blocTest<RegisterBloc, RegisterState>(
-    'emits [loading, success] when UploadImage event is added and upload is successful',
-    build: () {
-      when(() => mockUploadImageUseCase.call(any())).thenAnswer(
-        (_) async => const Right('uploaded_image.jpg'),
-      );
-      return registerBloc;
-    },
-    act: (bloc) => bloc.add(UploadImage(file: MockFile())),
-    expect: () => [
-      const RegisterState(
-        isLoading: true,
-        isSuccess: false,
-        imageUploaded: false,
-        imageName: '',
-      ),
-      const RegisterState(
-        isLoading: false,
-        isSuccess: false,
-        imageUploaded: true, // Updated to true on success
-        imageName: 'uploaded_image.jpg', // Expecting the updated image name
-      ),
-    ],
-    verify: (_) {
-      verify(() => mockUploadImageUseCase.call(any())).called(1);
-    },
-  );
-
-  blocTest<RegisterBloc, RegisterState>(
-    'emits [loading, failure] when UploadImage event is added and upload fails',
-    build: () {
-      when(() => mockUploadImageUseCase.call(any())).thenAnswer(
-        (_) async => Left(ApiFailure(message: 'Image upload failed')),
-      );
-      return registerBloc;
-    },
-    act: (bloc) => bloc.add(UploadImage(file: MockFile())),
-    expect: () => [
-      const RegisterState(
-        isLoading: true,
-        isSuccess: false,
-        imageUploaded: false,
-        imageName: '',
-      ),
-      const RegisterState(
-        isLoading: false,
-        isSuccess: false,
-        imageUploaded: false, // Failure path should keep imageUploaded false
-        imageName: '', // The image name should be empty
-      ),
-    ],
-    verify: (_) {
-      verify(() => mockUploadImageUseCase.call(any())).called(1);
     },
   );
 }

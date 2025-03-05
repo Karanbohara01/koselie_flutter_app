@@ -6,6 +6,7 @@ import 'package:koselie/core/common/snackbar/snackbar.dart';
 import 'package:koselie/features/auth/domain/entity/auth_entity.dart';
 import 'package:koselie/features/auth/presentation/view_model/login/login_bloc.dart';
 import 'package:koselie/features/chat/presentation/view/chat_view.dart';
+import 'package:koselie/features/comment/presentation/entity/comment_entity.dart';
 import 'package:koselie/features/posts/presentation/view_model/posts_bloc.dart';
 import 'package:koselie/features/theme/presentation/bloc/theme_bloc.dart';
 import 'package:koselie/features/theme/presentation/bloc/theme_state.dart';
@@ -20,6 +21,11 @@ class PostDetailsView extends StatefulWidget {
 }
 
 class _PostDetailsViewState extends State<PostDetailsView> {
+  final TextEditingController _commentController = TextEditingController();
+  bool showAllComments = false;
+  final int initialCommentCount = 3; // Initial number of comments to display
+  bool isExpanded = false;
+
   @override
   void initState() {
     super.initState();
@@ -29,8 +35,129 @@ class _PostDetailsViewState extends State<PostDetailsView> {
               postId: widget.postId,
               context: context,
             ));
+        context.read<PostsBloc>().add(GetComments(
+              postId: widget.postId,
+              context: context,
+            ));
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _commentController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildCommentTile(CommentEntity comment) {
+    final loggedInUser =
+        context.read<LoginBloc>().state.user; // Get logged-in user info
+
+    // Determine which image to display
+    String authorImage = (comment.authorId == loggedInUser?.userId)
+        ? "${ApiEndpoints.imageUrl}/${loggedInUser!.image}" // Logged-in user's image
+        : "${ApiEndpoints.imageUrl}/${comment.image}"; // Comment author's image
+
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      margin: const EdgeInsets.symmetric(vertical: 5),
+      elevation: 3,
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundImage: NetworkImage(authorImage),
+          onBackgroundImageError: (_, __) => const Icon(Icons.person),
+        ),
+        title: Text(
+          comment.authorUsername,
+          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+        ),
+        subtitle: Text(comment.text, style: GoogleFonts.poppins(fontSize: 14)),
+      ),
+    );
+  }
+
+  /// ✅ Display Comments Section
+  Widget _buildCommentsSection() {
+    return BlocBuilder<PostsBloc, PostsState>(
+      builder: (context, state) {
+        final comments = state.postComments[widget.postId] ?? [];
+        final displayedComments = showAllComments
+            ? comments
+            : comments.take(initialCommentCount).toList();
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Comments",
+              style: GoogleFonts.poppins(
+                  fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            if (comments.isEmpty)
+              Center(
+                child: Text(
+                  "No comments yet.",
+                  style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey),
+                ),
+              )
+            else
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: displayedComments.length,
+                itemBuilder: (context, index) {
+                  final comment = displayedComments[index];
+                  return _buildCommentTile(comment);
+                },
+              ),
+            if (comments.length > initialCommentCount)
+              TextButton(
+                onPressed: () {
+                  setState(() {
+                    showAllComments = !showAllComments;
+                  });
+                },
+                child: Text(
+                  showAllComments ? "See Less" : "See More",
+                  style: GoogleFonts.poppins(
+                      color: Colors.blue, fontWeight: FontWeight.w500),
+                ),
+              ),
+            const SizedBox(height: 16),
+          ],
+        );
+      },
+    );
+  }
+
+  /// ✅ Floating Comment Input Bar
+  Widget _buildCommentInput() {
+    return Positioned(
+      bottom: 10,
+      left: 10,
+      right: 10,
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 6)]),
+        child: Row(
+          children: [
+            Expanded(
+                child: TextField(
+                    controller: _commentController,
+                    decoration: const InputDecoration(
+                        hintText: "Write a comment...",
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.all(10)))),
+            IconButton(
+                icon: const Icon(Icons.send, color: Colors.pink),
+                onPressed: _addComment),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -39,19 +166,8 @@ class _PostDetailsViewState extends State<PostDetailsView> {
       builder: (context, themeState) {
         final isDarkMode = themeState is DarkThemeState;
 
-        // Define colors based on theme
-        final backgroundColor = isDarkMode ? Colors.black : Colors.grey[100]!;
-        final textColor = isDarkMode ? Colors.white : Colors.black87;
-        final appBarGradient = isDarkMode
-            ? [Colors.black87, Colors.black54]
-            : [const Color(0xFF8E2DE2), const Color(0xFFEC008C)];
-        final cardColor = isDarkMode ? Colors.grey[700]! : Colors.white;
-        final descriptionTextColor =
-            isDarkMode ? Colors.grey[400]! : Colors.black87;
-        final chipBackgroundColor =
-            isDarkMode ? Colors.grey[900]! : Colors.black;
-        final placeholderColor =
-            isDarkMode ? Colors.grey[700]! : Colors.grey[300]!;
+        final backgroundColor = isDarkMode ? Colors.black : Colors.white;
+        final textColor = isDarkMode ? Colors.white : Colors.black;
 
         return Scaffold(
           backgroundColor: backgroundColor,
@@ -60,39 +176,22 @@ class _PostDetailsViewState extends State<PostDetailsView> {
               "Product Details",
               style: GoogleFonts.poppins(
                 fontWeight: FontWeight.bold,
-                fontSize: 24,
+                fontSize: 22,
                 color: Colors.white,
               ),
             ),
             centerTitle: true,
-            elevation: 5,
-            backgroundColor: Colors.transparent,
-            flexibleSpace: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: appBarGradient,
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-              ),
-            ),
+            backgroundColor: Colors.black,
           ),
           body: BlocBuilder<PostsBloc, PostsState>(
             builder: (context, state) {
               if (state.isLoading) {
-                return Center(
-                    child: CircularProgressIndicator(
-                        color: Theme.of(context)
-                            .primaryColor)); // Themed indicator
+                return const Center(child: CircularProgressIndicator());
               } else if (state.error != null) {
                 return Center(
                   child: Text(
                     "Error: ${state.error!}",
-                    style: GoogleFonts.poppins(
-                      color: Colors.red,
-                      fontSize: 16,
-                    ),
-                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(color: Colors.red, fontSize: 16),
                   ),
                 );
               } else if (state.selectedPost == null) {
@@ -100,12 +199,17 @@ class _PostDetailsViewState extends State<PostDetailsView> {
                   child: Text(
                     "Post not found",
                     style: GoogleFonts.poppins(
-                      color: textColor.withOpacity(0.6),
-                      fontSize: 16,
-                    ),
+                        color: textColor.withOpacity(0.6), fontSize: 16),
                   ),
                 );
               }
+
+              // final post = state.selectedPost!;
+              // const postAuthor = AuthEntity(
+              //   userId: "67ac643a0cc29040b0e248a6",
+              //   username: 'Rekha',
+              //   email: 'rekha@gmail.com',
+              // );
 
               final post = state.selectedPost!;
               const postAuthor = AuthEntity(
@@ -114,116 +218,78 @@ class _PostDetailsViewState extends State<PostDetailsView> {
                 email: 'rekha@gmail.com',
               );
 
-              return SingleChildScrollView(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Image Display
-                    Hero(
-                      tag: 'post-image-${post.postId}',
-                      child: _buildImage(post.image, placeholderColor),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Product Title
-                    Text(
-                      post.caption,
-                      style: GoogleFonts.poppins(
-                        fontSize: 26,
-                        fontWeight: FontWeight.bold,
-                        color: textColor,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-
-                    // Price Display & Category
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              return Stack(
+                children: [
+                  SingleChildScrollView(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          "Rs. ${post.price}",
-                          style: GoogleFonts.poppins(
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green,
-                          ),
+                        // ✅ Post Image
+                        Hero(
+                          tag: 'post-image-${post.postId}',
+                          child: _buildImage(post.image),
                         ),
-                        Chip(
-                          label: Text(
-                            post.category.name,
-                            style: GoogleFonts.poppins(
-                              color: Colors.white,
-                              fontSize: 12,
+                        const SizedBox(height: 20),
+
+                        // ✅ Post Caption
+                        Text(
+                          post.caption,
+                          style: GoogleFonts.poppins(
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,
+                              color: textColor),
+                        ),
+                        const SizedBox(height: 12),
+
+                        // ✅ Post Price & Category
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Rs. ${post.price}",
+                              style: GoogleFonts.poppins(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green),
                             ),
-                          ),
-                          backgroundColor: chipBackgroundColor,
+                            Chip(
+                              label: Text(
+                                post.category.name,
+                                style: GoogleFonts.poppins(
+                                    color: Colors.white, fontSize: 12),
+                              ),
+                              backgroundColor: Colors.black,
+                            ),
+                          ],
                         ),
+                        const SizedBox(height: 12),
+                        // ✅ Post Description with Expand/Collapse
+                        _buildDescription(post.description, textColor),
+                        const SizedBox(height: 12),
+                        // ✅ Comments Section
+                        _buildCommentsSection(),
+
+                        const SizedBox(height: 100),
                       ],
                     ),
-                    const SizedBox(height: 12),
+                  ),
 
-                    // Location
-                    Row(
-                      children: [
-                        const Icon(Icons.location_on, color: Colors.red),
-                        const SizedBox(width: 6),
-                        Text(
-                          post.location,
-                          style: GoogleFonts.poppins(
-                            fontSize: 16,
-                            color:
-                                descriptionTextColor, // Adjusted location color
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
+                  // ✅ Floating Comment Input Bar
+                  _buildCommentInput(),
 
-                    // Description
-                    Text(
-                      "Description",
-                      style: GoogleFonts.poppins(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: textColor,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      post.description,
-                      style: GoogleFonts.poppins(
-                        fontSize: 16,
-                        color:
-                            descriptionTextColor, // Adjusted description color
-                        height: 1.5,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Likes & Comments
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _buildIconText(Icons.favorite, "6 Likes", Colors.red,
-                            descriptionTextColor), // Adjusted icon text color
-                        _buildIconText(
-                            Icons.comment,
-                            "8 Comments",
-                            descriptionTextColor,
-                            descriptionTextColor), // Adjusted icon text color
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-
-                    // Call to Action (Message Seller)
-                    _buildActionButton(
+                  // ✅ Floating "Message Seller" Button
+                  Positioned(
+                    bottom: 70,
+                    left: 20,
+                    right: 20,
+                    child: _buildActionButton(
                       "Message Seller",
                       textColor,
                       () => _navigateToChatScreen(context, postAuthor),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               );
             },
           ),
@@ -232,32 +298,51 @@ class _PostDetailsViewState extends State<PostDetailsView> {
     );
   }
 
-  /// Build Image with Placeholder Handling
-  Widget _buildImage(String? imageUrl, Color placeholderColor) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
-      child: imageUrl != null && imageUrl.isNotEmpty
-          ? Image.network(
-              "${ApiEndpoints.imageUrl}/$imageUrl",
-              width: double.infinity,
-              height: 250,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) =>
-                  _buildPlaceholderImage(placeholderColor),
-            )
-          : _buildPlaceholderImage(placeholderColor),
+  /// ✅ Post Description with Expand/Collapse
+  Widget _buildDescription(String description, Color textColor) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Description",
+          style: GoogleFonts.poppins(
+              fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
+        ),
+        const SizedBox(height: 8),
+        AnimatedSize(
+          duration: const Duration(milliseconds: 300),
+          child: ConstrainedBox(
+            constraints: isExpanded
+                ? const BoxConstraints()
+                : const BoxConstraints(maxHeight: 50),
+            child: Text(
+              description,
+              style: GoogleFonts.poppins(fontSize: 16, color: textColor),
+              softWrap: true,
+              overflow: TextOverflow.fade,
+            ),
+          ),
+        ),
+        InkWell(
+          onTap: () => setState(() => isExpanded = !isExpanded),
+          child: Text(
+            isExpanded ? 'Read Less' : 'Read More',
+            style: const TextStyle(color: Colors.pink),
+          ),
+        ),
+      ],
     );
   }
 
-  /// Navigate to Chat Screen
+  /// ✅ Navigate to Chat Screen
   void _navigateToChatScreen(BuildContext context, AuthEntity postAuthor) {
     final loggedInUser = context.read<LoginBloc>().state.user;
 
     if (loggedInUser == null) {
       showMySnackBar(
         context: context,
-        message: "Error: You must be logged in to chat!",
-        color: Colors.red,
+        message: "Please login  to chat!",
+        color: Colors.green,
       );
       return;
     }
@@ -276,59 +361,49 @@ class _PostDetailsViewState extends State<PostDetailsView> {
     );
   }
 
-  /// Reusable Method for Like/Comment Display
-  Widget _buildIconText(
-      IconData icon, String text, Color iconColor, Color textColor) {
-    return Row(
-      children: [
-        Icon(icon, color: iconColor),
-        const SizedBox(width: 6),
-        Text(
-          text,
-          style: GoogleFonts.poppins(
-            color: textColor,
-            fontSize: 14,
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// Reusable Action Button
+  /// ✅ Floating "Message Seller" Button
   Widget _buildActionButton(
       String text, Color textColor, VoidCallback onPressed) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.black, // Keep this fixed
-          foregroundColor: Colors.white,
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        child: Text(
-          text,
-          style: GoogleFonts.poppins(
-            fontSize: 16,
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.black,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+      child: Text(
+        text,
+        style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
       ),
     );
   }
 
-  /// Placeholder Image
-  Widget _buildPlaceholderImage(Color placeholderColor) {
-    return Container(
-      height: 250,
-      color: placeholderColor,
-      child: const Center(
-        child: Icon(Icons.image_not_supported, size: 50, color: Colors.grey),
-      ),
+  /// ✅ Post Image
+  Widget _buildImage(String? imageUrl) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: imageUrl != null && imageUrl.isNotEmpty
+          ? Image.network(
+              "${ApiEndpoints.imageUrl}/$imageUrl",
+              width: double.infinity,
+              height: 250,
+              fit: BoxFit.cover,
+            )
+          : Container(
+              height: 250,
+              color: Colors.grey[300],
+              child: const Center(
+                  child: Icon(Icons.image_not_supported,
+                      size: 50, color: Colors.grey))),
     );
+  }
+
+  void _addComment() {
+    final text = _commentController.text.trim();
+    if (text.isEmpty) return;
+    context.read<PostsBloc>().add(
+        AddComment(postId: widget.postId, commentText: text, context: context));
+    _commentController.clear();
   }
 }

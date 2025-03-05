@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:koselie/core/error/failure.dart';
+import 'package:koselie/features/comment/presentation/entity/comment_entity.dart';
 import 'package:koselie/features/posts/data/data_source/local_datasource/posts_local_data_source.dart';
 import 'package:koselie/features/posts/domain/entity/posts_entity.dart';
 import 'package:koselie/features/posts/domain/repository/posts_repository.dart';
@@ -59,6 +60,20 @@ class PostsLocalRepository implements IPostsRepository {
   Future<Either<Failure, void>> updatePost(
       String postId, PostsEntity post, String? token) {
     // TODO: implement updatePost
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Either<Failure, CommentEntity>> addComment(
+      String postId, String commentText, String? token) {
+    // TODO: implement addComment
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Either<Failure, List<CommentEntity>>> getComments(
+      String postId, String? token) {
+    // TODO: implement getComments
     throw UnimplementedError();
   }
 }

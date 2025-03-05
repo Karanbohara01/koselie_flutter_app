@@ -34,6 +34,8 @@ import 'package:koselie/features/chat/domain/usecase/delete_message_usecase.dart
 import 'package:koselie/features/chat/domain/usecase/get_message_usecase.dart';
 import 'package:koselie/features/chat/domain/usecase/send_message_usecase.dart';
 import 'package:koselie/features/chat/presentation/view_model/bloc/chat_bloc.dart';
+import 'package:koselie/features/comment/domain/usecase/add_comment_usecase.dart';
+import 'package:koselie/features/comment/domain/usecase/get_comments_usecase.dart';
 import 'package:koselie/features/home/presentation/view_model/home_cubit.dart';
 import 'package:koselie/features/posts/data/data_source/local_datasource/posts_local_data_source.dart';
 import 'package:koselie/features/posts/data/data_source/remote_datasource/posts_remote_data_source.dart';
@@ -51,6 +53,7 @@ import 'package:koselie/features/sensor/data/repositories/sensor_repository_impl
 import 'package:koselie/features/sensor/domain/repositories/sensor_repository.dart';
 import 'package:koselie/features/sensor/domain/usecases/detect_shake_usecase.dart';
 import 'package:koselie/features/sensor/presentation/bloc/sensor_bloc.dart';
+import 'package:koselie/features/sensor/shake_cubit/shake_cubit.dart';
 import 'package:koselie/features/splash/presentation/view_model/splash_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -99,6 +102,10 @@ Future<void> _initSensorDependencies() async {
       ),
     );
   }
+}
+
+void setupLocator() {
+  getIt.registerLazySingleton(() => ShakeCubit());
 }
 
 Future<void> _initSharedPreferences() async {
@@ -379,6 +386,20 @@ _initPostsDependencies() async {
     // Register Connectivity Service
     () => ConnectivityService(),
   );
+  // =========================== Use Cases ===========================
+  getIt.registerLazySingleton<AddCommentUseCase>(
+    () => AddCommentUseCase(
+      postsRepository: getIt<PostsRemoteRepository>(),
+      tokenSharedPrefs: getIt<TokenSharedPrefs>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<GetCommentsUseCase>(
+    () => GetCommentsUseCase(
+      postsRepository: getIt<PostsRemoteRepository>(),
+      tokenSharedPrefs: getIt<TokenSharedPrefs>(),
+    ),
+  );
 
   // =========================== Usecases ===========================
   getIt.registerLazySingleton<CreatePostsUseCase>(
@@ -424,6 +445,8 @@ _initPostsDependencies() async {
       deletePostUseCase: getIt<DeletePostsUsecase>(),
       updatePostsUseCase: getIt<UpdatePostsUsecase>(),
       connectivityService: getIt<ConnectivityService>(),
+      addCommentUseCase: getIt<AddCommentUseCase>(),
+      getCommentsUseCase: getIt<GetCommentsUseCase>(),
     ),
   );
 }

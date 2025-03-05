@@ -4,7 +4,7 @@ class ApiEndpoints {
   static const Duration connectionTimeout = Duration(seconds: 1000);
   static const Duration receiveTimeout = Duration(seconds: 5000);
   static const String baseUrl = "http://10.0.2.2:8000/api/v1/";
-  // static String baseUrl = "http://192.168.11.1:8000/api/v1";
+  // static String baseUrl = "http://192.168.215.1:8000/api/v1/";
 
   // ===================== ✅ User Routes =====================
   static const String login = "user/login";
@@ -20,6 +20,10 @@ class ApiEndpoints {
       "post"; // ✅ Fetch single post (ID will be appended in requests)
   static const String updatePost =
       "post"; // The ID will be appended in requests
+
+  // ======================== Comment Routes =============================
+  static String addComment(String postId) => "post/$postId/comment";
+  static String getComments(String postId) => "post/$postId/comment/all";
 
   static const String getMe = "user/getMe";
   static const String getUserById = "user/getUserById/";

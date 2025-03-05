@@ -64,6 +64,7 @@
 import 'dart:io';
 
 import 'package:koselie/core/network/hive_service.dart';
+import 'package:koselie/features/comment/presentation/entity/comment_entity.dart';
 import 'package:koselie/features/posts/data/data_source/posts_data_source.dart';
 import 'package:koselie/features/posts/data/model/posts_hive_model.dart';
 import 'package:koselie/features/posts/domain/entity/posts_entity.dart';
@@ -127,6 +128,19 @@ class PostsLocalDataSource implements IPostsDataSource {
 
   @override
   Future<void> updatePost(String postId, PostsEntity post, String? token) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<CommentEntity> addComment(
+      String postId, String commentText, String? token) {
+    // TODO: implement addComment
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<CommentEntity>> getComments(String postId, String? token) {
+    // TODO: implement getComments
     throw UnimplementedError();
   }
 }
