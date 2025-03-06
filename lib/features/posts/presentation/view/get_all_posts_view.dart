@@ -355,204 +355,14 @@ class _PostViewState extends State<PostView> {
   }
 }
 
-// class PostCard extends StatelessWidget {
-//   const PostCard({
-//     super.key,
-//     required this.post,
-//     required this.cardColor,
-//     required this.textColor,
-//     required this.contrastColor,
-//     required this.iconColor,
-//     required this.dividerColor,
-//   });
+class PostCard extends StatefulWidget {
+  final PostsEntity post;
+  final Color cardColor;
+  final Color textColor;
+  final Color contrastColor;
+  final Color iconColor;
+  final Color dividerColor;
 
-//   final PostsEntity post;
-//   final Color cardColor;
-//   final Color textColor;
-//   final Color contrastColor;
-//   final Color iconColor;
-//   final Color dividerColor;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Card(
-//       elevation: 3,
-//       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-//       shape: RoundedRectangleBorder(
-//         borderRadius: BorderRadius.circular(15),
-//       ),
-//       color: cardColor,
-//       child: InkWell(
-//         borderRadius: BorderRadius.circular(15),
-//         onTap: () {
-//           Navigator.push(
-//             context,
-//             MaterialPageRoute(
-//               builder: (context) => PostDetailsView(postId: post.postId ?? ""),
-//             ),
-//           );
-//         },
-//         child: Padding(
-//           padding: const EdgeInsets.all(16), // Increased padding
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Row(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   ClipRRect(
-//                     borderRadius:
-//                         BorderRadius.circular(12), // More rounded image
-//                     child: Image.network(
-//                       "${ApiEndpoints.imageUrl}/${post.image!}",
-//                       width: 100, // Increased image size
-//                       height: 100,
-//                       fit: BoxFit.cover,
-//                       errorBuilder: (BuildContext context, Object exception,
-//                           StackTrace? stackTrace) {
-//                         return Container(
-//                           // Placeholder for broken images
-//                           width: 100,
-//                           height: 100,
-//                           color: Colors.grey.shade300,
-//                           child: const Icon(Icons.image_not_supported,
-//                               color: Colors.grey),
-//                         );
-//                       },
-//                     ),
-//                   ),
-//                   const SizedBox(width: 16), // Increased spacing
-//                   Expanded(
-//                     child: Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: [
-//                         Text(
-//                           post.caption,
-//                           style: GoogleFonts.poppins(
-//                             fontWeight: FontWeight.w600, // Bolder caption
-//                             fontSize: 17, // Increased font size
-//                             color: textColor,
-//                           ),
-//                           maxLines: 2,
-//                           overflow: TextOverflow.ellipsis,
-//                         ),
-//                         const SizedBox(height: 6), // Increased spacing
-//                         Text(
-//                           'Rs. ${post.price}',
-//                           style: GoogleFonts.poppins(
-//                             fontWeight: FontWeight.w700, // Even bolder price
-//                             fontSize: 19, // Further increased size
-//                             color: contrastColor,
-//                           ),
-//                         ),
-//                         const SizedBox(height: 6), // Increased spacing
-//                         Row(
-//                           children: [
-//                             Icon(Icons.location_on, size: 16, color: iconColor),
-//                             const SizedBox(width: 6),
-//                             Text(
-//                               post.location,
-//                               style: GoogleFonts.poppins(
-//                                 fontSize: 14,
-//                                 color:
-//                                     textColor.withOpacity(0.8), // Less opaque
-//                               ),
-//                             ),
-//                           ],
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//                   PopupMenuButton<String>(
-//                     icon: Icon(Icons.more_vert, color: iconColor),
-//                     itemBuilder: (BuildContext context) {
-//                       return [
-//                         const PopupMenuItem<String>(
-//                           value: "View Details",
-//                           child: Text("View Details"),
-//                         ),
-//                         const PopupMenuItem<String>(
-//                           value: "Edit Post",
-//                           child: Text("Edit Post"),
-//                         ),
-//                         const PopupMenuItem<String>(
-//                           value: "Delete Post",
-//                           child: Text("Delete Post"),
-//                         ),
-//                       ];
-//                     },
-//                     onSelected: (String choice) {
-//                       _showActionSheet(
-//                           context, post.postId ?? "", post, choice);
-//                     },
-//                   ),
-//                 ],
-//               ),
-//               const SizedBox(height: 12), // Increased spacing
-//               Divider(color: dividerColor, height: 1),
-//               const SizedBox(height: 8), // Increased spacing
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   Row(
-//                     children: [
-//                       Icon(Icons.favorite_border,
-//                           size: 18, color: iconColor), // Slightly larger icons
-//                       const SizedBox(width: 4),
-//                       Text(
-//                         "6",
-//                         style: GoogleFonts.poppins(
-//                             fontSize: 14, color: textColor.withOpacity(0.8)),
-//                       ),
-//                       const SizedBox(width: 12),
-//                       Icon(Icons.mode_comment_outlined,
-//                           size: 18, color: iconColor), // Slightly larger icons
-//                       const SizedBox(width: 4),
-//                       Text(
-//                         "8",
-//                         style: GoogleFonts.poppins(
-//                             fontSize: 14, color: textColor.withOpacity(0.8)),
-//                       ),
-//                     ],
-//                   ),
-//                 ],
-//               ),
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
-//   void _showActionSheet(
-//       BuildContext context, String postId, PostsEntity post, String choice) {
-//     switch (choice) {
-//       case "View Details":
-//         Navigator.push(
-//           context,
-//           MaterialPageRoute(
-//             builder: (context) => PostDetailsView(postId: postId),
-//           ),
-//         );
-//         break;
-//       case "Edit Post":
-//         Navigator.push(
-//           context,
-//           MaterialPageRoute(
-//             builder: (context) => PostUpdateView(post: post),
-//           ),
-//         );
-//         break;
-//       case "Delete Post":
-//         context
-//             .read<PostsBloc>()
-//             .add(DeletePost(postId: postId, context: context));
-//         break;
-//     }
-//   }
-// }
-
-class PostCard extends StatelessWidget {
   const PostCard({
     super.key,
     required this.post,
@@ -563,12 +373,34 @@ class PostCard extends StatelessWidget {
     required this.dividerColor,
   });
 
-  final PostsEntity post;
-  final Color cardColor;
-  final Color textColor;
-  final Color contrastColor;
-  final Color iconColor;
-  final Color dividerColor;
+  @override
+  _PostCardState createState() => _PostCardState();
+}
+
+class _PostCardState extends State<PostCard> {
+  late bool isLiked;
+  late int likeCount;
+
+  @override
+  void initState() {
+    super.initState();
+    isLiked = widget.post.likes?.contains("dummy_user") ??
+        false; // Simulate user like status
+    likeCount = widget.post.likes?.length ?? 4;
+  }
+
+  void _toggleLike() {
+    setState(() {
+      if (isLiked) {
+        likeCount--;
+        widget.post.likes?.remove("dummy_user");
+      } else {
+        likeCount++;
+        widget.post.likes?.add("dummy_user");
+      }
+      isLiked = !isLiked;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -578,14 +410,15 @@ class PostCard extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15),
       ),
-      color: cardColor,
+      color: widget.cardColor,
       child: InkWell(
         borderRadius: BorderRadius.circular(15),
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => PostDetailsView(postId: post.postId ?? ""),
+              builder: (context) =>
+                  PostDetailsView(postId: widget.post.postId ?? ""),
             ),
           );
         },
@@ -594,13 +427,14 @@ class PostCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Post Image & Content
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image.network(
-                      "${ApiEndpoints.imageUrl}/${post.image!}",
+                      "${ApiEndpoints.imageUrl}/${widget.post.image!}",
                       width: 100,
                       height: 100,
                       fit: BoxFit.cover,
@@ -622,34 +456,35 @@ class PostCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          post.caption,
+                          widget.post.caption,
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w600,
                             fontSize: 17,
-                            color: textColor,
+                            color: widget.textColor,
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 6),
                         Text(
-                          'Rs. ${post.price}',
+                          'Rs. ${widget.post.price}',
                           style: GoogleFonts.poppins(
                             fontWeight: FontWeight.w700,
                             fontSize: 19,
-                            color: contrastColor,
+                            color: widget.contrastColor,
                           ),
                         ),
                         const SizedBox(height: 6),
                         Row(
                           children: [
-                            Icon(Icons.location_on, size: 16, color: iconColor),
+                            Icon(Icons.location_on,
+                                size: 16, color: widget.iconColor),
                             const SizedBox(width: 6),
                             Text(
-                              post.location,
+                              widget.post.location,
                               style: GoogleFonts.poppins(
                                 fontSize: 14,
-                                color: textColor.withOpacity(0.8),
+                                color: widget.textColor.withOpacity(0.8),
                               ),
                             ),
                           ],
@@ -658,7 +493,7 @@ class PostCard extends StatelessWidget {
                     ),
                   ),
                   PopupMenuButton<String>(
-                    icon: Icon(Icons.more_vert, color: iconColor),
+                    icon: Icon(Icons.more_vert, color: widget.iconColor),
                     itemBuilder: (BuildContext context) {
                       return [
                         const PopupMenuItem<String>(
@@ -676,35 +511,47 @@ class PostCard extends StatelessWidget {
                       ];
                     },
                     onSelected: (String choice) {
-                      _showActionSheet(
-                          context, post.postId ?? "", post, choice);
+                      _showActionSheet(context, widget.post.postId ?? "",
+                          widget.post, choice);
                     },
                   ),
                 ],
               ),
+
+              // Like & Comment Count
               const SizedBox(height: 12),
-              Divider(color: dividerColor, height: 1),
+              Divider(color: widget.dividerColor, height: 1),
               const SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.favorite_border, size: 18, color: iconColor),
-                      const SizedBox(width: 4),
+                      IconButton(
+                        icon: Icon(
+                          isLiked ? Icons.favorite : Icons.favorite_border,
+                          size: 22,
+                          color: isLiked ? Colors.red : widget.iconColor,
+                        ),
+                        onPressed: _toggleLike,
+                      ),
                       Text(
-                        "${post.likes?.length ?? 2}", // ✅ Display actual likes count
+                        "$likeCount",
                         style: GoogleFonts.poppins(
-                            fontSize: 14, color: textColor.withOpacity(0.8)),
+                          fontSize: 14,
+                          color: widget.textColor.withOpacity(0.8),
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Icon(Icons.mode_comment_outlined,
-                          size: 18, color: iconColor),
+                          size: 18, color: widget.iconColor),
                       const SizedBox(width: 4),
                       Text(
-                        "${post.comments?.length ?? 0}", // ✅ Display actual comments count
+                        "${widget.post.comments?.length ?? 0}",
                         style: GoogleFonts.poppins(
-                            fontSize: 14, color: textColor.withOpacity(0.8)),
+                          fontSize: 14,
+                          color: widget.textColor.withOpacity(0.8),
+                        ),
                       ),
                     ],
                   ),
