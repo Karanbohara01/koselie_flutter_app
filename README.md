@@ -7,10 +7,9 @@ Koselie is an innovative **social media-based marketplace** that seamlessly blen
 - **Product Listings**: Users can list products with images, descriptions, and pricing.
 - **Chat System**: Real-time chat for buyers and sellers.
 - **Social Engagement**: Like, comment, and share products.
-- **Wishlist**: Save favorite products for later.
+- **Comment system**: Add comments.
 - **Dark & Light Mode**: Customizable UI themes.
-- **Push Notifications**: Stay updated on product activity.
-- **Secure Payments**: Integrated with trusted payment gateways.
+
 
 ## 🛠 Tech Stack
 ### **Frontend:**
@@ -61,7 +60,7 @@ Koselie/
    ```
 3. **Run the server:**
    ```sh
-   node server.js
+   node index.js
    ```
 
 ## 📸 Screenshots
@@ -95,12 +94,12 @@ Screenshot_1741276627
 This project is **open-source** and available under the **MIT License**.
 
 ## 👥 Contributors
-- **Your Name** - [GitHub](https://github.com/yourusername)
+- **Karan Bohara** - [GitHub](https://github.com/karanbohara01)
 - More contributors are welcome!
 
 ## 📬 Contact
 For any queries or contributions, feel free to reach out:
-📧 Email: your-email@example.com
+📧 Email: karanbohara216@gmail.com
 
 Happy Coding! 🚀
 
