@@ -1,14 +1,82 @@
-Koselie an e-commerce based social media app
+# Koselie - Social Media Marketplace
 
+Koselie is an innovative **social media-based marketplace** that seamlessly blends e-commerce with community interaction. Users can **buy, sell, and connect** in a dynamic and engaging environment.
 
-![WhatsApp Image 2024-12-12 at 20 53 02_f8715f3d](https://github.com/user-attachments/assets/cfca7d93-4a16-48ec-8905-58817ff1f17a)
-![WhatsApp Image 2024-12-13 at 11 07 41_c254205a](https://github.com/user-attachments/assets/e457a3d6-f6ed-491e-89e5-9a5f3296fc24)
-![WhatsApp Image 2024-12-13 at 11 09 22_321148ec](https://github.com/user-attachments/assets/28d21389-ae3e-4e4f-9027-6477864cf0e5)
+## 🚀 Features
+- **User Authentication**: Secure login and registration.
+- **Product Listings**: Users can list products with images, descriptions, and pricing.
+- **Chat System**: Real-time chat for buyers and sellers.
+- **Social Engagement**: Like, comment, and share products.
+- **Wishlist**: Save favorite products for later.
+- **Dark & Light Mode**: Customizable UI themes.
+- **Push Notifications**: Stay updated on product activity.
+- **Secure Payments**: Integrated with trusted payment gateways.
 
-Sprint 2 screenshots
-![Screenshot_1734685951](https://github.com/user-attachments/assets/13ef384b-13d0-416f-bf8b-527697432cf8)
-![Screenshot_1734686054](https://github.com/user-attachments/assets/52d14517-d046-472d-9354-7e32618f31fe)
-![Screenshot_1734686071](https://github.com/user-attachments/assets/0f1e941b-5c48-4511-8195-28a7c9cfb5e1)
-![Screenshot_1734686083](https://github.com/user-attachments/assets/41539ff1-2482-4a08-a28c-96cf029d40ad)
+## 🛠 Tech Stack
+### **Frontend:**
+- **Flutter** (for mobile app development)
+- **BLoC** (for state management)
+- **Hive & SharedPreferences** (for local storage)
 
+### **Backend:**
+- **Node.js** (for API handling)
+- **MongoDB** (for database storage)
+- **WebSockets** (for real-time chat communication)
+
+## 📂 Project Structure
+```
+Koselie/
+│-- lib/
+│   ├── data/  # Data layer (API calls, local storage, models)
+│   ├── domain/  # Business logic layer (repositories, use cases)
+│   ├── presentation/  # UI layer (screens, widgets, BLoC)
+│-- test/  # Unit & integration tests
+│-- pubspec.yaml  # Dependencies
+│-- README.md  # Project documentation
+```
+
+## 📦 Installation & Setup
+1. **Clone the repository:**
+   ```sh
+   git clone https://github.com/yourusername/koselie.git
+   cd koselie
+   ```
+2. **Install dependencies:**
+   ```sh
+   flutter pub get
+   ```
+3. **Run the app:**
+   ```sh
+   flutter run
+   ```
+
+## 🔥 API Setup
+1. **Navigate to the backend folder:**
+   ```sh
+   cd backend
+   ```
+2. **Install backend dependencies:**
+   ```sh
+   npm install
+   ```
+3. **Run the server:**
+   ```sh
+   node server.js
+   ```
+
+## 📸 Screenshots
+![Screenshot_1741276801](https://github.com/user-attachments/assets/51e67b50-7764-42d4-8799-0b3dcffcbd97)
+
+## 📜 License
+This project is **open-source** and available under the **MIT License**.
+
+## 👥 Contributors
+- **Your Name** - [GitHub](https://github.com/yourusername)
+- More contributors are welcome!
+
+## 📬 Contact
+For any queries or contributions, feel free to reach out:
+📧 Email: your-email@example.com
+
+Happy Coding! 🚀
 
