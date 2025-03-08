@@ -8,11 +8,13 @@ import 'package:koselie/features/auth/data/data_source/remote_datasource/auth_re
 import 'package:koselie/features/auth/data/repository/auth_local_repository.dart';
 import 'package:koselie/features/auth/data/repository/auth_remote_repository.dart';
 import 'package:koselie/features/auth/domain/repository/auth_repository.dart';
+import 'package:koselie/features/auth/domain/usecase/forgot_password_usecase.dart';
 import 'package:koselie/features/auth/domain/usecase/get_all_users_usecase.dart';
 import 'package:koselie/features/auth/domain/usecase/get_current_user_usecase.dart';
 import 'package:koselie/features/auth/domain/usecase/login_user_usecase.dart';
 import 'package:koselie/features/auth/domain/usecase/logout_usecase.dart';
 import 'package:koselie/features/auth/domain/usecase/register_user_usecase.dart';
+import 'package:koselie/features/auth/domain/usecase/reset_password_usecase.dart';
 import 'package:koselie/features/auth/domain/usecase/update_user_usecase.dart';
 import 'package:koselie/features/auth/domain/usecase/upload_image_usecase.dart';
 import 'package:koselie/features/auth/presentation/view_model/login/login_bloc.dart';
@@ -40,6 +42,7 @@ import 'package:koselie/features/posts/data/repository/posts_remote_repository.d
 import 'package:koselie/features/posts/domain/usecase/create_posts_usecase.dart';
 import 'package:koselie/features/posts/domain/usecase/delete_posts_usecase.dart';
 import 'package:koselie/features/posts/domain/usecase/get_all_posts_usecase.dart';
+import 'package:koselie/features/posts/domain/usecase/get_post_by_id_usecase.dart';
 import 'package:koselie/features/posts/domain/usecase/upload_posts_image_usecase.dart';
 import 'package:koselie/features/posts/presentation/view_model/posts_bloc.dart';
 import 'package:koselie/features/splash/presentation/view_model/splash_cubit.dart';
@@ -119,51 +122,6 @@ _initHomeDependencies() async {
   );
 }
 
-// _initLoginDependencies() async {
-//   // =========================== Register IAuthRepository First ===========================
-//   if (!getIt.isRegistered<AuthRemoteDatasource>()) {
-//     getIt.registerLazySingleton<AuthRemoteDatasource>(
-//       () => AuthRemoteDatasource(
-//           getIt<Dio>(), getIt<TokenSharedPrefs>()), // ✅ Inject TokenSharedPrefs
-//     );
-//   }
-
-//   if (!getIt.isRegistered<IAuthRepository>()) {
-//     getIt.registerLazySingleton<IAuthRepository>(
-//       () => AuthRemoteRepository(getIt<AuthRemoteDatasource>()),
-//     );
-//   }
-
-//   // =========================== Token Shared Preferences ===========================
-//   getIt.registerLazySingleton<TokenSharedPrefs>(
-//     () => TokenSharedPrefs(getIt<SharedPreferences>()),
-//   );
-
-//   // =========================== Usecases ===========================
-//   getIt.registerLazySingleton<GetCurrentUserUseCase>(
-//     () => GetCurrentUserUseCase(
-//         getIt<IAuthRepository>()), // ✅ Fix: Correct Dependency Injection
-//   );
-
-//   getIt.registerLazySingleton<LoginUseCase>(
-//     () => LoginUseCase(
-//       getIt<AuthRemoteRepository>(),
-//       getIt<TokenSharedPrefs>(),
-//     ),
-//   );
-
-//   // =========================== Bloc ===========================
-//   getIt.registerFactory<LoginBloc>(
-//     () => LoginBloc(
-//         registerBloc: getIt<RegisterBloc>(), // only for testing
-//         homeCubit: getIt<HomeCubit>(),
-//         loginUseCase: getIt<LoginUseCase>(),
-//         tokenSharedPrefs: getIt<TokenSharedPrefs>(),
-//         getCurrentUserUseCase: getIt<
-//             GetCurrentUserUseCase>()), // ✅ Now `getCurrentUserUseCase` has the correct dependency
-//   );
-// }
-
 _initLoginDependencies() async {
   // =========================== Register IAuthRepository First ===========================
   if (!getIt.isRegistered<AuthRemoteDatasource>()) {
@@ -203,6 +161,18 @@ _initLoginDependencies() async {
         tokenSharedPrefs: getIt<TokenSharedPrefs>()),
   );
 
+  if (!getIt.isRegistered<ForgotPasswordUseCase>()) {
+    getIt.registerLazySingleton<ForgotPasswordUseCase>(
+      () => ForgotPasswordUseCase(getIt<IAuthRepository>()),
+    );
+  }
+
+  if (!getIt.isRegistered<ResetPasswordUseCase>()) {
+    getIt.registerLazySingleton<ResetPasswordUseCase>(
+      () => ResetPasswordUseCase(getIt<IAuthRepository>()),
+    );
+  }
+
   // =========================== Bloc ===========================
   getIt.registerFactory<LoginBloc>(
     () => LoginBloc(
@@ -211,8 +181,10 @@ _initLoginDependencies() async {
       loginUseCase: getIt<LoginUseCase>(),
       tokenSharedPrefs: getIt<TokenSharedPrefs>(),
       getCurrentUserUseCase: getIt<GetCurrentUserUseCase>(),
-      updateUserUseCase:
-          getIt<UpdateUserUsecase>(), // ✅ Inject UpdateUserUseCase
+      updateUserUseCase: getIt<UpdateUserUsecase>(),
+      forgotPasswordUseCase: getIt<ForgotPasswordUseCase>(),
+      resetPasswordUseCase:
+          getIt<ResetPasswordUseCase>(), // ✅ Inject UpdateUserUseCase
     ),
   );
 }
@@ -287,31 +259,34 @@ _initPostsDependencies() async {
       () => PostsLocalDataSource(hiveService: getIt<HiveService>()));
 
   getIt.registerLazySingleton<PostsRemoteDataSource>(
-    () => PostsRemoteDataSource(
-      getIt<Dio>(),
-    ),
+    () => PostsRemoteDataSource(getIt<Dio>()),
   );
 
   // =========================== Repository ===========================
+  getIt.registerLazySingleton<PostsLocalRepository>(
+    () => PostsLocalRepository(
+        postsLocalDataSource: getIt<PostsLocalDataSource>()),
+  );
 
-  getIt.registerLazySingleton<PostsLocalRepository>(() => PostsLocalRepository(
-      postsLocalDataSource: getIt<PostsLocalDataSource>()));
-
-  getIt.registerLazySingleton(
-    () => PostsRemoteRepository(
-      remoteDataSource: getIt<PostsRemoteDataSource>(),
-    ),
+  getIt.registerLazySingleton<PostsRemoteRepository>(
+    () =>
+        PostsRemoteRepository(remoteDataSource: getIt<PostsRemoteDataSource>()),
   );
 
   // =========================== Usecases ===========================
-
   getIt.registerLazySingleton<CreatePostsUseCase>(
-    () => CreatePostsUseCase(postsRepository: getIt<PostsRemoteRepository>()),
-  );
-  getIt.registerLazySingleton<UploadPostsImageUsecase>(
-    () => UploadPostsImageUsecase(
-      getIt<PostsRemoteRepository>(),
+    () => CreatePostsUseCase(
+      postsRepository: getIt<PostsRemoteRepository>(),
+      tokenSharedPrefs: getIt<TokenSharedPrefs>(),
     ),
+  );
+
+  getIt.registerLazySingleton<GetPostByIdUseCase>(
+    () => GetPostByIdUseCase(postsRepository: getIt<PostsRemoteRepository>()),
+  );
+
+  getIt.registerLazySingleton<UploadPostsImageUsecase>(
+    () => UploadPostsImageUsecase(getIt<PostsRemoteRepository>()),
   );
 
   getIt.registerLazySingleton<GetAllPostsUseCase>(
@@ -328,11 +303,12 @@ _initPostsDependencies() async {
   // =========================== Bloc ===========================
   getIt.registerFactory<PostsBloc>(
     () => PostsBloc(
-        createPostsUseCase: getIt<CreatePostsUseCase>(),
-        getAllPostsUseCase: getIt<GetAllPostsUseCase>(),
-        // deletePostsUsecase: getIt<DeletePostsUsecase>(),
-        uploadPostsImageUsecase: getIt<UploadPostsImageUsecase>(),
-        categoryBloc: getIt<CategoryBloc>()),
+      createPostsUseCase: getIt<CreatePostsUseCase>(),
+      getAllPostsUseCase: getIt<GetAllPostsUseCase>(),
+      uploadPostsImageUsecase: getIt<UploadPostsImageUsecase>(),
+      categoryBloc: getIt<CategoryBloc>(),
+      getPostByIdUseCase: getIt<GetPostByIdUseCase>(),
+    ),
   );
 }
 

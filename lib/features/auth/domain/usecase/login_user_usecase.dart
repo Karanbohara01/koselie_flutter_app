@@ -18,7 +18,6 @@ class LoginParams extends Equatable {
   const LoginParams.initial()
       : username = '',
         password = '';
-
   @override
   List<Object> get props => [username, password];
 }

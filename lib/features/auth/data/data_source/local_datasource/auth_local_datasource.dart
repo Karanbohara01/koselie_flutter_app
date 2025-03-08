@@ -90,6 +90,22 @@ class AuthLocalDataSource implements IAuthDataSource {
     throw UnimplementedError();
   }
 
+  @override
+  Future<void> forgotPassword({String? email, String? phone}) {
+    // TODO: implement forgotPassword
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> resetPassword(
+      {String? email,
+      String? phone,
+      required String otp,
+      required String newPassword}) {
+    // TODO: implement resetPassword
+    throw UnimplementedError();
+  }
+
   //   @override
   // Future<String> uploadProfilePicture(File file) {
   //   throw UnimplementedError();

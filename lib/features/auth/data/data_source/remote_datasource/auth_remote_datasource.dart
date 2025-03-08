@@ -219,45 +219,6 @@ class AuthRemoteDatasource implements IAuthDataSource {
     }
   }
 
-  // @override
-  // Future<void> updateUser(AuthEntity entity, String token) async {
-  //   try {
-  //     final tokenResult = await _tokenSharedPrefs.getToken();
-
-  //     final token = tokenResult.fold(
-  //       (failure) =>
-  //           throw Exception("Failed to retrieve token: ${failure.message}"),
-  //       (token) => token,
-  //     );
-
-  //     if (token == null) {
-  //       throw Exception("No authentication token found");
-  //     }
-
-  //     final response = await _dio.put(
-  //       // ✅ Use PUT instead of POST
-  //       "http://10.0.2.2:8000/api/v1/user/profile/edit",
-  //       data: {
-  //         "username": entity.username,
-  //         "bio": entity.bio,
-  //         "role": entity.role,
-  //       },
-  //       options: Options(
-  //         headers: {
-  //           "Authorization": "Bearer $token",
-  //           "Content-Type": "application/json",
-  //         },
-  //       ),
-  //     );
-
-  //     if (response.statusCode != 200) {
-  //       throw Exception("Profile update failed: ${response.statusMessage}");
-  //     }
-  //   } catch (e) {
-  //     throw Exception("Error updating profile: $e");
-  //   }
-  // }
-
   @override
   Future<void> updateUser(AuthEntity entity, String? token) async {
     try {
@@ -331,6 +292,60 @@ class AuthRemoteDatasource implements IAuthDataSource {
           e.response?.data["message"] ?? "Network Error: ${e.message}");
     } catch (e) {
       throw Exception("Unexpected Error: $e");
+    }
+  }
+
+  @override
+  Future<void> forgotPassword({String? email, String? phone}) async {
+    try {
+      Response response = await _dio.post(
+        ApiEndpoints
+            .forgotPassword, // Ensure this endpoint is defined, e.g. "/api/v1/users/forgot-password"
+        data: {
+          'email': email,
+          'phone': phone,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw Exception(response.statusMessage);
+      }
+    } on DioException catch (e) {
+      throw Exception(e);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  @override
+  Future<void> resetPassword(
+      {String? email,
+      String? phone,
+      required String otp,
+      required String newPassword}) async {
+    try {
+      Response response = await _dio.post(
+        ApiEndpoints
+            .resetPassword, // Ensure this endpoint is defined, e.g. "/api/v1/users/reset-password"
+        data: {
+          'email': email,
+          'phone': phone,
+          'otp': otp,
+          'newPassword': newPassword,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw Exception(response.statusMessage);
+      }
+    } on DioException catch (e) {
+      throw Exception(e);
+    } catch (e) {
+      throw Exception(e);
     }
   }
 }
